@@ -34,7 +34,7 @@ class FBDrawBorderCommand(fb.FBCommand):
     return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView*', help='The view to border.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to border.') ]
 
   def options(self):
     return [
@@ -43,11 +43,9 @@ class FBDrawBorderCommand(fb.FBCommand):
     ]
 
   def run(self, args, options):
-    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-
-    object = frame.EvaluateExpression('(id)%s' % (args[0])).GetValue()
-    lldb.debugger.HandleCommand('expr (void)[(CALayer *)[%s layer] setBorderWidth:%s]' % (object, options.width))
-    lldb.debugger.HandleCommand('expr (void)[(CALayer *)[%s layer] setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (object, options.color))
+    layer = viewHelpers.convertToLayer(args[0])
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:%s]' % (layer, options.width))
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, options.color))
     lldb.debugger.HandleCommand('caflush')
 
 
@@ -59,12 +57,11 @@ class FBRemoveBorderCommand(fb.FBCommand):
     return 'Removes border around <viewOrLayer>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView*', help='The view to unborder.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to unborder.') ]
 
   def run(self, args, options):
-    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    object = frame.EvaluateExpression('(id)%s' % (args[0])).GetValue()
-    lldb.debugger.HandleCommand('expr (void)[(CALayer *)[%s layer] setBorderWidth:%s]' % (object, 0))
+    layer = viewHelpers.convertToLayer(args[0])
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:%s]' % (layer, 0))
     lldb.debugger.HandleCommand('caflush')
 
 
