@@ -22,7 +22,7 @@ There are many commands; here's a few:
 |----------------------------------|-----------|
 |pviews                            |Print the recursive view description for the key window.|
 |pvc                               |Print the recursive view controller description for the key window.|
-|show{view\|image\|layer\|imageref}|Draw the argument into an image and open it in Preview.app.|
+|show{view,image,layer,imageref}|Draw the argument into an image and open it in Preview.app.|
 |fv                                |Find a view in the hierarchy whose class name matches the provided regex.|
 |fvc                               |Find a view controller in the hierarchy whose class name matches the provided regex.|
 |show/hide                         |Show or hide the given view or layer. You don't even have to continue the process to see the changes!|
