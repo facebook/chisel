@@ -18,22 +18,21 @@ The commands will be available the next time `Xcode` starts.
 ## Commands
 There are many commands; here's a few:
 
-|Command|Description|
-|-|-|
-|pviews|Print the recursive view description for the key window.|
-|pvc|Print the recursive view controller description for the key window.|
+|Command                           |Description|
+|----------------------------------|-----------|
+|pviews                            |Print the recursive view description for the key window.|
+|pvc                               |Print the recursive view controller description for the key window.|
 |show{view\|image\|layer\|imageref}|Draw the argument into an image and open it in Preview.app.|
-|fv|Find a view in the hierarchy whose class name matches the provided regex.|
-|fvc|Find a view controller in the hierarchy whose class name matches the provided regex.|
-|show/hide|Show or hide the given view or layer. You don't even have to continue the process to see the changes!|
-|mask/unmask|Overlay a view or layer with a transparent rectangle to visualize where it is.|
-|border/unborder|Add a border to a view or layer to visualize where it is.|
-|caflush|Flush the render server (equivalent to a "repaint" if no animations are in-flight).)|
-|bmessage|Set a symbolic breakpoint on the method of a class or the method of an instance without worrying which class in the hierarchy actually implements the method.|
-|wivar|Set a watchpoint on an instance variable of an object.|
-|presponder|Print the responder chain starting from the given object.|
-|...|... and many more!|
-
+|fv                                |Find a view in the hierarchy whose class name matches the provided regex.|
+|fvc                               |Find a view controller in the hierarchy whose class name matches the provided regex.|
+|show/hide                         |Show or hide the given view or layer. You don't even have to continue the process to see the changes!|
+|mask/unmask                       |Overlay a view or layer with a transparent rectangle to visualize where it is.|
+|border/unborder                   |Add a border to a view or layer to visualize where it is.|
+|caflush                           |Flush the render server (equivalent to a "repaint" if no animations are in-flight).)|
+|bmessage                          |Set a symbolic breakpoint on the method of a class or the method of an instance without worrying which class in the hierarchy actually implements the method.|
+|wivar                             |Set a watchpoint on an instance variable of an object.|
+|presponder                        |Print the responder chain starting from the given object.|
+|...                               |... and many more!|
 
 To see the list of **all** of the commands execute the help command in `LLDB`.
 
