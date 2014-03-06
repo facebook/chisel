@@ -13,12 +13,14 @@ import re
 import lldb
 import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
+import fblldbobjcruntimehelpers as objc
 
 def lldbcommands():
   return [
     FBFindViewControllerCommand(),
     FBFindViewCommand(),
     FBFindViewByAccessibilityLabelCommand(),
+    FBTapLoggerCommand(),
   ]
 
 class FBFindViewControllerCommand(fb.FBCommand):
@@ -87,3 +89,27 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
           first = view
           cmd = 'echo %s | tr -d "\n" | pbcopy' % first
           os.system(cmd)
+
+
+class FBTapLoggerCommand(fb.FBCommand):
+  def name(self):
+    return 'taplog'
+
+  def description(self):
+    return 'Log tapped view to the console.'
+
+  def run(self, arguments, options):
+    parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
+    target = lldb.debugger.GetSelectedTarget()
+    breakpoint = target.BreakpointCreateByName("-[UIApplication sendEvent:]")
+    breakpoint.SetCondition('(int)[' + parameterExpr + ' type] == 0 && (int)[[[' + parameterExpr + ' allTouches] anyObject] phase] == 0')
+    breakpoint.SetOneShot(True)
+    lldb.debugger.HandleCommand('breakpoint command add -s python -F "sys.modules[\'FBFindCommands\'].FBTapLoggerCommand.taplog_callback" ' + str(breakpoint.id))
+    lldb.debugger.SetAsync(True)
+    lldb.debugger.HandleCommand('continue')
+
+  @staticmethod
+  def taplog_callback(frame, bp_loc, internal_dict):
+    parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
+    lldb.debugger.HandleCommand('po [[[%s allTouches] anyObject] view]' % (parameterExpr))
+    lldb.debugger.HandleCommand('thread return')
