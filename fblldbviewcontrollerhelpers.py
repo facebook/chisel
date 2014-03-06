@@ -39,7 +39,7 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
     viewController = fb.evaluateExpression('(id)[(id)[%s childViewControllers] objectAtIndex:%d]' % (vc, i))
     s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(viewController, string, nextPrefix, nextPrefix)
 
-  isModal = fb.evaluateBooleanExpression('((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s' % (vc, vc))
+  isModal = fb.evaluateBooleanExpression('%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s' % (vc, vc, vc))
 
   if isModal:
     modalVC = fb.evaluateObjectExpression('(id)[(id)%s presentedViewController]' % (vc))
