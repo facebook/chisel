@@ -100,11 +100,10 @@ class FBTapLoggerCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
-    target = lldb.debugger.GetSelectedTarget()
-    breakpoint = target.BreakpointCreateByName("-[UIApplication sendEvent:]")
+    breakpoint = lldb.debugger.GetSelectedTarget().BreakpointCreateByName("-[UIApplication sendEvent:]")
     breakpoint.SetCondition('(int)[' + parameterExpr + ' type] == 0 && (int)[[[' + parameterExpr + ' allTouches] anyObject] phase] == 0')
     breakpoint.SetOneShot(True)
-    lldb.debugger.HandleCommand('breakpoint command add -s python -F "sys.modules[\'FBFindCommands\'].FBTapLoggerCommand.taplog_callback" ' + str(breakpoint.id))
+    lldb.debugger.HandleCommand('breakpoint command add -s python -F "sys.modules[\'' + __name__ + '\'].' + self.__class__.__name__ + '.taplog_callback" ' + str(breakpoint.id))
     lldb.debugger.SetAsync(True)
     lldb.debugger.HandleCommand('continue')
 
@@ -112,4 +111,5 @@ class FBTapLoggerCommand(fb.FBCommand):
   def taplog_callback(frame, bp_loc, internal_dict):
     parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
     lldb.debugger.HandleCommand('po [[[%s allTouches] anyObject] view]' % (parameterExpr))
+    # We don't want to proceed event (click on button for example), so we just skip it
     lldb.debugger.HandleCommand('thread return')
