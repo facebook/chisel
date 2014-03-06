@@ -13,12 +13,14 @@ import re
 import lldb
 import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
+import fblldbobjcruntimehelpers as objc
 
 def lldbcommands():
   return [
     FBFindViewControllerCommand(),
     FBFindViewCommand(),
     FBFindViewByAccessibilityLabelCommand(),
+    FBTapLoggerCommand(),
   ]
 
 class FBFindViewControllerCommand(fb.FBCommand):
@@ -87,3 +89,28 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
           first = view
           cmd = 'echo %s | tr -d "\n" | pbcopy' % first
           os.system(cmd)
+
+
+class FBTapLoggerCommand(fb.FBCommand):
+  def name(self):
+    return 'taplog'
+
+  def description(self):
+    return 'Log tapped view to the console.'
+
+  def run(self, arguments, options):
+    parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
+    target = lldb.debugger.GetSelectedTarget()
+    breakpointCountBefore = target.GetNumBreakpoints()
+    lldb.debugger.HandleCommand('breakpoint set --fullname "-[UIApplication sendEvent:]" --condition "(int)[' + parameterExpr + ' type] == 0 && (int)[[[' + parameterExpr + ' allTouches] anyObject] phase] == 0"')
+    if target.GetNumBreakpoints() == breakpointCountBefore:
+      print 'Can\'t setup breakpoint'
+      return
+    
+    hitCommands = "import lldb; lldb.debugger.HandleCommand('po [[[%s allTouches] anyObject] view]'); lldb.debugger.HandleCommand('thread return')" % (parameterExpr)
+    
+    breakpoint = target.GetBreakpointAtIndex(target.GetNumBreakpoints() - 1)
+    breakpoint.SetOneShot(True)
+    lldb.debugger.HandleCommand('breakpoint command add -s python -o "' + hitCommands + '" ' + str(breakpoint.id))
+    lldb.debugger.SetAsync(True)
+    lldb.debugger.HandleCommand('continue')
