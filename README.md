@@ -9,7 +9,7 @@ Add the following line to your _~/.lldbinit_ file. If it doesn't exist, create i
 ```
 # ~/.lldbinit
 ...
-command source /path/to/fblldb.py
+command script import /path/to/fblldb.py
 
 ```
 
