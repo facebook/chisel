@@ -43,7 +43,7 @@ class FBFindOwningViewControllerCommand(fb.FBCommand):
     return 'fovc'
 
   def descriptino(self):
-    return 'Find the view controller that owns the input view'
+    return 'Find the view controller that owns the input view.'
 
   def args(self):
     return [ fb.FBCommandArgument(arg='view', type='UIView', help='This function will print the View Controller that owns this view')]
