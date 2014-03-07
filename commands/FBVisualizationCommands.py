@@ -37,6 +37,21 @@ def _showImage(commandForImage):
   lldb.debugger.HandleCommand('expr (void) ' + createImageCMD)
   os.system('open ' + imagePath)
 
+def _showLayer(layer):
+  layer = '(' + layer + ')'
+
+  lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContext(((CGRect)[(id)' + layer + ' frame]).size)')
+  lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
+
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
+  if result.GetError() is not None and str(result.GetError()) != 'success':
+    print result.GetError()
+  else:
+    image = result.GetValue()
+    _showImage(image)
+
+  lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
 
 class FBShowImageCommand(fb.FBCommand):
   def name(self):
@@ -77,20 +92,7 @@ class FBShowViewCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to examine.') ]
 
   def run(self, arguments, options):
-    view = arguments[0]
-
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + view + ' bounds]).size, NO, 0)')
-    lldb.debugger.HandleCommand('expr (void)[' + view + ' drawViewHierarchyInRect:(CGRect)[' + view + ' bounds] afterScreenUpdates:NO]')
-
-    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
-
-    if result.GetError() is not None and str(result.GetError()) != 'success':
-      print result.GetError()
-    else:
-      image = result.GetValue()
-      _showImage(image)
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+    _showLayer('[(id)' + arguments[0] + ' layer]')
 
 
 class FBShowLayerCommand(fb.FBCommand):
@@ -104,18 +106,5 @@ class FBShowLayerCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='aLayer', type='CALayer*', help='The layer to examine.') ]
 
   def run(self, arguments, options):
-    layer = '(' + arguments[0] + ')'
-    
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContext(((CGRect)[(id)' + layer + ' frame]).size)')
-    lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
-
-    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
-    if result.GetError() is not None and str(result.GetError()) != 'success':
-      print result.GetError()
-    else:
-      image = result.GetValue()
-      _showImage(image)
-
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+    _showLayer(arguments[0])
 
