@@ -77,7 +77,20 @@ class FBShowViewCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to examine.') ]
 
   def run(self, arguments, options):
-    _showImage('(id)[' + arguments[0] + ' screenshotImageOfRect:(CGRect)[' + arguments[0] + ' bounds]]')
+    view = arguments[0]
+
+    lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + view + ' bounds]).size, NO, 0)')
+    lldb.debugger.HandleCommand('expr (void)[' + view + ' drawViewHierarchyInRect:(CGRect)[' + view + ' bounds] afterScreenUpdates:NO]')
+
+    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+    result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
+
+    if result.GetError() is not None and str(result.GetError()) != 'success':
+      print result.GetError()
+    else:
+      image = result.GetValue()
+      _showImage(image)
+    lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
 
 
 class FBShowLayerCommand(fb.FBCommand):
