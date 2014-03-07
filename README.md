@@ -6,7 +6,7 @@
 ## Installation
 Add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
 
-```
+```Python
 # ~/.lldbinit
 ...
 command script import /path/to/fblldb.py
@@ -36,7 +36,7 @@ There are many commands; here's a few:
 
 To see the list of **all** of the commands execute the help command in `LLDB`.
 
-```
+```Python
 (lldb) help
 The following is a list of built-in, permanent debugger commands:
 ...
@@ -93,7 +93,7 @@ class PrintCurrentWindowLevel(fb.FBCommand):
 
 Then all that's left is to source the commands in lldbinit. `Chisel` has a python function just for this, _loadCommandsInDirectory_ in the _fblldb.py_ module.
 
-```
+```Python
 # ~/.lldbinit
 ...
 command script import /path/to/fblldb.py
