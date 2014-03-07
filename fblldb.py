@@ -77,13 +77,13 @@ def makeRunCommand(command, filename):
       head = args[:overhead+1] # Take N+1 and reduce to 1.
       args = [' '.join(head)] + args[-overhead:]
 
-    if validateArgsForCommand(args, command):
-      command.run(args, options)
+    if validateArgsForCommand(args, command, result):
+      command.run(args, options, result)
 
   runCommand.__doc__ = helpForCommand(command, filename)
   return runCommand
 
-def validateArgsForCommand(args, command):
+def validateArgsForCommand(args, command, result):
   if len(args) < len(command.args()):
     defaultArgs = [arg.default for arg in command.args()]
     defaultArgsToAppend = defaultArgs[len(args):]
@@ -92,8 +92,8 @@ def validateArgsForCommand(args, command):
     for defaultArg in defaultArgsToAppend:
       if not defaultArg:
         arg = command.args()[index]
-        print 'Whoops! You are missing the <' + arg.argName + '> argument.'
-        print '\nUsage: ' + usageForCommand(command)
+        fb.printResult('Whoops! You are missing the <' + arg.argName + '> argument.', result)
+        fb.printResult('\nUsage: ' + usageForCommand(command), result)
         return
       index += 1
 

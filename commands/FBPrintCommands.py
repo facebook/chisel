@@ -38,7 +38,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[UIWindow keyWindow]') ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     lldb.debugger.HandleCommand('po (id)[' + arguments[0] + ' recursiveDescription]')
 
 
@@ -49,7 +49,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
   def description(self):
     return 'Print layer tree from the perspective of the render server.'
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     lldb.debugger.HandleCommand('po [NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
 
 
@@ -63,8 +63,8 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[UIWindow keyWindow] rootViewController]') ]
 
-  def run(self, arguments, options):
-    print vcHelpers.viewControllerRecursiveDescription(arguments[0])
+  def run(self, arguments, options, result):
+    fb.printResult(vcHelpers.viewControllerRecursiveDescription(arguments[0]), result)
 
 
 class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
@@ -74,14 +74,14 @@ class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
   def description(self):
     return 'Prints if the code is currently execution with a UIView animation block.'
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     lldb.debugger.HandleCommand('p (BOOL)[UIView _isInAnimationBlock]')
 
 
-def _printIterative(initialValue, generator):
+def _printIterative(initialValue, generator, result):
   indent = 0
   for currentValue in generator(initialValue):
-    print '   | '*indent + currentValue
+    fb.printResult('   | '*indent + currentValue, result)
     indent += 1
 
 
@@ -95,8 +95,8 @@ class FBPrintInheritanceHierarchy(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='object', type='id', help='The instance to examine.') ]
 
-  def run(self, arguments, options):
-    _printIterative(arguments[0], _inheritanceHierarchy)
+  def run(self, arguments, options, result):
+    _printIterative(arguments[0], _inheritanceHierarchy, result)
 
 def _inheritanceHierarchy(instanceOfAClass):
   instanceAddress = fb.evaluateExpression(instanceOfAClass)
@@ -116,13 +116,13 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='startResponder', type='UIResponder *', help='The responder to use to start walking the chain.') ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     startResponder = arguments[0]
     if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[UIResponder class]]'):
-      print 'Whoa, ' + startResponder + ' is not a UIResponder. =('
+      fb.printResult('Whoa, ' + startResponder + ' is not a UIResponder. =(', result)
       return
 
-    _printIterative(startResponder, _responderChain)
+    _printIterative(startResponder, _responderChain, result)
 
 def _responderChain(startResponder):
   responderAddress = fb.evaluateExpression(startResponder)
@@ -166,15 +166,15 @@ class FBPrintOnscreenTableView(fb.FBCommand):
   def description(self):
     return 'Print the highest table view in the hierarchy.'
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     tableView = tableViewInHierarchy()
     if tableView:
       viewValue = fb.evaluateExpressionValue(tableView)
-      print viewValue.GetObjectDescription()
+      fb.printResult(viewValue.GetObjectDescription(), result)
       cmd = 'echo %s | tr -d "\n" | pbcopy' % tableView
       os.system(cmd)
     else:
-      print 'Sorry, chump. I couldn\'t find a table-view. :\'('
+      fb.printResult('Sorry, chump. I couldn\'t find a table-view. :\'(', result)
 
 class FBPrintOnscreenTableViewCells(fb.FBCommand):
   def name(self):
@@ -183,9 +183,9 @@ class FBPrintOnscreenTableViewCells(fb.FBCommand):
   def description(self):
     return 'Print the visible cells of the highest table view in the hierarchy.'
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     tableView = tableViewInHierarchy()
-    print fb.evaluateExpressionValue('(id)[(id)' + tableView + ' visibleCells]').GetObjectDescription()
+    fb.printResult(fb.evaluateExpressionValue('(id)[(id)' + tableView + ' visibleCells]').GetObjectDescription(), result)
 
 
 class FBPrintInternals(fb.FBCommand):
@@ -198,7 +198,7 @@ class FBPrintInternals(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='object', type='id', help='Object expression to be evaluated.') ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     object = fb.evaluateObjectExpression(arguments[0])
     objectClass = fb.evaluateExpressionValue('(id)[(id)(' + object + ') class]').GetObjectDescription()
 
@@ -219,7 +219,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
       fb.FBCommandArgument(arg='ivarName', help='Name of instance variable to print.')
     ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     commandForObject, ivarName = arguments
 
     object = fb.evaluateObjectExpression(commandForObject)

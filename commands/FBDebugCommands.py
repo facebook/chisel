@@ -25,7 +25,7 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
       fb.FBCommandArgument(arg='ivarName', help='Name of the instance variable to watch.')
     ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     commandForObject, ivarName = arguments
 
     objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
@@ -44,9 +44,9 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
     watchpoint = lldb.debugger.GetSelectedTarget().WatchAddress(objectAddress + ivarOffset, ivarSize, False, True, error)
 
     if error.Success():
-      print 'Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID())
+      fb.printResult('Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID()), result)
     else:
-      print 'Could not create the watchpoint: {}'.format(error.GetCString())
+      fb.printResult('Could not create the watchpoint: {}'.format(error.GetCString()), result)
 
 class FBMethodBreakpointCommand(fb.FBCommand):
   def name(self):
@@ -60,18 +60,18 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       fb.FBCommandArgument(arg='expression', type='string', help='Expression to set a breakpoint on, e.g. "-[MyView setFrame:]", "+[MyView awesomeClassMethod]" or "-[0xabcd1234 setFrame:]"'),
     ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     expression = arguments[0]
 
     match = re.match(r'([-+])*\[(.*) (.*)\]', expression)
 
     if not match:
-      print 'Failed to parse expression. Do you even Objective-C?!'
+      fb.printResult('Failed to parse expression. Do you even Objective-C?!', result)
       return
 
     expressionForSelf = objc.functionPreambleExpressionForSelf()
     if not expressionForSelf:
-      print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
+      fb.printResult('Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch), result)
       return
 
     methodTypeCharacter = match.group(1)
@@ -96,7 +96,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     targetClass = fb.evaluateObjectExpression('[{} class]'.format(targetObject), False)
 
     if not targetClass or int(targetClass, 0) == 0:
-      print 'Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression)
+      fb.printResult('Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression), result)
       return
 
     if methodIsClassMethod:
@@ -112,7 +112,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
         nextClass = objc.class_getSuperclass(nextClass)
 
     if not found:
-      print 'There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector)
+      fb.printResult('There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector), result)
       return
 
     breakpointClassName = objc.class_getName(nextClass)
@@ -124,7 +124,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     else:
       breakpointCondition = '(void*){} == {}'.format(expressionForSelf, targetObject)
 
-    print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
+    fb.printResult('Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition), result)
 
     lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
 

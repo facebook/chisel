@@ -32,7 +32,7 @@ class FBFlickerViewCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView*', help='The view to border.') ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     object = fb.evaluateObjectExpression(arguments[0])
 
     isHidden = fb.evaluateBooleanExpression('[' + object + ' isHidden]')
@@ -52,17 +52,17 @@ class FBViewSearchCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='view', type='UIView*', help='The view to border.') ]
 
-  def run(self, arguments, options):
-    print '\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n'
+  def run(self, arguments, options, result):
+    fb.printResult('\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n', result)
 
     object = fb.evaluateObjectExpression(arguments[0])
-    walker = FlickerWalker(object)
+    walker = FlickerWalker(object, result)
     walker.run()
 
 class FlickerWalker:
-  def __init__(self, startView):
+  def __init__(self, startView, result):
     self.setCurrentView(startView)
-
+    self.result = result
     self.handler = inputHelpers.FBInputHandler(lldb.debugger, self.inputCallback)
     self.handler.start()
 
@@ -83,33 +83,33 @@ class FlickerWalker:
       cmd = 'echo %s | tr -d "\n" | pbcopy' % oldView
       os.system(cmd)
 
-      print '\nI hope ' + oldView + ' was what you were looking for. I put it on your clipboard.'
+      fb.printResult('\nI hope ' + oldView + ' was what you were looking for. I put it on your clipboard.', self.result)
 
       self.handler.stop()
     elif input == 'w':
       v = superviewOfView(self.currentView)
       if not v:
-        print 'There is no superview. Where are you trying to go?!'
+        fb.printResult('There is no superview. Where are you trying to go?!', self.result)
       self.setCurrentView(v)
     elif input == 's':
       v = firstSubviewOfView(self.currentView)
       if not v:
-        print '\nThe view has no subviews.\n'
+        fb.printResult('\nThe view has no subviews.\n', self.result)
       self.setCurrentView(v)
     elif input == 'd':
       v = nthSiblingOfView(self.currentView, -1)
       if v == oldView:
-        print '\nThere are no sibling views to this view.\n'
+        fb.printResult('\nThere are no sibling views to this view.\n', self.result)
       self.setCurrentView(v)
     elif input == 'a':
       v = nthSiblingOfView(self.currentView, 1)
       if v == oldView:
-        print '\nThere are no sibling views to this view.\n'
+        fb.printResult('\nThere are no sibling views to this view.\n', self.result)
       self.setCurrentView(v)
     elif input == 'p':
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' recursiveDescription]')
     else:
-      print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
+      fb.printResult('\nI really have no idea what you meant by \'' + input + '\'... =\\\n', self.result)
 
     viewHelpers.setViewHidden(oldView, False)
 

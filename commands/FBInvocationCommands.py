@@ -29,25 +29,25 @@ class FBPrintInvocation(fb.FBCommand):
             fb.FBCommandArgument(short='-a', long='--all', arg='all', default=False, boolean=True, help='Specify to print the entire stack instead of just the current frame.'),
             ]
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     target = lldb.debugger.GetSelectedTarget()
 
     if not re.match(r'.*i386.*', target.GetTriple()):
-      print 'Only x86 is currently supported (32-bit iOS Simulator or Mac OS X).'
+      fb.printResult('Only x86 is currently supported (32-bit iOS Simulator or Mac OS X).', result)
       return
 
     thread = target.GetProcess().GetSelectedThread()
 
     if options.all:
       for frame in thread:
-        printInvocationForFrame(frame)
-        print '---------------------------------'
+        printInvocationForFrame(frame, result)
+        fb.printResult('---------------------------------', result)
     else:
       frame = thread.GetSelectedFrame()
-      printInvocationForFrame(frame)
+      printInvocationForFrame(frame, result)
 
-def printInvocationForFrame(frame):
-  print frame
+def printInvocationForFrame(frame, result):
+  fb.printResult(frame, result)
 
   symbolName = frame.GetSymbol().GetName()
   if not re.match(r'[-+]\s*\[.*\]', symbolName):
@@ -60,7 +60,7 @@ def printInvocationForFrame(frame):
   signatureValue = fb.evaluateExpressionValue('(id)' + commandForSignature)
 
   if signatureValue.GetError() is not None and str(signatureValue.GetError()) != 'success':
-    print "My sincerest apologies. I couldn't find a method signature for the selector."
+    fb.printResult("My sincerest apologies. I couldn't find a method signature for the selector.", result)
     return
 
   signature = signatureValue.GetValue()
@@ -70,9 +70,9 @@ def printInvocationForFrame(frame):
   invocation = fb.evaluateExpression('(id)' + commandForInvocation)
 
   if invocation:
-    prettyPrintInvocation(frame, invocation)
+    prettyPrintInvocation(frame, invocation, result)
   else:
-    print frame
+    fb.printResult(frame, result)
 
 def stackStartAddressInSelectedFrame(frame):
   # Determine if the %ebp register has already had the stack register pushed into it (always the first instruction)
@@ -99,7 +99,7 @@ def findArgAdressAtIndexFromStackFrame(frame, index):
   arg = arg0 + 4 * index
   return arg
 
-def prettyPrintInvocation(frame, invocation):
+def prettyPrintInvocation(frame, invocation, result):
   object = fb.evaluateExpression('(id)[(id)' + invocation + ' target]')
   selector = fb.evaluateExpressionValue('(char *)sel_getName((SEL)[(id)' + invocation + ' selector])').GetSummary()
   selector = re.sub(r'^"|"$', '', selector)
@@ -110,11 +110,11 @@ def prettyPrintInvocation(frame, invocation):
   description = fb.evaluateExpressionValue('(id)' + invocation).GetObjectDescription()
   argDescriptions = description.splitlines(True)[4:]
 
-  print 'NSInvocation: ' + invocation
-  print 'self: ' + fb.evaluateExpression('(id)' + object)
+  fb.printResult('NSInvocation: ' + invocation, result)
+  fb.printResult('self: ' + fb.evaluateExpression('(id)' + object), result)
 
   if len(argDescriptions) > 0:
-    print '\n' + str(len(argDescriptions)) + ' Arguments:' if len(argDescriptions) > 1 else '\nArgument:'
+    fb.printResult('\n' + str(len(argDescriptions)) + ' Arguments:' if len(argDescriptions) > 1 else '\nArgument:', result)
 
     index = 2
     for argDescription in argDescriptions:
@@ -131,11 +131,11 @@ def prettyPrintInvocation(frame, invocation):
       readableString = argumentAsString(frame, address, encoding)
 
       if readableString:
-        print readableString
+        fb.printResult(readableString, result)
       else:
         if encoding[0] == '{':
           encoding = encoding[1:len(encoding)-1]
-        print (hex(address) + ', address of ' + encoding + ' ' + description).strip()
+        fb.printResult((hex(address) + ', address of ' + encoding + ' ' + description).strip(), result)
 
       index += 1
 
