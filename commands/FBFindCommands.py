@@ -18,6 +18,7 @@ import fblldbobjcruntimehelpers as objc
 def lldbcommands():
   return [
     FBFindViewControllerCommand(),
+    FBFindOwningViewControllerCommand(),
     FBFindViewCommand(),
     FBFindViewByAccessibilityLabelCommand(),
     FBTapLoggerCommand(),
@@ -36,6 +37,43 @@ class FBFindViewControllerCommand(fb.FBCommand):
   def run(self, arguments, options):
     output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
     printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
+
+class FBFindOwningViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'fovc'
+
+  def descriptino(self):
+    return 'Find the view controller that owns the input view'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='view', type='UIView', help='This function will print the View Controller that owns this view')]
+
+  def run(self, arguments, options):
+    object = arguments[0]
+    while object:
+      if self.isViewController(object):
+        description = fb.evaluateExpressionValue(object).GetObjectDescription()
+        print("Found the owning view controller.\n{}".format(description))
+        return
+      else:
+        object = self.nextResponder(object)
+
+    print("Could not find an owning view controller")
+
+  @staticmethod
+  def isViewController(object):
+    command = '[(id){} isKindOfClass:[UIViewController class]]'.format(object)
+    isVC = fb.evaluateBooleanExpression(command)
+    return isVC
+
+  @staticmethod
+  def nextResponder(object):
+    command = '[((id){}) nextResponder]'.format(object)
+    nextResponder = fb.evaluateObjectExpression(command)
+    if int(nextResponder, 0):
+      return nextResponder
+    else:
+      return None
 
 
 class FBFindViewCommand(fb.FBCommand):
