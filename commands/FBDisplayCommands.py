@@ -42,7 +42,7 @@ class FBDrawBorderCommand(fb.FBCommand):
       fb.FBCommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.')
     ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     layer = viewHelpers.convertToLayer(args[0])
     lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:%s]' % (layer, options.width))
     lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, options.color))
@@ -59,7 +59,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to unborder.') ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     layer = viewHelpers.convertToLayer(args[0])
     lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:%s]' % (layer, 0))
     lldb.debugger.HandleCommand('caflush')
@@ -81,7 +81,7 @@ class FBMaskViewCommand(fb.FBCommand):
       fb.FBCommandArgument(short='-a', long='--alpha', arg='alpha', type='CGFloat', default=0.5, help='Desired alpha of mask.')
     ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     viewOrLayer = fb.evaluateObjectExpression(args[0])
     viewHelpers.maskView(viewOrLayer, options.color, options.alpha)
 
@@ -96,7 +96,7 @@ class FBUnmaskViewCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     viewOrLayer = fb.evaluateObjectExpression(args[0])
     viewHelpers.unmaskView(viewOrLayer)
 
@@ -108,7 +108,7 @@ class FBCoreAnimationFlushCommand(fb.FBCommand):
   def description(self):
     return 'Force Core Animation to flush. This will \'repaint\' the UI but also may mess with ongoing animations.'
 
-  def run(self, arguments, options):
+  def run(self, arguments, options, result):
     viewHelpers.flushCoreAnimationTransaction()
 
 
@@ -122,7 +122,7 @@ class FBShowViewCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to show.') ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     viewHelpers.setViewHidden(args[0], False)
 
 
@@ -136,5 +136,5 @@ class FBHideViewCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to hide.') ]
 
-  def run(self, args, options):
+  def run(self, args, options, result):
     viewHelpers.setViewHidden(args[0], True)

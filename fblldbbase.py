@@ -32,7 +32,7 @@ class FBCommand:
   def description(self):
     return ''
 
-  def run(self, arguments, option):
+  def run(self, arguments, option, result):
     pass
 
 
@@ -60,3 +60,9 @@ def evaluateExpression(expression, printErrors = True):
 
 def evaluateObjectExpression(expression, printErrors = True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)
+
+def printResult(message, result):
+  if result:
+    print >>result, message
+  else:
+    print message
