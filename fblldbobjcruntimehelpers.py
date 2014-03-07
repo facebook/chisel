@@ -36,12 +36,14 @@ def class_getInstanceMethod(klass, selector):
   value = fb.evaluateExpression(command)
   return value
 
-def functionPreambleExpressionForSelf():
+def currentArch():
   targetTriple = lldb.debugger.GetSelectedTarget().GetTriple()
   arch = targetTriple.split('-')[0]
+  return arch
 
+def functionPreambleExpressionForSelf():
+  arch = currentArch()
   expressionForSelf = None
-
   if arch == 'i386':
     expressionForSelf = '*(id*)($esp+4)'
   elif arch == 'x86_64':
@@ -50,5 +52,24 @@ def functionPreambleExpressionForSelf():
     expressionForSelf = '(id)$x0'
   elif re.match(r'^armv.*$', arch):
     expressionForSelf = '(id)$r0'
-
   return expressionForSelf
+
+def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
+  arch = currentArch()
+  expresssion = None
+  if arch == 'i386':
+    expresssion = '*(id*)($esp + ' + str(12 + parameterIndex * 4) + ')'
+  elif arch == 'x86_64':
+    if (parameterIndex > 3):
+      raise Exception("Current implementation can not return object at index greater than 3 for arc x86_64")
+    registersList = ['rdx', 'rcx', 'r8', 'r9']
+    expresssion = '(id)$' + registersList[parameterIndex]
+  elif arch == 'arm64':
+    if (parameterIndex > 5):
+      raise Exception("Current implementation can not return object at index greater than 5 for arm64")  
+    expresssion = '(id)$x' + str(parameterIndex + 2)
+  elif re.match(r'^armv.*$', arch):
+    if (parameterIndex > 3):
+      raise Exception("Current implementation can not return object at index greater than 1 for arm32")
+    expresssion = '(id)$r' + str(parameterIndex + 2)
+  return expresssion
