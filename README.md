@@ -9,7 +9,7 @@ Add the following line to your _~/.lldbinit_ file. If it doesn't exist, create i
 ```
 # ~/.lldbinit
 ...
-command source /path/to/fblldb.py
+command script import /path/to/fblldb.py
 
 ```
 
@@ -96,7 +96,7 @@ Then all that's left is to source the commands in lldbinit. `Chisel` has a pytho
 ```
 # ~/.lldbinit
 ...
-command source /path/to/fblldb.py
+command script import /path/to/fblldb.py
 script fblldb.loadCommandsInDirectory('/magical/commands/')
 
 ```
