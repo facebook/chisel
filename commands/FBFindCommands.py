@@ -54,6 +54,8 @@ class FBFindOwningViewControllerCommand(fb.FBCommand):
       if self.isViewController(object):
         description = fb.evaluateExpressionValue(object).GetObjectDescription()
         print("Found the owning view controller.\n{}".format(description))
+        cmd = 'echo {} | tr -d "\n" | pbcopy'.format(object)
+        os.system(cmd)
         return
       else:
         object = self.nextResponder(object)
