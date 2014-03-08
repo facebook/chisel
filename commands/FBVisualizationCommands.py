@@ -19,6 +19,7 @@ def lldbcommands():
     FBShowImageRefCommand(),
     FBShowViewCommand(),
     FBShowLayerCommand(),
+    GAShowDataAsImageCommand(),
   ]
 
 def _showImage(commandForImage):
@@ -79,6 +80,20 @@ class FBShowImageRefCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     _showImage('(id)[UIImage imageWithCGImage:' + arguments[0] + ']')
+
+
+class GAShowDataAsImageCommand(fb.FBCommand):
+  def name(self):
+    return 'showdataasimage'
+
+  def description(self):
+    return 'Convert data to an image and show the image in Preview.app on your Mac.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='data', type='NSData*', help='The data to examine.') ]
+
+  def run(self, arguments, options):
+    _showImage('(id)[UIImage imageWithData:' + arguments[0] + ']')
 
 
 class FBShowViewCommand(fb.FBCommand):
