@@ -10,6 +10,7 @@
 import lldb
 import os
 import time
+import errno
 
 import fblldbbase as fb
 
@@ -21,21 +22,63 @@ def lldbcommands():
     FBShowLayerCommand(),
   ]
 
-def _showImage(commandForImage):
+def _showLocalImage(commandForImage, imageDirectory, imagePath):
   commandForImage = '(' + commandForImage + ')'
-  imageDirectory = '/tmp/xcode_debug_images/'
 
   createDirectoryFormatStr = '[[NSFileManager defaultManager] createDirectoryAtPath:@"{}" withIntermediateDirectories:YES attributes:nil error:NULL]'
   createDirectoryCMD = createDirectoryFormatStr.format(imageDirectory)
   lldb.debugger.HandleCommand('expr (void) ' + createDirectoryCMD)
 
-  imageName = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + ".png"
-  imagePath = imageDirectory + imageName
   createImageFormatStr = '[[NSFileManager defaultManager] createFileAtPath:@"{}" contents:(id)UIImagePNGRepresentation({}) attributes:nil]'
   createImageCMD = createImageFormatStr.format(imagePath, commandForImage)
 
   lldb.debugger.HandleCommand('expr (void) ' + createImageCMD)
   os.system('open ' + imagePath)
+
+
+def _showRemoteImage(commandForImage, imageDirectory, imagePath):
+  commandForImage = '(' + commandForImage + ')'
+
+  try:
+    os.makedirs(imageDirectory)
+  except OSError as e:
+    if e.errno == errno.EEXIST and os.path.isdir(imageDirectory):
+      pass
+    else:
+      raise
+
+  imageDataAddress = fb.evaluateExpression('(id)UIImagePNGRepresentation(' + commandForImage +')')
+  imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
+  imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
+
+  address = int(imageBytesStartAddress,16)
+  length = int(imageBytesLength)
+
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
+  mem = process.ReadMemory(address, length, error)
+  
+  if error is not None and str(error) != 'success':
+    print error
+  else:
+    imgFile = open(imagePath, 'wb')
+    imgFile.write(mem)
+    imgFile.close()
+    os.system('open ' + imagePath)
+
+
+def _showImage(commandForImage):
+  imageDirectory = '/tmp/xcode_debug_images/'
+
+  imageName = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + ".png"
+  imagePath = imageDirectory + imageName
+
+  device = fb.evaluateExpressionValue('(id) [[[UIDevice currentDevice] model] lowercaseString]')
+  if 'simulator' in device.GetObjectDescription():
+    _showLocalImage(commandForImage, imageDirectory, imagePath)
+  else:
+    _showRemoteImage(commandForImage, imageDirectory, imagePath)
+
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
@@ -52,6 +95,7 @@ def _showLayer(layer):
     _showImage(image)
 
   lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+
 
 class FBShowImageCommand(fb.FBCommand):
   def name(self):
