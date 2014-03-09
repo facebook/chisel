@@ -72,9 +72,12 @@ class FBFindOwningViewControllerCommand(fb.FBCommand):
   def nextResponder(object):
     command = '[((id){}) nextResponder]'.format(object)
     nextResponder = fb.evaluateObjectExpression(command)
-    if int(nextResponder, 0):
-      return nextResponder
-    else:
+    try:
+      if int(nextResponder, 0):
+        return nextResponder
+      else:
+        return None
+    except:
       return None
 
 
