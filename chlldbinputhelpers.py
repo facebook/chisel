@@ -9,7 +9,7 @@
 
 import lldb
 
-class FBInputHandler:
+class InputHandler:
   def __init__(self, debugger, callback):
     self.debugger = debugger
     self.callback = callback

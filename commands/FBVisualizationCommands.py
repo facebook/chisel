@@ -11,14 +11,14 @@ import lldb
 import os
 import time
 
-import fblldbbase as fb
+import chlldbbase as ch
 
 def lldbcommands():
   return [
-    FBShowImageCommand(),
-    FBShowImageRefCommand(),
-    FBShowViewCommand(),
-    FBShowLayerCommand(),
+    ShowImageCommand(),
+    ShowImageRefCommand(),
+    ShowViewCommand(),
+    ShowLayerCommand(),
   ]
 
 def _showImage(commandForImage):
@@ -53,7 +53,7 @@ def _showLayer(layer):
 
   lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
 
-class FBShowImageCommand(fb.FBCommand):
+class ShowImageCommand(ch.Command):
   def name(self):
     return 'showimage'
 
@@ -61,13 +61,13 @@ class FBShowImageCommand(fb.FBCommand):
     return 'Open a UIImage in Preview.app on your Mac.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='anImage', type='UIImage*', help='The image to examine.') ]
+    return [ ch.CommandArgument(arg='anImage', type='UIImage*', help='The image to examine.') ]
 
   def run(self, arguments, options):
     _showImage(arguments[0])
 
 
-class FBShowImageRefCommand(fb.FBCommand):
+class ShowImageRefCommand(ch.Command):
   def name(self):
     return 'showimageref'
 
@@ -75,13 +75,13 @@ class FBShowImageRefCommand(fb.FBCommand):
     return 'Open a CGImageRef in Preview.app on your Mac.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='anImageRef', type='CGImageRef', help='The image to examine.') ]
+    return [ ch.CommandArgument(arg='anImageRef', type='CGImageRef', help='The image to examine.') ]
 
   def run(self, arguments, options):
     _showImage('(id)[UIImage imageWithCGImage:' + arguments[0] + ']')
 
 
-class FBShowViewCommand(fb.FBCommand):
+class ShowViewCommand(ch.Command):
   def name(self):
     return 'showview'
 
@@ -89,13 +89,13 @@ class FBShowViewCommand(fb.FBCommand):
     return 'Render the given UIView into an image and open it in Preview.app on your Mac.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to examine.') ]
+    return [ ch.CommandArgument(arg='aView', type='UIView*', help='The view to examine.') ]
 
   def run(self, arguments, options):
     _showLayer('[(id)' + arguments[0] + ' layer]')
 
 
-class FBShowLayerCommand(fb.FBCommand):
+class ShowLayerCommand(ch.Command):
   def name(self):
     return 'showlayer'
 
@@ -103,7 +103,7 @@ class FBShowLayerCommand(fb.FBCommand):
     return 'Render the given CALayer into an image and open it in Preview.app on your Mac.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aLayer', type='CALayer*', help='The layer to examine.') ]
+    return [ ch.CommandArgument(arg='aLayer', type='CALayer*', help='The layer to examine.') ]
 
   def run(self, arguments, options):
     _showLayer(arguments[0])

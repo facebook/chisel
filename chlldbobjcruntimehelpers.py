@@ -8,32 +8,32 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import lldb
-import fblldbbase as fb
+import chlldbbase as ch
 import re
 
 def objc_getClass(className):
   command = '(void*)objc_getClass("{}")'.format(className)
-  value = fb.evaluateExpression(command)
+  value = ch.evaluateExpression(command)
   return value
 
 def object_getClass(object):
   command = '(void*)object_getClass({})'.format(object)
-  value = fb.evaluateExpression(command)
+  value = ch.evaluateExpression(command)
   return value
 
 def class_getName(klass):
   command = '(const char*)class_getName({})'.format(klass)
-  value = fb.evaluateExpressionValue(command).GetSummary().strip('"')
+  value = ch.evaluateExpressionValue(command).GetSummary().strip('"')
   return value
 
 def class_getSuperclass(klass):
   command = '(void*)class_getSuperclass({})'.format(klass)
-  value = fb.evaluateExpression(command)
+  value = ch.evaluateExpression(command)
   return value
 
 def class_getInstanceMethod(klass, selector):
   command = '(void*)class_getInstanceMethod({}, @selector({}))'.format(klass, selector)
-  value = fb.evaluateExpression(command)
+  value = ch.evaluateExpression(command)
   return value
 
 def currentArch():

@@ -11,22 +11,22 @@ import lldb
 import os
 import time
 
-import fblldbviewhelpers as viewHelpers
-import fblldbbase as fb
+import chlldbviewhelpers as viewHelpers
+import chlldbbase as ch
 
 def lldbcommands():
   return [
-    FBCoreAnimationFlushCommand(),
-    FBDrawBorderCommand(),
-    FBRemoveBorderCommand(),
-    FBMaskViewCommand(),
-    FBUnmaskViewCommand(),
-    FBShowViewCommand(),
-    FBHideViewCommand(),
+    CoreAnimationFlushCommand(),
+    DrawBorderCommand(),
+    RemoveBorderCommand(),
+    MaskViewCommand(),
+    UnmaskViewCommand(),
+    ShowViewCommand(),
+    HideViewCommand(),
   ]
 
 
-class FBDrawBorderCommand(fb.FBCommand):
+class DrawBorderCommand(ch.Command):
   def name(self):
     return 'border'
 
@@ -34,12 +34,12 @@ class FBDrawBorderCommand(fb.FBCommand):
     return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to border.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to border.') ]
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
-      fb.FBCommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.')
+      ch.CommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
+      ch.CommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.')
     ]
 
   def run(self, args, options):
@@ -49,7 +49,7 @@ class FBDrawBorderCommand(fb.FBCommand):
     lldb.debugger.HandleCommand('caflush')
 
 
-class FBRemoveBorderCommand(fb.FBCommand):
+class RemoveBorderCommand(ch.Command):
   def name(self):
     return 'unborder'
 
@@ -57,7 +57,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
     return 'Removes border around <viewOrLayer>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to unborder.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to unborder.') ]
 
   def run(self, args, options):
     layer = viewHelpers.convertToLayer(args[0])
@@ -65,7 +65,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
     lldb.debugger.HandleCommand('caflush')
 
 
-class FBMaskViewCommand(fb.FBCommand):
+class MaskViewCommand(ch.Command):
   def name(self):
     return 'mask'
 
@@ -73,20 +73,20 @@ class FBMaskViewCommand(fb.FBCommand):
     return 'Add a transparent rectangle to the window to reveal a possibly obscured or hidden view or layer\'s bounds'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
-      fb.FBCommandArgument(short='-a', long='--alpha', arg='alpha', type='CGFloat', default=0.5, help='Desired alpha of mask.')
+      ch.CommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
+      ch.CommandArgument(short='-a', long='--alpha', arg='alpha', type='CGFloat', default=0.5, help='Desired alpha of mask.')
     ]
 
   def run(self, args, options):
-    viewOrLayer = fb.evaluateObjectExpression(args[0])
+    viewOrLayer = ch.evaluateObjectExpression(args[0])
     viewHelpers.maskView(viewOrLayer, options.color, options.alpha)
 
 
-class FBUnmaskViewCommand(fb.FBCommand):
+class UnmaskViewCommand(ch.Command):
   def name(self):
     return 'unmask'
 
@@ -94,14 +94,14 @@ class FBUnmaskViewCommand(fb.FBCommand):
     return 'Remove mask from a view or layer'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
 
   def run(self, args, options):
-    viewOrLayer = fb.evaluateObjectExpression(args[0])
+    viewOrLayer = ch.evaluateObjectExpression(args[0])
     viewHelpers.unmaskView(viewOrLayer)
 
 
-class FBCoreAnimationFlushCommand(fb.FBCommand):
+class CoreAnimationFlushCommand(ch.Command):
   def name(self):
     return 'caflush'
 
@@ -112,7 +112,7 @@ class FBCoreAnimationFlushCommand(fb.FBCommand):
     viewHelpers.flushCoreAnimationTransaction()
 
 
-class FBShowViewCommand(fb.FBCommand):
+class ShowViewCommand(ch.Command):
   def name(self):
     return 'show'
 
@@ -120,13 +120,13 @@ class FBShowViewCommand(fb.FBCommand):
     return 'Show a view or layer.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to show.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to show.') ]
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], False)
 
 
-class FBHideViewCommand(fb.FBCommand):
+class HideViewCommand(ch.Command):
   def name(self):
     return 'hide'
 
@@ -134,7 +134,7 @@ class FBHideViewCommand(fb.FBCommand):
     return 'Hide a view or layer.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to hide.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to hide.') ]
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
