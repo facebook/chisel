@@ -4,7 +4,12 @@
 [[Installation](#installation) &bull; [Commands](#commands) &bull; [Custom Commands](#custom-commands) &bull; [Development Workflow](#development-workflow) [Contributing](#contributing) &bull; [License](#license)]
 
 ## Installation
-Add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
+
+```
+brew install chisel
+```
+
+Or, download chisel and add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
 
 ```Python
 # ~/.lldbinit
