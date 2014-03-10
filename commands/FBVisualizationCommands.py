@@ -54,10 +54,10 @@ def _showLayer(layer):
 def _visualize(object):
   object = '(' + object + ')'
   
-  if fb.evaluateBooleanExpression('(BOOL)((unsigned long)CFGetTypeID((CFTypeRef)' + object + ') == (unsigned long)CGImageGetTypeID())'):
+  if fb.evaluateBooleanExpression('((unsigned long)CFGetTypeID((CFTypeRef)' + object + ') == (unsigned long)CGImageGetTypeID())'):
     _showImage('(id)[UIImage imageWithCGImage:' + object + ']')
   else:
-    comarisonStr = '(BOOL)[' + object + 'isKindOfClass:[{} class]]'
+    comarisonStr = '[' + object + 'isKindOfClass:[{} class]]'
     if fb.evaluateBooleanExpression(comarisonStr.format('UIImage')):
       _showImage(object)
     elif fb.evaluateBooleanExpression(comarisonStr.format('UIView')):
