@@ -9,7 +9,7 @@
 
 import lldb
 
-class FBCommandArgument:
+class CommandArgument:
   def __init__(self, short='', long='', arg='', type='', help='', default='', boolean=False):
     self.shortName = short
     self.longName = long
@@ -19,7 +19,7 @@ class FBCommandArgument:
     self.default = default
     self.boolean = boolean
 
-class FBCommand:
+class Command:
   def name(self):
     return None
 

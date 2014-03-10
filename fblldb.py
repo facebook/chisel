@@ -15,7 +15,7 @@ import shlex
 import sys
 from optparse import OptionParser
 
-import fblldbbase as fb
+import chlldbbase as ch
 
 def __lldb_init_module(debugger, dict):
   filePath = os.path.realpath(__file__)

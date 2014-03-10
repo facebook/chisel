@@ -10,14 +10,14 @@
 import re
 
 import lldb
-import fblldbbase as fb
+import chlldbbase as ch
 
 def lldbcommands():
   return [
-    FBPrintInvocation(),
+    PrintInvocation(),
   ]
 
-class FBPrintInvocation(fb.FBCommand):
+class PrintInvocation(ch.Command):
   def name(self):
     return 'pinvocation'
 
@@ -26,7 +26,7 @@ class FBPrintInvocation(fb.FBCommand):
 
   def options(self):
     return [
-            fb.FBCommandArgument(short='-a', long='--all', arg='all', default=False, boolean=True, help='Specify to print the entire stack instead of just the current frame.'),
+            ch.CommandArgument(short='-a', long='--all', arg='all', default=False, boolean=True, help='Specify to print the entire stack instead of just the current frame.'),
             ]
 
   def run(self, arguments, options):
@@ -57,7 +57,7 @@ def printInvocationForFrame(frame):
   cmd = findArgAtIndexFromStackFrame(frame, 1)
 
   commandForSignature = '[(id)' + self + ' methodSignatureForSelector:(char *)sel_getName(' + cmd + ')]'
-  signatureValue = fb.evaluateExpressionValue('(id)' + commandForSignature)
+  signatureValue = ch.evaluateExpressionValue('(id)' + commandForSignature)
 
   if signatureValue.GetError() is not None and str(signatureValue.GetError()) != 'success':
     print "My sincerest apologies. I couldn't find a method signature for the selector."
@@ -67,7 +67,7 @@ def printInvocationForFrame(frame):
 
   arg0 = stackStartAddressInSelectedFrame(frame)
   commandForInvocation = '[NSInvocation _invocationWithMethodSignature:(id)' + signature + ' frame:((void *)' + str(arg0) + ')]'
-  invocation = fb.evaluateExpression('(id)' + commandForInvocation)
+  invocation = ch.evaluateExpression('(id)' + commandForInvocation)
 
   if invocation:
     prettyPrintInvocation(frame, invocation)
@@ -92,7 +92,7 @@ def stackStartAddressInSelectedFrame(frame):
     
 
 def findArgAtIndexFromStackFrame(frame, index):
-  return fb.evaluateExpression('*(int *)' + str(findArgAdressAtIndexFromStackFrame(frame, index)))
+  return ch.evaluateExpression('*(int *)' + str(findArgAdressAtIndexFromStackFrame(frame, index)))
 
 def findArgAdressAtIndexFromStackFrame(frame, index):
   arg0 = stackStartAddressInSelectedFrame(frame)
@@ -100,18 +100,18 @@ def findArgAdressAtIndexFromStackFrame(frame, index):
   return arg
 
 def prettyPrintInvocation(frame, invocation):
-  object = fb.evaluateExpression('(id)[(id)' + invocation + ' target]')
-  selector = fb.evaluateExpressionValue('(char *)sel_getName((SEL)[(id)' + invocation + ' selector])').GetSummary()
+  object = ch.evaluateExpression('(id)[(id)' + invocation + ' target]')
+  selector = ch.evaluateExpressionValue('(char *)sel_getName((SEL)[(id)' + invocation + ' selector])').GetSummary()
   selector = re.sub(r'^"|"$', '', selector)
 
-  objectClassValue = fb.evaluateExpressionValue('(id)object_getClass((id)' + object + ')')
+  objectClassValue = ch.evaluateExpressionValue('(id)object_getClass((id)' + object + ')')
   objectClass = objectClassValue.GetObjectDescription()
 
-  description = fb.evaluateExpressionValue('(id)' + invocation).GetObjectDescription()
+  description = ch.evaluateExpressionValue('(id)' + invocation).GetObjectDescription()
   argDescriptions = description.splitlines(True)[4:]
 
   print 'NSInvocation: ' + invocation
-  print 'self: ' + fb.evaluateExpression('(id)' + object)
+  print 'self: ' + ch.evaluateExpression('(id)' + object)
 
   if len(argDescriptions) > 0:
     print '\n' + str(len(argDescriptions)) + ' Arguments:' if len(argDescriptions) > 1 else '\nArgument:'

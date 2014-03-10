@@ -11,18 +11,18 @@ import os
 import time
 
 import lldb
-import fblldbbase as fb
-import fblldbviewhelpers as viewHelpers
-import fblldbinputhelpers as inputHelpers
+import chlldbbase as ch
+import chlldbviewhelpers as viewHelpers
+import chlldbinputhelpers as inputHelpers
 
 def lldbcommands():
   return [
-    FBFlickerViewCommand(),
-    FBViewSearchCommand(),
+    FlickerViewCommand(),
+    ViewSearchCommand(),
   ]
 
 
-class FBFlickerViewCommand(fb.FBCommand):
+class FlickerViewCommand(ch.Command):
   def name(self):
     return 'flicker'
 
@@ -30,19 +30,19 @@ class FBFlickerViewCommand(fb.FBCommand):
     return 'Quickly show and hide a view to quickly help visualize where it is.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView*', help='The view to border.') ]
+    return [ ch.CommandArgument(arg='viewOrLayer', type='UIView*', help='The view to border.') ]
 
   def run(self, arguments, options):
-    object = fb.evaluateObjectExpression(arguments[0])
+    object = ch.evaluateObjectExpression(arguments[0])
 
-    isHidden = fb.evaluateBooleanExpression('[' + object + ' isHidden]')
+    isHidden = ch.evaluateBooleanExpression('[' + object + ' isHidden]')
     shouldHide = not isHidden
     for x in range(0, 2):
       viewHelpers.setViewHidden(object, shouldHide)
       viewHelpers.setViewHidden(object, isHidden)
 
 
-class FBViewSearchCommand(fb.FBCommand):
+class ViewSearchCommand(ch.Command):
   def name(self):
     return 'vs'
 
@@ -50,12 +50,12 @@ class FBViewSearchCommand(fb.FBCommand):
     return 'Interactively search for a view by walking the hierarchy.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='view', type='UIView*', help='The view to border.') ]
+    return [ ch.CommandArgument(arg='view', type='UIView*', help='The view to border.') ]
 
   def run(self, arguments, options):
     print '\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n'
 
-    object = fb.evaluateObjectExpression(arguments[0])
+    object = ch.evaluateObjectExpression(arguments[0])
     walker = FlickerWalker(object)
     walker.run()
 
@@ -63,7 +63,7 @@ class FlickerWalker:
   def __init__(self, startView):
     self.setCurrentView(startView)
 
-    self.handler = inputHelpers.FBInputHandler(lldb.debugger, self.inputCallback)
+    self.handler = inputHelpers.InputHandler(lldb.debugger, self.inputCallback)
     self.handler.start()
 
   def run(self):
@@ -119,33 +119,33 @@ class FlickerWalker:
       lldb.debugger.HandleCommand('po (id)' + view)
 
 def superviewOfView(view):
-  superview = fb.evaluateObjectExpression('[' + view + ' superview]')
+  superview = ch.evaluateObjectExpression('[' + view + ' superview]')
   if int(superview, 16) == 0:
     return None
 
   return superview
 
 def subviewsOfView(view):
-  return fb.evaluateObjectExpression('[' + view + ' subviews]')
+  return ch.evaluateObjectExpression('[' + view + ' subviews]')
 
 def firstSubviewOfView(view):
   subviews = subviewsOfView(view)
-  numViews = fb.evaluateIntegerExpression('[(id)' + subviews + ' count]')
+  numViews = ch.evaluateIntegerExpression('[(id)' + subviews + ' count]')
 
   if numViews == 0:
     return None
   else:
-    return fb.evaluateObjectExpression('[' + subviews + ' objectAtIndex:0]')
+    return ch.evaluateObjectExpression('[' + subviews + ' objectAtIndex:0]')
 
 def nthSiblingOfView(view, n):
   subviews = subviewsOfView(superviewOfView(view))
-  numViews = fb.evaluateIntegerExpression('[(id)' + subviews + ' count]')
+  numViews = ch.evaluateIntegerExpression('[(id)' + subviews + ' count]')
 
-  idx = fb.evaluateIntegerExpression('[(id)' + subviews + ' indexOfObject:' + view + ']')
+  idx = ch.evaluateIntegerExpression('[(id)' + subviews + ' indexOfObject:' + view + ']')
 
   newIdx = idx + n
   while newIdx < 0:
     newIdx += numViews
   newIdx = newIdx % numViews
 
-  return fb.evaluateObjectExpression('[(id)' + subviews + ' objectAtIndex:' + str(newIdx) + ']')
+  return ch.evaluateObjectExpression('[(id)' + subviews + ' objectAtIndex:' + str(newIdx) + ']')

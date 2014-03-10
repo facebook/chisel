@@ -11,19 +11,19 @@ import os
 import re
 
 import lldb
-import fblldbbase as fb
-import fblldbviewcontrollerhelpers as vcHelpers
-import fblldbobjcruntimehelpers as objc
+import chlldbbase as ch
+import chlldbviewcontrollerhelpers as vcHelpers
+import chlldbobjcruntimehelpers as objc
 
 def lldbcommands():
   return [
-    FBFindViewControllerCommand(),
-    FBFindViewCommand(),
-    FBFindViewByAccessibilityLabelCommand(),
-    FBTapLoggerCommand(),
+    FindViewControllerCommand(),
+    FindViewCommand(),
+    FindViewByAccessibilityLabelCommand(),
+    TapLoggerCommand(),
   ]
 
-class FBFindViewControllerCommand(fb.FBCommand):
+class FindViewControllerCommand(ch.Command):
   def name(self):
     return 'fvc'
 
@@ -31,14 +31,14 @@ class FBFindViewControllerCommand(fb.FBCommand):
     return 'Find the view controllers whose class names match classNameRegex and puts the address of first on the clipboard.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.') ]
+    return [ ch.CommandArgument(arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.') ]
 
   def run(self, arguments, options):
     output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
     printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
 
 
-class FBFindViewCommand(fb.FBCommand):
+class FindViewCommand(ch.Command):
   def name(self):
     return 'fv'
 
@@ -46,17 +46,17 @@ class FBFindViewCommand(fb.FBCommand):
       return 'Find the views whose class names match classNameRegex and puts the address of first on the clipboard.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='classNameRegex', type='string', help='The view-class regex to search the view hierarchy for.') ]
+    return [ ch.CommandArgument(arg='classNameRegex', type='string', help='The view-class regex to search the view hierarchy for.') ]
 
   def run(self, arguments, options):
-    output = fb.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+    output = ch.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
     printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
 
 
 def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
   matches = re.findall('.*<.*' + needle + '.*: (0x[0-9a-fA-F]*);.*', haystack, re.IGNORECASE)
   for match in matches:
-    className = fb.evaluateExpressionValue('(id)[(' + match + ') class]').GetObjectDescription()
+    className = ch.evaluateExpressionValue('(id)[(' + match + ') class]').GetObjectDescription()
     print('{} {}'.format(match, className))
 
   if len(matches) > 0:
@@ -64,7 +64,7 @@ def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
     os.system(cmd)
 
 
-class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
+class FindViewByAccessibilityLabelCommand(ch.Command):
   def name(self):
     return 'fa11y'
 
@@ -72,16 +72,16 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
       return 'Find the views whose accessibility labels match labelRegex and puts the address of the first result on the clipboard.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='labelRegex', type='string', help='The accessibility label regex to search the view hierarchy for.') ]
+    return [ ch.CommandArgument(arg='labelRegex', type='string', help='The accessibility label regex to search the view hierarchy for.') ]
 
   def run(self, arguments, options):
     first = None
-    haystack = fb.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+    haystack = ch.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
     needle = arguments[0]
 
     allViews = re.findall('.* (0x[0-9a-fA-F]*);.*', haystack)
     for view in allViews:
-      a11yLabel = fb.evaluateExpressionValue('(id)[(' + view + ') accessibilityLabel]').GetObjectDescription()
+      a11yLabel = ch.evaluateExpressionValue('(id)[(' + view + ') accessibilityLabel]').GetObjectDescription()
       if re.match(r'.*' + needle + '.*', a11yLabel, re.IGNORECASE):
         print('{} {}'.format(view, a11yLabel))
 
@@ -91,7 +91,7 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
           os.system(cmd)
 
 
-class FBTapLoggerCommand(fb.FBCommand):
+class TapLoggerCommand(ch.Command):
   def name(self):
     return 'taplog'
 
