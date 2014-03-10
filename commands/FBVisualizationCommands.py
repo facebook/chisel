@@ -64,6 +64,9 @@ def _visualize(object):
       _showLayer('[(id)' + object + ' layer]')
     elif fb.evaluateBooleanExpression(comarisonStr.format('CALayer')):
       _showLayer(object)
+    else:
+      className = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
+      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, or CALayer.'.format(className)
 
 
 class FBVisualizeCommand(fb.FBCommand):
