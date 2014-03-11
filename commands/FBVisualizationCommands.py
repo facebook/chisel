@@ -10,8 +10,8 @@
 import lldb
 import os
 import time
-
 import fblldbbase as fb
+import fblldbobjecthelpers as objectHelpers
 
 def lldbcommands():
   return [
@@ -51,22 +51,20 @@ def _showLayer(layer):
   lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
 
 
-def _visualize(object):
-  object = '(' + object + ')'
+def _visualize(target):
+  target = '(' + target + ')'
   
-  if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + object + ') == (unsigned long)CGImageGetTypeID()'):
-    _showImage('(id)[UIImage imageWithCGImage:' + object + ']')
+  if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + target + ') == (unsigned long)CGImageGetTypeID()'):
+    _showImage('(id)[UIImage imageWithCGImage:' + target + ']')
   else:
-    isKindOfClassStr = '[' + object + 'isKindOfClass:[{} class]]'
-    if fb.evaluateBooleanExpression(isKindOfClassStr.format('UIImage')):
-      _showImage(object)
-    elif fb.evaluateBooleanExpression(isKindOfClassStr.format('UIView')):
-      _showLayer('[(id)' + object + ' layer]')
-    elif fb.evaluateBooleanExpression(isKindOfClassStr.format('CALayer')):
-      _showLayer(object)
+    if objectHelpers.isKindOfClass(target, 'UIImage'):
+      _showImage(target)
+    elif objectHelpers.isKindOfClass(target, 'UIView'):
+      _showLayer('[(id)' + target + ' layer]')
+    elif objectHelpers.isKindOfClass(target, 'CALayer'):
+      _showLayer(target)
     else:
-      className = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
-      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, or CALayer.'.format(className)
+      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, or CALayer.'.format(objectHelpers.className(target))
 
 
 class FBVisualizeCommand(fb.FBCommand):
@@ -77,7 +75,7 @@ class FBVisualizeCommand(fb.FBCommand):
     return 'Open a UIImage, CGImageRef, UIView, or CALayer in Preview.app on your Mac.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='object', type='(id)', help='The object to visualize.') ]
+    return [ fb.FBCommandArgument(arg='target', type='(id)', help='The object to visualize.') ]
 
   def run(self, arguments, options):
     _visualize(arguments[0])
