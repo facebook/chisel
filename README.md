@@ -83,7 +83,7 @@ import fblldbbase as fb
 def lldbcommands():
   return [ PrintKeyWindowLevel() ]
   
-class PrintCurrentWindowLevel(fb.FBCommand):
+class PrintKeyWindowLevel(fb.FBCommand):
   def name(self):
     return 'pkeywinlevel'
     
