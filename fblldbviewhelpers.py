@@ -55,3 +55,32 @@ def convertToLayer(viewOrLayer):
   else:
     raise Exception('Argument must be a CALayer or a UIView')
 
+def upwardsRecursiveDescription(view):
+  if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
+    return None
+  
+  currentView = view
+  recursiveDescription = []
+  
+  while currentView:
+    viewDescription = fb.evaluateExpressionValue('(id)[%s debugDescription]' % (currentView)).GetObjectDescription()
+    currentView = fb.evaluateExpression('(void*)[%s superview]' % (currentView))
+    try:
+      if int(currentView, 0) == 0:
+        currentView = None
+    except:
+      currentView = None
+    
+    if viewDescription:
+      recursiveDescription.insert(0, viewDescription)
+
+  if len(viewDescription) == 0:
+  	return None
+  
+  currentPrefix = ""
+  builder = ""
+  for viewDescription in recursiveDescription:
+    builder += currentPrefix + viewDescription + "\n"
+    currentPrefix += "   | "
+  
+  return builder
