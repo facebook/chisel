@@ -54,7 +54,7 @@ def _showLayer(layer):
 def _visualize(object):
   object = '(' + object + ')'
   
-  if fb.evaluateBooleanExpression('((unsigned long)CFGetTypeID((CFTypeRef)' + object + ') == (unsigned long)CGImageGetTypeID())'):
+  if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + object + ') == (unsigned long)CGImageGetTypeID()'):
     _showImage('(id)[UIImage imageWithCGImage:' + object + ']')
   else:
     isKindOfClassStr = '[' + object + 'isKindOfClass:[{} class]]'
