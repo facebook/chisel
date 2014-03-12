@@ -13,6 +13,7 @@ import re
 import lldb
 import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
+import fblldbviewhelpers as viewHelpers
 
 def lldbcommands():
   return [
@@ -35,11 +36,22 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
   def description(self):
     return 'Print the recursion description of <aView>.'
 
+  def options(self):
+    return [ fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.') ]
+
   def args(self):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[UIWindow keyWindow]') ]
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po (id)[' + arguments[0] + ' recursiveDescription]')
+    if options.upwards:
+      view = arguments[0]
+      description = viewHelpers.upwardsRecursiveDescription(view)
+      if description:
+        print description
+      else:
+        print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
+    else:
+      lldb.debugger.HandleCommand('po (id)[' + arguments[0] + ' recursiveDescription]')
 
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
