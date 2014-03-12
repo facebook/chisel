@@ -6,6 +6,7 @@
 ## Installation
 
 ```
+brew update
 brew install chisel
 ```
 
