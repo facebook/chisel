@@ -18,7 +18,6 @@ import fblldbobjcruntimehelpers as objc
 def lldbcommands():
   return [
     FBFindViewControllerCommand(),
-    FBFindOwningViewControllerCommand(),
     FBFindViewCommand(),
     FBFindViewByAccessibilityLabelCommand(),
     FBTapLoggerCommand(),
@@ -31,25 +30,23 @@ class FBFindViewControllerCommand(fb.FBCommand):
   def description(self):
     return 'Find the view controllers whose class names match classNameRegex and puts the address of first on the clipboard.'
 
-  def args(self):
-    return [ fb.FBCommandArgument(arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.') ]
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-n', long='--name', arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.'),
+      fb.FBCommandArgument(short='-v', long='--view', arg='view', type='UIView', help='This function will print the View Controller that owns this view.')
+    ]
 
   def run(self, arguments, options):
-    output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
-    printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
+    if options.classNameRegex and options.view:
+      print("Do not set both the --name and --view flags")
+    elif options.view:
+      self.findOwningViewController(options.view)
+    else:
+      output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
+      searchString = options.classNameRegex if options.classNameRegex else arguments[0]
+      printMatchesInViewOutputStringAndCopyFirstToClipboard(searchString, output)
 
-class FBFindOwningViewControllerCommand(fb.FBCommand):
-  def name(self):
-    return 'fovc'
-
-  def descriptino(self):
-    return 'Find the view controller that owns the input view.'
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='view', type='UIView', help='This function will print the View Controller that owns this view')]
-
-  def run(self, arguments, options):
-    object = arguments[0]
+  def findOwningViewController(self, object):
     while object:
       if self.isViewController(object):
         description = fb.evaluateExpressionValue(object).GetObjectDescription()
@@ -59,7 +56,6 @@ class FBFindOwningViewControllerCommand(fb.FBCommand):
         return
       else:
         object = self.nextResponder(object)
-
     print("Could not find an owning view controller")
 
   @staticmethod
