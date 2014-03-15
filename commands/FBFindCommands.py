@@ -30,12 +30,51 @@ class FBFindViewControllerCommand(fb.FBCommand):
   def description(self):
     return 'Find the view controllers whose class names match classNameRegex and puts the address of first on the clipboard.'
 
-  def args(self):
-    return [ fb.FBCommandArgument(arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.') ]
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-n', long='--name', arg='classNameRegex', type='string', help='The view-controller-class regex to search the view controller hierarchy for.'),
+      fb.FBCommandArgument(short='-v', long='--view', arg='view', type='UIView', help='This function will print the View Controller that owns this view.')
+    ]
 
   def run(self, arguments, options):
-    output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
-    printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
+    if options.classNameRegex and options.view:
+      print("Do not set both the --name and --view flags")
+    elif options.view:
+      self.findOwningViewController(options.view)
+    else:
+      output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
+      searchString = options.classNameRegex if options.classNameRegex else arguments[0]
+      printMatchesInViewOutputStringAndCopyFirstToClipboard(searchString, output)
+
+  def findOwningViewController(self, object):
+    while object:
+      if self.isViewController(object):
+        description = fb.evaluateExpressionValue(object).GetObjectDescription()
+        print("Found the owning view controller.\n{}".format(description))
+        cmd = 'echo {} | tr -d "\n" | pbcopy'.format(object)
+        os.system(cmd)
+        return
+      else:
+        object = self.nextResponder(object)
+    print("Could not find an owning view controller")
+
+  @staticmethod
+  def isViewController(object):
+    command = '[(id){} isKindOfClass:[UIViewController class]]'.format(object)
+    isVC = fb.evaluateBooleanExpression(command)
+    return isVC
+
+  @staticmethod
+  def nextResponder(object):
+    command = '[((id){}) nextResponder]'.format(object)
+    nextResponder = fb.evaluateObjectExpression(command)
+    try:
+      if int(nextResponder, 0):
+        return nextResponder
+      else:
+        return None
+    except:
+      return None
 
 
 class FBFindViewCommand(fb.FBCommand):
