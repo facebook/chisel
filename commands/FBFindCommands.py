@@ -93,14 +93,15 @@ class FBFindViewCommand(fb.FBCommand):
 
 
 def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
-  matches = re.findall('.*<.*' + needle + '.*: (0x[0-9a-fA-F]*);.*', haystack, re.IGNORECASE)
-  for match in matches:
-    className = fb.evaluateExpressionValue('(id)[(' + match + ') class]').GetObjectDescription()
-    print('{} {}'.format(match, className))
-
-  if len(matches) > 0:
-    cmd = 'echo %s | tr -d "\n" | pbcopy' % matches[0]
-    os.system(cmd)
+  first = None
+  for match in re.finditer('.*<.*(' + needle + ').*: (0x[0-9a-fA-F]*);.*', haystack, re.IGNORECASE):
+    view = match.groups()[-1]
+    className = fb.evaluateExpressionValue('(id)[(' + view + ') class]').GetObjectDescription()
+    print('{} {}'.format(view, className))
+    if first == None:
+      first = view
+      cmd = 'echo %s | tr -d "\n" | pbcopy' % view
+      os.system(cmd)
 
 
 class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
