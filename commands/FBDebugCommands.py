@@ -6,136 +6,156 @@ import fblldbobjcruntimehelpers as objc
 
 import re
 
+
 def lldbcommands():
-  return [
-    FBWatchInstanceVariableCommand(),
-    FBMethodBreakpointCommand(),
-  ]
+    return [
+        FBWatchInstanceVariableCommand(),
+        FBMethodBreakpointCommand(),
+    ]
+
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
-  def name(self):
-    return 'wivar'
 
-  def description(self):
-    return "Set a watchpoint for an object's instance variable."
+    def name(self):
+        return 'wivar'
 
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='object', type='id', help='Object expression to be evaluated.'),
-      fb.FBCommandArgument(arg='ivarName', help='Name of the instance variable to watch.')
-    ]
+    def description(self):
+        return "Set a watchpoint for an object's instance variable."
 
-  def run(self, arguments, options):
-    commandForObject, ivarName = arguments
+    def args(self):
+        return [
+            fb.FBCommandArgument(
+                arg='object', type='id', help='Object expression to be evaluated.'),
+            fb.FBCommandArgument(
+                arg='ivarName', help='Name of the instance variable to watch.')
+        ]
 
-    objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
+    def run(self, arguments, options):
+        commandForObject, ivarName = arguments
 
-    ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void *)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
-    ivarOffset = fb.evaluateIntegerExpression(ivarOffsetCommand)
+        objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
 
-    # A multi-statement command allows for variables scoped to the command, not permanent in the session like $variables.
-    ivarSizeCommand = ('unsigned int size = 0;'
-                       'char *typeEncoding = (char *)ivar_getTypeEncoding((void *)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
-                       '(char *)NSGetSizeAndAlignment(typeEncoding, &size, 0);'
-                       'size').format(objectAddress, ivarName)
-    ivarSize = int(fb.evaluateExpression(ivarSizeCommand), 0)
+        ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void *)object_getInstanceVariable((id){}, "{}", 0))'.format(
+            objectAddress, ivarName)
+        ivarOffset = fb.evaluateIntegerExpression(ivarOffsetCommand)
 
-    error = lldb.SBError()
-    watchpoint = lldb.debugger.GetSelectedTarget().WatchAddress(objectAddress + ivarOffset, ivarSize, False, True, error)
+        # A multi-statement command allows for variables scoped to the command,
+        # not permanent in the session like $variables.
+        ivarSizeCommand = ('unsigned int size = 0;'
+                           'char *typeEncoding = (char *)ivar_getTypeEncoding((void *)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
+                           '(char *)NSGetSizeAndAlignment(typeEncoding, &size, 0);'
+                           'size').format(objectAddress, ivarName)
+        ivarSize = int(fb.evaluateExpression(ivarSizeCommand), 0)
 
-    if error.Success():
-      print 'Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID())
-    else:
-      print 'Could not create the watchpoint: {}'.format(error.GetCString())
+        error = lldb.SBError()
+        watchpoint = lldb.debugger.GetSelectedTarget().WatchAddress(
+            objectAddress + ivarOffset, ivarSize, False, True, error)
+
+        if error.Success():
+            print 'Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID())
+        else:
+            print 'Could not create the watchpoint: {}'.format(error.GetCString())
+
 
 class FBMethodBreakpointCommand(fb.FBCommand):
-  def name(self):
-    return 'bmessage'
 
-  def description(self):
-    return "Set a breakpoint for a selector on a class, even if the class itself doesn't override that selector. It walks the hierarchy until it finds a class that does implement the selector and sets a conditional breakpoint there."
+    def name(self):
+        return 'bmessage'
 
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', type='string', help='Expression to set a breakpoint on, e.g. "-[MyView setFrame:]", "+[MyView awesomeClassMethod]" or "-[0xabcd1234 setFrame:]"'),
-    ]
+    def description(self):
+        return "Set a breakpoint for a selector on a class, even if the class itself doesn't override that selector. It walks the hierarchy until it finds a class that does implement the selector and sets a conditional breakpoint there."
 
-  def run(self, arguments, options):
-    expression = arguments[0]
+    def args(self):
+        return [
+            fb.FBCommandArgument(arg='expression', type='string',
+                                 help='Expression to set a breakpoint on, e.g. "-[MyView setFrame:]", "+[MyView awesomeClassMethod]" or "-[0xabcd1234 setFrame:]"'),
+        ]
 
-    match = re.match(r'([-+])*\[(.*) (.*)\]', expression)
+    def run(self, arguments, options):
+        expression = arguments[0]
 
-    if not match:
-      print 'Failed to parse expression. Do you even Objective-C?!'
-      return
+        match = re.match(r'([-+])*\[(.*) (.*)\]', expression)
 
-    expressionForSelf = objc.functionPreambleExpressionForSelf()
-    if not expressionForSelf:
-      print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
-      return
+        if not match:
+            print 'Failed to parse expression. Do you even Objective-C?!'
+            return
 
-    methodTypeCharacter = match.group(1)
-    classNameOrExpression = match.group(2)
-    selector = match.group(3)
+        expressionForSelf = objc.functionPreambleExpressionForSelf()
+        if not expressionForSelf:
+            print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
+            return
 
-    methodIsClassMethod = (methodTypeCharacter == '+')
+        methodTypeCharacter = match.group(1)
+        classNameOrExpression = match.group(2)
+        selector = match.group(3)
 
-    if not methodIsClassMethod:
-      # The default is instance method, and methodTypeCharacter may not actually be '-'.
-      methodTypeCharacter = '-'
+        methodIsClassMethod = (methodTypeCharacter == '+')
 
-    targetIsClass = False
-    targetObject = fb.evaluateObjectExpression('({})'.format(classNameOrExpression), False)
+        if not methodIsClassMethod:
+            # The default is instance method, and methodTypeCharacter may not
+            # actually be '-'.
+            methodTypeCharacter = '-'
 
-    if not targetObject:
-      # If the expression didn't yield anything then it's likely a class. Assume it is.
-      # We will check again that the class does actually exist anyway.
-      targetIsClass = True
-      targetObject = fb.evaluateObjectExpression('[{} class]'.format(classNameOrExpression), False)
+        targetIsClass = False
+        targetObject = fb.evaluateObjectExpression(
+            '({})'.format(classNameOrExpression), False)
 
-    targetClass = fb.evaluateObjectExpression('[{} class]'.format(targetObject), False)
+        if not targetObject:
+            # If the expression didn't yield anything then it's likely a class. Assume it is.
+            # We will check again that the class does actually exist anyway.
+            targetIsClass = True
+            targetObject = fb.evaluateObjectExpression(
+                '[{} class]'.format(classNameOrExpression), False)
 
-    if not targetClass or int(targetClass, 0) == 0:
-      print 'Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression)
-      return
+        targetClass = fb.evaluateObjectExpression(
+            '[{} class]'.format(targetObject), False)
 
-    if methodIsClassMethod:
-      targetClass = objc.object_getClass(targetClass)
+        if not targetClass or int(targetClass, 0) == 0:
+            print 'Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression)
+            return
 
-    found = False
-    nextClass = targetClass
+        if methodIsClassMethod:
+            targetClass = objc.object_getClass(targetClass)
 
-    while not found and int(nextClass, 0) > 0:
-      if classItselfImplementsSelector(nextClass, selector):
-        found = True
-      else:
-        nextClass = objc.class_getSuperclass(nextClass)
+        found = False
+        nextClass = targetClass
 
-    if not found:
-      print 'There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector)
-      return
+        while not found and int(nextClass, 0) > 0:
+            if classItselfImplementsSelector(nextClass, selector):
+                found = True
+            else:
+                nextClass = objc.class_getSuperclass(nextClass)
 
-    breakpointClassName = objc.class_getName(nextClass)
-    breakpointFullName = '{}[{} {}]'.format(methodTypeCharacter, breakpointClassName, selector)
+        if not found:
+            print 'There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector)
+            return
 
-    breakpointCondition = None
-    if targetIsClass:
-      breakpointCondition = '(void*)object_getClass({}) == {}'.format(expressionForSelf, targetClass)
-    else:
-      breakpointCondition = '(void*){} == {}'.format(expressionForSelf, targetObject)
+        breakpointClassName = objc.class_getName(nextClass)
+        breakpointFullName = '{}[{} {}]'.format(
+            methodTypeCharacter, breakpointClassName, selector)
 
-    print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
+        breakpointCondition = None
+        if targetIsClass:
+            breakpointCondition = '(void*)object_getClass({}) == {}'.format(
+                expressionForSelf, targetClass)
+        else:
+            breakpointCondition = '(void*){} == {}'.format(expressionForSelf,
+                                                           targetObject)
 
-    lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+        print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
+
+        lldb.debugger.HandleCommand(
+            'breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+
 
 def classItselfImplementsSelector(klass, selector):
-  thisMethod = objc.class_getInstanceMethod(klass, selector)
-  if thisMethod == 0:
-    return False
+    thisMethod = objc.class_getInstanceMethod(klass, selector)
+    if thisMethod == 0:
+        return False
 
-  superklass = objc.class_getSuperclass(klass)
-  superMethod = objc.class_getInstanceMethod(superklass, selector)
-  if thisMethod == superMethod:
-    return False
-  else:
-    return True
+    superklass = objc.class_getSuperclass(klass)
+    superMethod = objc.class_getInstanceMethod(superklass, selector)
+    if thisMethod == superMethod:
+        return False
+    else:
+        return True

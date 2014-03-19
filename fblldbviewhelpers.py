@@ -11,76 +11,97 @@ import lldb
 
 import fblldbbase as fb
 
+
 def flushCoreAnimationTransaction():
-  lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
+    lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
+
 
 def setViewHidden(object, hidden):
-  lldb.debugger.HandleCommand('expr (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
-  flushCoreAnimationTransaction()
+    lldb.debugger.HandleCommand(
+        'expr (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
+    flushCoreAnimationTransaction()
+
 
 def maskView(viewOrLayer, color, alpha):
-  unmaskView(viewOrLayer)
-  window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
-  origin = convertPoint(0, 0, viewOrLayer, window)
-  size = fb.evaluateExpressionValue('(CGSize)((CGRect)[(id)%s frame]).size' % viewOrLayer)
+    unmaskView(viewOrLayer)
+    window = fb.evaluateExpression(
+        '(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
+    origin = convertPoint(0, 0, viewOrLayer, window)
+    size = fb.evaluateExpressionValue(
+        '(CGSize)((CGRect)[(id)%s frame]).size' % viewOrLayer)
 
-  rectExpr = '(CGRect){{%s, %s}, {%s, %s}}' % (origin.GetChildMemberWithName('x').GetValue(),
-                                               origin.GetChildMemberWithName('y').GetValue(),
-                                               size.GetChildMemberWithName('width').GetValue(),
-                                               size.GetChildMemberWithName('height').GetValue())
-  mask = fb.evaluateExpression('[((UIView *)[UIView alloc]) initWithFrame:%s]' % rectExpr)
+    rectExpr = '(CGRect){{%s, %s}, {%s, %s}}' % (origin.GetChildMemberWithName('x').GetValue(),
+                                                 origin.GetChildMemberWithName(
+                                                     'y').GetValue(),
+                                                 size.GetChildMemberWithName(
+                                                     'width').GetValue(),
+                                                 size.GetChildMemberWithName('height').GetValue())
+    mask = fb.evaluateExpression(
+        '[((UIView *)[UIView alloc]) initWithFrame:%s]' % rectExpr)
 
-  lldb.debugger.HandleCommand('expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  lldb.debugger.HandleCommand('expr (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  lldb.debugger.HandleCommand('expr (void)[%s addSubview:%s]' % (window, mask))
-  flushCoreAnimationTransaction()
+    lldb.debugger.HandleCommand(
+        'expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+    lldb.debugger.HandleCommand(
+        'expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+    lldb.debugger.HandleCommand(
+        'expr (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+    lldb.debugger.HandleCommand(
+        'expr (void)[%s addSubview:%s]' % (window, mask))
+    flushCoreAnimationTransaction()
+
 
 def unmaskView(viewOrLayer):
-  window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
-  mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s removeFromSuperview]' % mask)
-  flushCoreAnimationTransaction()
+    window = fb.evaluateExpression(
+        '(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
+    mask = fb.evaluateExpression(
+        '(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
+    lldb.debugger.HandleCommand('expr (void)[%s removeFromSuperview]' % mask)
+    flushCoreAnimationTransaction()
+
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):
-  fromLayer = convertToLayer(fromViewOrLayer)
-  toLayer = convertToLayer(toViewOrLayer)
-  return fb.evaluateExpressionValue('(CGPoint)[%s convertPoint:(CGPoint){ .x = %s, .y = %s } toLayer:(CALayer *)%s]' % (fromLayer, x, y, toLayer))
+    fromLayer = convertToLayer(fromViewOrLayer)
+    toLayer = convertToLayer(toViewOrLayer)
+    return fb.evaluateExpressionValue('(CGPoint)[%s convertPoint:(CGPoint){ .x = %s, .y = %s } toLayer:(CALayer *)%s]' % (fromLayer, x, y, toLayer))
+
 
 def convertToLayer(viewOrLayer):
-  if fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[CALayer class]]' % viewOrLayer):
-    return viewOrLayer
-  elif fb.evaluateBooleanExpression('[(id)%s respondsToSelector:(SEL)@selector(layer)]' % viewOrLayer):
-    return fb.evaluateExpression('(CALayer *)[%s layer]' % viewOrLayer)
-  else:
-    raise Exception('Argument must be a CALayer or a UIView')
+    if fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[CALayer class]]' % viewOrLayer):
+        return viewOrLayer
+    elif fb.evaluateBooleanExpression('[(id)%s respondsToSelector:(SEL)@selector(layer)]' % viewOrLayer):
+        return fb.evaluateExpression('(CALayer *)[%s layer]' % viewOrLayer)
+    else:
+        raise Exception('Argument must be a CALayer or a UIView')
+
 
 def upwardsRecursiveDescription(view):
-  if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
-    return None
-  
-  currentView = view
-  recursiveDescription = []
-  
-  while currentView:
-    viewDescription = fb.evaluateExpressionValue('(id)[%s debugDescription]' % (currentView)).GetObjectDescription()
-    currentView = fb.evaluateExpression('(void*)[%s superview]' % (currentView))
-    try:
-      if int(currentView, 0) == 0:
-        currentView = None
-    except:
-      currentView = None
-    
-    if viewDescription:
-      recursiveDescription.insert(0, viewDescription)
+    if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
+        return None
 
-  if len(viewDescription) == 0:
-  	return None
-  
-  currentPrefix = ""
-  builder = ""
-  for viewDescription in recursiveDescription:
-    builder += currentPrefix + viewDescription + "\n"
-    currentPrefix += "   | "
-  
-  return builder
+    currentView = view
+    recursiveDescription = []
+
+    while currentView:
+        viewDescription = fb.evaluateExpressionValue(
+            '(id)[%s debugDescription]' % (currentView)).GetObjectDescription()
+        currentView = fb.evaluateExpression(
+            '(void*)[%s superview]' % (currentView))
+        try:
+            if int(currentView, 0) == 0:
+                currentView = None
+        except:
+            currentView = None
+
+        if viewDescription:
+            recursiveDescription.insert(0, viewDescription)
+
+    if len(viewDescription) == 0:
+        return None
+
+    currentPrefix = ""
+    builder = ""
+    for viewDescription in recursiveDescription:
+        builder += currentPrefix + viewDescription + "\n"
+        currentPrefix += "   | "
+
+    return builder
