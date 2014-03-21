@@ -10,6 +10,7 @@
 import lldb
 import os
 import time
+import errno
 import fblldbbase as fb
 import fblldbobjecthelpers as objectHelpers
 
@@ -19,27 +20,48 @@ def lldbcommands():
   ]
 
 def _showImage(commandForImage):
-  commandForImage = '(' + commandForImage + ')'
   imageDirectory = '/tmp/xcode_debug_images/'
-
-  createDirectoryFormatStr = '[[NSFileManager defaultManager] createDirectoryAtPath:@"{}" withIntermediateDirectories:YES attributes:nil error:NULL]'
-  createDirectoryCMD = createDirectoryFormatStr.format(imageDirectory)
-  lldb.debugger.HandleCommand('expr (void) ' + createDirectoryCMD)
 
   imageName = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + ".png"
   imagePath = imageDirectory + imageName
-  createImageFormatStr = '[[NSFileManager defaultManager] createFileAtPath:@"{}" contents:(id)UIImagePNGRepresentation({}) attributes:nil]'
-  createImageCMD = createImageFormatStr.format(imagePath, commandForImage)
 
-  lldb.debugger.HandleCommand('expr (void) ' + createImageCMD)
-  os.system('open ' + imagePath)
+  try:
+    os.makedirs(imageDirectory)
+  except OSError as e:
+    if e.errno == errno.EEXIST and os.path.isdir(imageDirectory):
+      pass
+    else:
+      raise
+
+  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation(' + commandForImage +')')
+  imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
+  imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
+
+  address = int(imageBytesStartAddress,16)
+  length = int(imageBytesLength)
+  
+  if not (address or length):
+    print 'Could not get image data.'
+    return
+
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
+  mem = process.ReadMemory(address, length, error)
+  
+  if error is not None and str(error) != 'success':
+    print error
+  else:
+    imgFile = open(imagePath, 'wb')
+    imgFile.write(mem)
+    imgFile.close()
+    os.system('open ' + imagePath)
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
 
   lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + layer + ' bounds]).size, NO, 0.0)')
   lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
-
+  
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
   if result.GetError() is not None and str(result.GetError()) != 'success':
