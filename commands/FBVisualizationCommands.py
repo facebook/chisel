@@ -15,10 +15,6 @@ import fblldbobjecthelpers as objectHelpers
 
 def lldbcommands():
   return [
-    FBShowImageCommand(),
-    FBShowImageRefCommand(),
-    FBShowViewCommand(),
-    FBShowLayerCommand(),
     FBVisualizeCommand()
   ]
 
@@ -54,6 +50,36 @@ def _showLayer(layer):
 
   lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
 
+def _dataIsImage(data):
+  data = '(' + data + ')'
+
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']');
+
+  if result.GetError() is not None and str(result.GetError()) != 'success':
+    return 0;
+  else:
+    hasImage = result.GetValueAsUnsigned() != 0;
+    if hasImage:
+      return 1;
+    else:
+      return 0;
+
+def _dataIsString(data):
+  data = '(' + data + ')'
+
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]');
+
+  if result.GetError() is not None and str(result.GetError()) != 'success':
+    return 0;
+  else:
+    hasImage = result.GetValueAsUnsigned() != 0;
+    if hasImage:
+      return 1;
+    else:
+      return 0;
+
 def _visualize(target):
   target = '(' + target + ')'
   
@@ -67,11 +93,14 @@ def _visualize(target):
     elif objectHelpers.isKindOfClass(target, 'CALayer'):
       _showLayer(target)
     elif objectHelpers.isKindOfClass(target, 'NSData'):
-      imageCommand = '(id)[UIImage imageWithData:' + arguments[0] + ']'
-      image = frame.EvaluateExpression('(id)[UIImage imageWithData:' + arguments[0] + ']')
-      _showImage(image)
+      if _dataIsImage(target):
+        _showImage('(id)[UIImage imageWithData:' + target + ']');
+      elif _dataIsString(target):
+        lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
+      else:
+        print 'Data isn\'t an image and isn\'t a string';
     else:
-      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, or CALayer.'.format(objectHelpers.className(target))
+      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
 
 class FBVisualizeCommand(fb.FBCommand):
   def name(self):
