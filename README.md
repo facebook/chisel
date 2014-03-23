@@ -4,7 +4,13 @@
 [[Installation](#installation) &bull; [Commands](#commands) &bull; [Custom Commands](#custom-commands) &bull; [Development Workflow](#development-workflow) [Contributing](#contributing) &bull; [License](#license)]
 
 ## Installation
-Add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
+
+```
+brew update
+brew install chisel
+```
+
+Or, download chisel and add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
 
 ```Python
 # ~/.lldbinit
@@ -22,7 +28,7 @@ There are many commands; here's a few:
 |----------------------------------|-----------|
 |pviews                            |Print the recursive view description for the key window.|
 |pvc                               |Print the recursive view controller description for the key window.|
-|show{view,image,layer,imageref}|Draw the argument into an image and open it in Preview.app.|
+|visualize                         |Open a UIImage, CGImageRef, UIView, or CALayer in Preview.app on your Mac.|
 |fv                                |Find a view in the hierarchy whose class name matches the provided regex.|
 |fvc                               |Find a view controller in the hierarchy whose class name matches the provided regex.|
 |show/hide                         |Show or hide the given view or layer. You don't even have to continue the process to see the changes!|
@@ -78,7 +84,7 @@ import fblldbbase as fb
 def lldbcommands():
   return [ PrintKeyWindowLevel() ]
   
-class PrintCurrentWindowLevel(fb.FBCommand):
+class PrintKeyWindowLevel(fb.FBCommand):
   def name(self):
     return 'pkeywinlevel'
     
