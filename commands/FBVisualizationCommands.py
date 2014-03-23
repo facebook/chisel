@@ -59,8 +59,8 @@ def _dataIsImage(data):
   if result.GetError() is not None and str(result.GetError()) != 'success':
     return 0;
   else:
-    hasImage = result.GetValueAsUnsigned() != 0;
-    if hasImage:
+    isImage = result.GetValueAsUnsigned() != 0;
+    if isImage:
       return 1;
     else:
       return 0;
@@ -74,8 +74,8 @@ def _dataIsString(data):
   if result.GetError() is not None and str(result.GetError()) != 'success':
     return 0;
   else:
-    hasImage = result.GetValueAsUnsigned() != 0;
-    if hasImage:
+    isString = result.GetValueAsUnsigned() != 0;
+    if isString:
       return 1;
     else:
       return 0;
