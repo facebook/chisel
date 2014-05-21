@@ -14,6 +14,8 @@ import fblldbbase as fb
 def lldbcommands():
   return [
     FBPrintAutolayoutTrace(),
+    FBAutolayoutBorderAmbiguous(),
+    FBAutolayoutUnborderAmbiguous(),
   ]
 
 class FBPrintAutolayoutTrace(fb.FBCommand):
@@ -28,3 +30,53 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
 
   def run(self, arguments, options):
     lldb.debugger.HandleCommand('po (id)[{} _autolayoutTrace]'.format(arguments[0]))
+
+
+def setBorderOnAmbiguousViewRecursive(view, width, color):
+  if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
+    return
+  
+  isAmbiguous = fb.evaluateBooleanExpression('(BOOL)[%s hasAmbiguousLayout]' % view)
+  if isAmbiguous:
+    layer = viewHelpers.convertToLayer(view)
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
+  
+  subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
+  subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
+  if subviewsCount > 0:
+    for i in range(0, subviewsCount):
+      subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
+      setBorderOnAmbiguousViewRecursive(subview, width, color)
+
+
+class FBAutolayoutBorderAmbiguous(fb.FBCommand):
+  def name(self):
+    return 'alamborder'
+
+  def description(self):
+    return "Put a border around views with an ambiguous layout"
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
+      fb.FBCommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.')
+    ]
+
+  def run(self, arguments, options):
+    keyWindow = fb.evaluateExpression('(id)[[UIApplication sharedApplication] keyWindow]')
+    setBorderOnAmbiguousViewRecursive(keyWindow, options.width, options.color)
+    lldb.debugger.HandleCommand('caflush')
+
+
+class FBAutolayoutUnborderAmbiguous(fb.FBCommand):
+  def name(self):
+    return 'alamunborder'
+
+  def description(self):
+    return "Removes the border around views with an ambiguous layout"
+
+  def run(self, arguments, options):
+    keyWindow = fb.evaluateExpression('(id)[[UIApplication sharedApplication] keyWindow]')
+    setBorderOnAmbiguousViewRecursive(keyWindow, 0, "red")
+    lldb.debugger.HandleCommand('caflush')
