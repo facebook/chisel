@@ -27,7 +27,6 @@ def lldbcommands():
     FBPrintOnscreenTableViewCells(),
     FBPrintInternals(),
     FBPrintInstanceVariable(),
-    FBPrintAutolayoutTrace(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -254,17 +253,3 @@ class FBPrintInstanceVariable(fb.FBCommand):
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
     lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
-
-
-class FBPrintAutolayoutTrace(fb.FBCommand):
-  def name(self):
-    return 'paltrace'
-
-  def description(self):
-    return "Print the Auto Layout trace for the given view. Defaults to the key window."
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='view', type='UIView *', help='The view to print the Auto Layout trace for.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
-
-  def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po (id)[{} _autolayoutTrace]'.format(arguments[0]))
