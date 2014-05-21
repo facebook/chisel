@@ -42,7 +42,7 @@ class FBFindViewControllerCommand(fb.FBCommand):
     elif options.view:
       self.findOwningViewController(options.view)
     else:
-      output = vcHelpers.viewControllerRecursiveDescription('(id)[[UIWindow keyWindow] rootViewController]')
+      output = vcHelpers.viewControllerRecursiveDescription('(id)[[[UIApplication sharedApplication] keyWindow] rootViewController]')
       searchString = options.classNameRegex if options.classNameRegex else arguments[0]
       printMatchesInViewOutputStringAndCopyFirstToClipboard(searchString, output)
 
@@ -88,7 +88,7 @@ class FBFindViewCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='classNameRegex', type='string', help='The view-class regex to search the view hierarchy for.') ]
 
   def run(self, arguments, options):
-    output = fb.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+    output = fb.evaluateExpressionValue('(id)[[[UIApplication sharedApplication] keyWindow] recursiveDescription]').GetObjectDescription()
     printMatchesInViewOutputStringAndCopyFirstToClipboard(arguments[0], output)
 
 
@@ -116,7 +116,7 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     first = None
-    haystack = fb.evaluateExpressionValue('(id)[[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+    haystack = fb.evaluateExpressionValue('(id)[[[UIApplication sharedApplication] keyWindow] recursiveDescription]').GetObjectDescription()
     needle = arguments[0]
 
     allViews = re.findall('.* (0x[0-9a-fA-F]*);.*', haystack)

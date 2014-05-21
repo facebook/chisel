@@ -30,12 +30,12 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
 
     objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
 
-    ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void *)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
+    ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((Ivar)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
     ivarOffset = fb.evaluateIntegerExpression(ivarOffsetCommand)
 
     # A multi-statement command allows for variables scoped to the command, not permanent in the session like $variables.
     ivarSizeCommand = ('unsigned int size = 0;'
-                       'char *typeEncoding = (char *)ivar_getTypeEncoding((void *)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
+                       'char *typeEncoding = (char *)ivar_getTypeEncoding((Ivar)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
                        '(char *)NSGetSizeAndAlignment(typeEncoding, &size, 0);'
                        'size').format(objectAddress, ivarName)
     ivarSize = int(fb.evaluateExpression(ivarSizeCommand), 0)

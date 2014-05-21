@@ -41,7 +41,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.') ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[UIWindow keyWindow]') ]
+    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
     if options.upwards:
@@ -74,7 +74,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
     return 'Print the recursion description of <aViewController>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[UIWindow keyWindow] rootViewController]') ]
+    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]') ]
 
   def run(self, arguments, options):
     print vcHelpers.viewControllerRecursiveDescription(arguments[0])
@@ -145,7 +145,7 @@ def _responderChain(startResponder):
 
 
 def tableViewInHierarchy():
-  viewDescription = fb.evaluateExpressionValue('(id)[(id)[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+  viewDescription = fb.evaluateExpressionValue('(id)[(id)[[UIApplication sharedApplication] keyWindow] recursiveDescription]').GetObjectDescription()
 
   searchView = None
 
@@ -238,7 +238,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
-    ivarTypeCommand = '((char *)ivar_getTypeEncoding((void *)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
+    ivarTypeCommand = '((char *)ivar_getTypeEncoding((Ivar)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
