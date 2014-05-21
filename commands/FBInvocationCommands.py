@@ -56,7 +56,7 @@ def printInvocationForFrame(frame):
   self = findArgAtIndexFromStackFrame(frame, 0)
   cmd = findArgAtIndexFromStackFrame(frame, 1)
 
-  commandForSignature = '[(id)' + self + ' methodSignatureForSelector:(char *)sel_getName(' + cmd + ')]'
+  commandForSignature = '[(id)' + self + ' methodSignatureForSelector:(char *)sel_getName((SEL)' + cmd + ')]'
   signatureValue = fb.evaluateExpressionValue('(id)' + commandForSignature)
 
   if signatureValue.GetError() is not None and str(signatureValue.GetError()) != 'success':

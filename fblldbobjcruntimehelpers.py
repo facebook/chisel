@@ -22,17 +22,17 @@ def object_getClass(object):
   return value
 
 def class_getName(klass):
-  command = '(const char*)class_getName({})'.format(klass)
+  command = '(const char*)class_getName((Class){})'.format(klass)
   value = fb.evaluateExpressionValue(command).GetSummary().strip('"')
   return value
 
 def class_getSuperclass(klass):
-  command = '(void*)class_getSuperclass({})'.format(klass)
+  command = '(void*)class_getSuperclass((Class){})'.format(klass)
   value = fb.evaluateExpression(command)
   return value
 
 def class_getInstanceMethod(klass, selector):
-  command = '(void*)class_getInstanceMethod({}, @selector({}))'.format(klass, selector)
+  command = '(void*)class_getInstanceMethod((Class){}, @selector({}))'.format(klass, selector)
   value = fb.evaluateExpression(command)
   return value
 

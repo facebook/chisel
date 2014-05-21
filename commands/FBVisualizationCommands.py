@@ -28,7 +28,7 @@ def _showImage(commandForImage):
 
   imageName = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + ".png"
   imagePath = imageDirectory + imageName
-  createImageFormatStr = '[[NSFileManager defaultManager] createFileAtPath:@"{}" contents:(id)UIImagePNGRepresentation({}) attributes:nil]'
+  createImageFormatStr = '[[NSFileManager defaultManager] createFileAtPath:@"{}" contents:(id)UIImagePNGRepresentation((UIImage*){}) attributes:nil]'
   createImageCMD = createImageFormatStr.format(imagePath, commandForImage)
 
   lldb.debugger.HandleCommand('expr (void) ' + createImageCMD)
