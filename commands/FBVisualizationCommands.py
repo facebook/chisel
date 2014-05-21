@@ -33,7 +33,7 @@ def _showImage(commandForImage):
     else:
       raise
 
-  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation(' + commandForImage +')')
+  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation((id)' + commandForImage +')')
   imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
   imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
 
