@@ -38,21 +38,32 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     return 'Print the recursion description of <aView>.'
 
   def options(self):
-    return [ fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.') ]
+    return [
+      fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.'),
+      fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default="0", help='Print only to a given depth. 0 indicates infinite depth.'),
+    ]
 
   def args(self):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
+    maxDepth = int(options.depth)
+
     if options.upwards:
       view = arguments[0]
-      description = viewHelpers.upwardsRecursiveDescription(view)
+      description = viewHelpers.upwardsRecursiveDescription(view, maxDepth)
       if description:
         print description
       else:
         print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
     else:
-      lldb.debugger.HandleCommand('po (id)[' + arguments[0] + ' recursiveDescription]')
+      description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' recursiveDescription]').GetObjectDescription()
+      if maxDepth > 0:
+        separator = re.escape("   | ")
+        prefixToRemove = separator * maxDepth + " "
+        description += "\n"
+        description = re.sub(r'%s.*\n' % (prefixToRemove), r'', description)
+      print description
 
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
