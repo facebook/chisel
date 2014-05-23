@@ -10,6 +10,7 @@
 import lldb
 import os
 import time
+import errno
 import fblldbbase as fb
 import fblldbobjecthelpers as objectHelpers
 
@@ -19,20 +20,41 @@ def lldbcommands():
   ]
 
 def _showImage(commandForImage):
-  commandForImage = '(' + commandForImage + ')'
   imageDirectory = '/tmp/xcode_debug_images/'
-
-  createDirectoryFormatStr = '[[NSFileManager defaultManager] createDirectoryAtPath:@"{}" withIntermediateDirectories:YES attributes:nil error:NULL]'
-  createDirectoryCMD = createDirectoryFormatStr.format(imageDirectory)
-  lldb.debugger.HandleCommand('expr (void) ' + createDirectoryCMD)
 
   imageName = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + ".png"
   imagePath = imageDirectory + imageName
-  createImageFormatStr = '[[NSFileManager defaultManager] createFileAtPath:@"{}" contents:(id)UIImagePNGRepresentation((UIImage*){}) attributes:nil]'
-  createImageCMD = createImageFormatStr.format(imagePath, commandForImage)
 
-  lldb.debugger.HandleCommand('expr (void) ' + createImageCMD)
-  os.system('open ' + imagePath)
+  try:
+    os.makedirs(imageDirectory)
+  except OSError as e:
+    if e.errno == errno.EEXIST and os.path.isdir(imageDirectory):
+      pass
+    else:
+      raise
+
+  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation((id)' + commandForImage +')')
+  imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
+  imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
+
+  address = int(imageBytesStartAddress,16)
+  length = int(imageBytesLength)
+  
+  if not (address or length):
+    print 'Could not get image data.'
+    return
+
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
+  mem = process.ReadMemory(address, length, error)
+  
+  if error is not None and str(error) != 'success':
+    print error
+  else:
+    imgFile = open(imagePath, 'wb')
+    imgFile.write(mem)
+    imgFile.close()
+    os.system('open ' + imagePath)
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
@@ -98,9 +120,9 @@ def _visualize(target):
       elif _dataIsString(target):
         lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
-        print 'Data isn\'t an image and isn\'t a string';
+        print 'Data isn\'t an image and isn\'t a string.';
     else:
-      print '{} is not supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
+      print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
 
 class FBVisualizeCommand(fb.FBCommand):
   def name(self):
