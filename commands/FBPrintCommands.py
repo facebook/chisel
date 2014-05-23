@@ -27,6 +27,7 @@ def lldbcommands():
     FBPrintOnscreenTableViewCells(),
     FBPrintInternals(),
     FBPrintInstanceVariable(),
+    FBPrintAutolayoutTrace(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -37,21 +38,32 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     return 'Print the recursion description of <aView>.'
 
   def options(self):
-    return [ fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.') ]
+    return [
+      fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.'),
+      fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default="0", help='Print only to a given depth. 0 indicates infinite depth.'),
+    ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[UIWindow keyWindow]') ]
+    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
+    maxDepth = int(options.depth)
+
     if options.upwards:
       view = arguments[0]
-      description = viewHelpers.upwardsRecursiveDescription(view)
+      description = viewHelpers.upwardsRecursiveDescription(view, maxDepth)
       if description:
         print description
       else:
         print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
     else:
-      lldb.debugger.HandleCommand('po (id)[' + arguments[0] + ' recursiveDescription]')
+      description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' recursiveDescription]').GetObjectDescription()
+      if maxDepth > 0:
+        separator = re.escape("   | ")
+        prefixToRemove = separator * maxDepth + " "
+        description += "\n"
+        description = re.sub(r'%s.*\n' % (prefixToRemove), r'', description)
+      print description
 
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
@@ -73,7 +85,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
     return 'Print the recursion description of <aViewController>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[UIWindow keyWindow] rootViewController]') ]
+    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]') ]
 
   def run(self, arguments, options):
     print vcHelpers.viewControllerRecursiveDescription(arguments[0])
@@ -144,7 +156,7 @@ def _responderChain(startResponder):
 
 
 def tableViewInHierarchy():
-  viewDescription = fb.evaluateExpressionValue('(id)[(id)[UIWindow keyWindow] recursiveDescription]').GetObjectDescription()
+  viewDescription = fb.evaluateExpressionValue('(id)[(id)[[UIApplication sharedApplication] keyWindow] recursiveDescription]').GetObjectDescription()
 
   searchView = None
 
@@ -237,8 +249,22 @@ class FBPrintInstanceVariable(fb.FBCommand):
     object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
-    ivarTypeCommand = '((char *)ivar_getTypeEncoding((void *)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
+    ivarTypeCommand = '((char *)ivar_getTypeEncoding((Ivar)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
     lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+
+
+class FBPrintAutolayoutTrace(fb.FBCommand):
+  def name(self):
+    return 'paltrace'
+
+  def description(self):
+    return "Print the Auto Layout trace for the given view. Defaults to the key window."
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='view', type='UIView *', help='The view to print the Auto Layout trace for.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
+
+  def run(self, arguments, options):
+    lldb.debugger.HandleCommand('po (id)[{} _autolayoutTrace]'.format(arguments[0]))
