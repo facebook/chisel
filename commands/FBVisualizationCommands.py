@@ -120,7 +120,7 @@ def _visualize(target):
       elif _dataIsString(target):
         lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
-          print 'Data isn\'t an image and isn\'t a string.';
+        print 'Data isn\'t an image and isn\'t a string.';
     else:
       print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
 
