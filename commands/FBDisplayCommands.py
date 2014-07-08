@@ -34,7 +34,7 @@ class FBDrawBorderCommand(fb.FBCommand):
     return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to border.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to border. NSViews must be layer-backed.') ]
 
   def options(self):
     return [

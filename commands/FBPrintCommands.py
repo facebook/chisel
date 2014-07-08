@@ -14,6 +14,7 @@ import lldb
 import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
 import fblldbviewhelpers as viewHelpers
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
@@ -44,10 +45,16 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the description of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
+    return [ fb.FBCommandArgument(arg='aView', type='UIView*/NSView*', help='The view to print the description of.', default='__keyWindow_dynamic__') ]
 
   def run(self, arguments, options):
     maxDepth = int(options.depth)
+    arch = runtimeHelpers.currentArch()
+    
+    if (arguments[0] == '__keyWindow_dynamic__'):
+      arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
+      if (arch == 'x86_64'):
+        arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]'
 
     if options.upwards:
       view = arguments[0]
@@ -57,7 +64,11 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
       else:
         print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
     else:
-      description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' recursiveDescription]').GetObjectDescription()
+      printingMethod = 'recursiveDescription'
+      if (arch == 'x86_64'):
+        printingMethod = '_subtreeDescription'
+      
+      description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' ' + printingMethod + ']').GetObjectDescription()
       if maxDepth > 0:
         separator = re.escape("   | ")
         prefixToRemove = separator * maxDepth + " "
@@ -85,9 +96,16 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
     return 'Print the recursion description of <aViewController>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]') ]
+    return [ fb.FBCommandArgument(arg='aViewController', type='UIViewController*', help='The view controller to print the description of.', default='__keyWindow_rootVC_dynamic__') ]
 
   def run(self, arguments, options):
+    arch = runtimeHelpers.currentArch()
+    
+    if (arguments[0] == '__keyWindow_rootVC_dynamic__'):
+      arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
+      if (arch == 'x86_64'):
+        arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]'
+
     print vcHelpers.viewControllerRecursiveDescription(arguments[0])
 
 
@@ -142,8 +160,8 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
 
   def run(self, arguments, options):
     startResponder = arguments[0]
-    if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[UIResponder class]]'):
-      print 'Whoa, ' + startResponder + ' is not a UIResponder. =('
+    if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[UIResponder class]]') and not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[NSResponder class]]'):
+      print 'Whoa, ' + startResponder + ' is not a UI/NSResponder. =('
       return
 
     _printIterative(startResponder, _responderChain)
