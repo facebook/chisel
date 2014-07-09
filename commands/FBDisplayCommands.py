@@ -44,10 +44,10 @@ class FBDrawBorderCommand(fb.FBCommand):
     ]
 
   def run(self, args, options):
-    arch = runtimeHelpers.currentArch()
     colorClassName = 'UIColor'
+    isMac = runtimeHelpers.isMacintoshArch()
     
-    if (arch == 'x86_64'):
+    if isMac:
       colorClassName = 'NSColor'
     
     layer = viewHelpers.convertToLayer(args[0])

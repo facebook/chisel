@@ -109,7 +109,9 @@ class FlickerWalker:
       self.setCurrentView(v)
     elif input == 'p':
       recusionName = 'recursiveDescription'
-      if (runtimeHelpers.currentArch() == 'x86_64'):
+      isMac = runtimeHelpers.isMacintoshArch()
+      
+      if isMac:
         recursionName = '_subtreeDescription'
       
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')

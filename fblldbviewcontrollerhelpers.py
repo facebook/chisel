@@ -29,7 +29,7 @@ def _viewControllerDescription(viewController):
 
 
 def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, prefix, childPrefix):
-  arch = runtimeHelpers.currentArch()
+  isMac = runtimeHelpers.isMacintoshArch()
 
   s = '%s%s%s\n' % (prefix, '' if prefix == '' else ' ', _viewControllerDescription(vc))
 
@@ -42,7 +42,7 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
     viewController = fb.evaluateExpression('(id)[(id)[%s childViewControllers] objectAtIndex:%d]' % (vc, i))
     s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(viewController, string, nextPrefix, nextPrefix)
 
-  if not arch == 'x86_64':
+  if not isMac:
     isModal = fb.evaluateBooleanExpression('%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s' % (vc, vc, vc))
 
     if isModal:
