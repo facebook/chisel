@@ -9,7 +9,6 @@
 
 import lldb
 import fblldbbase as fb
-import re
 
 def objc_getClass(className):
   command = '(void*)objc_getClass("{}")'.format(className)
@@ -42,6 +41,8 @@ def currentArch():
   return arch
 
 def functionPreambleExpressionForSelf():
+  import re
+  
   arch = currentArch()
   expressionForSelf = None
   if arch == 'i386':
@@ -55,6 +56,8 @@ def functionPreambleExpressionForSelf():
   return expressionForSelf
 
 def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
+  import re
+  
   arch = currentArch()
   expresssion = None
   if arch == 'i386':
@@ -73,3 +76,13 @@ def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
       raise Exception("Current implementation can not return object at index greater than 1 for arm32")
     expresssion = '(id)$r' + str(parameterIndex + 2)
   return expresssion
+
+def isMacintoshArch():
+  arch = currentArch()
+  if not arch == 'x86_64':
+    return False
+  
+  nsClassName ='NSApplication'
+  command = '(void*)objc_getClass("{}")'.format(nsClassName)
+
+  return (fb.evaluateBooleanExpression(command + '!= nil'))

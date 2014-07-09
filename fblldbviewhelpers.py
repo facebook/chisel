@@ -53,10 +53,10 @@ def convertToLayer(viewOrLayer):
   elif fb.evaluateBooleanExpression('[(id)%s respondsToSelector:(SEL)@selector(layer)]' % viewOrLayer):
     return fb.evaluateExpression('(CALayer *)[%s layer]' % viewOrLayer)
   else:
-    raise Exception('Argument must be a CALayer or a UIView')
+    raise Exception('Argument must be a CALayer, UIView, or NSView.')
 
 def upwardsRecursiveDescription(view, maxDepth=0):
-  if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
+  if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):
     return None
   
   currentView = view

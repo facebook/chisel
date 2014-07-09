@@ -14,6 +14,7 @@ import lldb
 import fblldbbase as fb
 import fblldbviewhelpers as viewHelpers
 import fblldbinputhelpers as inputHelpers
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
@@ -30,7 +31,7 @@ class FBFlickerViewCommand(fb.FBCommand):
     return 'Quickly show and hide a view to quickly help visualize where it is.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView*', help='The view to border.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView*', help='The view to flicker.') ]
 
   def run(self, arguments, options):
     object = fb.evaluateObjectExpression(arguments[0])
@@ -107,7 +108,13 @@ class FlickerWalker:
         print '\nThere are no sibling views to this view.\n'
       self.setCurrentView(v)
     elif input == 'p':
-      lldb.debugger.HandleCommand('po [(id)' + oldView + ' recursiveDescription]')
+      recusionName = 'recursiveDescription'
+      isMac = runtimeHelpers.isMacintoshArch()
+      
+      if isMac:
+        recursionName = '_subtreeDescription'
+      
+      lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
 

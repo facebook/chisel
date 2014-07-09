@@ -9,6 +9,7 @@
 
 import lldb
 import fblldbbase as fb
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def viewControllerRecursiveDescription(vc):
   return _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(fb.evaluateObjectExpression(vc), '', '', '')
@@ -28,6 +29,8 @@ def _viewControllerDescription(viewController):
 
 
 def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, prefix, childPrefix):
+  isMac = runtimeHelpers.isMacintoshArch()
+
   s = '%s%s%s\n' % (prefix, '' if prefix == '' else ' ', _viewControllerDescription(vc))
 
   nextPrefix = childPrefix + '   |'
@@ -39,11 +42,12 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
     viewController = fb.evaluateExpression('(id)[(id)[%s childViewControllers] objectAtIndex:%d]' % (vc, i))
     s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(viewController, string, nextPrefix, nextPrefix)
 
-  isModal = fb.evaluateBooleanExpression('%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s' % (vc, vc, vc))
+  if not isMac:
+    isModal = fb.evaluateBooleanExpression('%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s' % (vc, vc, vc))
 
-  if isModal:
-    modalVC = fb.evaluateObjectExpression('(id)[(id)%s presentedViewController]' % (vc))
-    s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(modalVC, string, childPrefix + '  *M' , nextPrefix)
-    s += '\n// \'*M\' means the view controller is presented modally.'
+    if isModal:
+      modalVC = fb.evaluateObjectExpression('(id)[(id)%s presentedViewController]' % (vc))
+      s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(modalVC, string, childPrefix + '  *M' , nextPrefix)
+      s += '\n// \'*M\' means the view controller is presented modally.'
 
   return string + s

@@ -12,8 +12,8 @@ import re
 
 import lldb
 import fblldbbase as fb
-import fblldbviewcontrollerhelpers as vcHelpers
 import fblldbobjcruntimehelpers as objc
+import fblldbviewcontrollerhelpers as vcHelpers
 
 def lldbcommands():
   return [

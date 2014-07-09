@@ -13,6 +13,7 @@ import time
 
 import fblldbviewhelpers as viewHelpers
 import fblldbbase as fb
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
@@ -34,7 +35,7 @@ class FBDrawBorderCommand(fb.FBCommand):
     return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to border.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to border. NSViews must be layer-backed.') ]
 
   def options(self):
     return [
@@ -43,9 +44,15 @@ class FBDrawBorderCommand(fb.FBCommand):
     ]
 
   def run(self, args, options):
+    colorClassName = 'UIColor'
+    isMac = runtimeHelpers.isMacintoshArch()
+    
+    if isMac:
+      colorClassName = 'NSColor'
+    
     layer = viewHelpers.convertToLayer(args[0])
     lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, options.width))
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, options.color))
+    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClassName, options.color))
     lldb.debugger.HandleCommand('caflush')
 
 
@@ -57,7 +64,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
     return 'Removes border around <viewOrLayer>.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to unborder.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to unborder.') ]
 
   def run(self, args, options):
     layer = viewHelpers.convertToLayer(args[0])
@@ -73,7 +80,7 @@ class FBMaskViewCommand(fb.FBCommand):
     return 'Add a transparent rectangle to the window to reveal a possibly obscured or hidden view or layer\'s bounds'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to mask.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to mask.') ]
 
   def options(self):
     return [
@@ -120,7 +127,7 @@ class FBShowViewCommand(fb.FBCommand):
     return 'Show a view or layer.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to show.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to show.') ]
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], False)
@@ -134,7 +141,7 @@ class FBHideViewCommand(fb.FBCommand):
     return 'Hide a view or layer.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/CALayer *', help='The view/layer to hide.') ]
+    return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to hide.') ]
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
