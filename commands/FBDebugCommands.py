@@ -9,6 +9,7 @@ import re
 def lldbcommands():
   return [
     FBWatchInstanceVariableCommand(),
+    FBFrameworkAddressBreakpointCommand(),
     FBMethodBreakpointCommand(),
   ]
 
@@ -47,6 +48,24 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
       print 'Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID())
     else:
       print 'Could not create the watchpoint: {}'.format(error.GetCString())
+
+class FBFrameworkAddressBreakpointCommand(fb.FBCommand):
+  def name(self):
+    return 'binside'
+
+  def description(self):
+    return "Set a breakpoint for a relative address within the framework/library that's currently running. This does the work of finding the offset for the framework/library and sliding your address accordingly."
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='address', type='string', help='Address within the currently running framework to set a breakpoint on.'),
+    ]
+
+  def run(self, arguments, options):
+    library_address = int(arguments[0], 0)
+    address = int(lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame().GetModule().ResolveFileAddress(library_address))
+
+    lldb.debugger.HandleCommand('breakpoint set --address {}'.format(address))
 
 class FBMethodBreakpointCommand(fb.FBCommand):
   def name(self):
