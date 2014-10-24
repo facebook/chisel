@@ -10,6 +10,7 @@
 
 import lldb
 import fblldbbase as fb
+import fblldbviewhelpers as viewHelpers
 
 def lldbcommands():
   return [
