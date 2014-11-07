@@ -89,7 +89,7 @@ def stackStartAddressInSelectedFrame(frame):
     return int(frame.EvaluateExpression('($esp + 8)').GetValue())
   else:
     return int(frame.EvaluateExpression('($ebp + 8)').GetValue())
-    
+
 
 def findArgAtIndexFromStackFrame(frame, index):
   return fb.evaluateExpression('*(int *)' + str(findArgAdressAtIndexFromStackFrame(frame, index)))
@@ -202,5 +202,5 @@ def argumentAsString(frame, address, encoding):
         description = value.GetSummary()
       if description:
         return type + ': ' + description
-  
+
   return None

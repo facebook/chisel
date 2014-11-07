@@ -50,10 +50,10 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
   def run(self, arguments, options):
     maxDepth = int(options.depth)
     isMac = runtimeHelpers.isMacintoshArch()
-    
+
     if (arguments[0] == '__keyWindow_dynamic__'):
       arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
-      
+
       if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]'
 
@@ -68,7 +68,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
       printingMethod = 'recursiveDescription'
       if (isMac):
         printingMethod = '_subtreeDescription'
-      
+
       description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' ' + printingMethod + ']').GetObjectDescription()
       if maxDepth > 0:
         separator = re.escape("   | ")
@@ -101,7 +101,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     isMac = runtimeHelpers.isMacintoshArch()
-    
+
     if (arguments[0] == '__keyWindow_rootVC_dynamic__'):
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
       if (isMac):

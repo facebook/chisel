@@ -37,5 +37,5 @@ class FBInputHandler:
       self.callback(bytes)
     elif (notification == lldb.eInputReaderInterrupt):
       self.stop()
-    
+
     return len(bytes)

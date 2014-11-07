@@ -39,7 +39,7 @@ def _showImage(commandForImage):
 
   address = int(imageBytesStartAddress,16)
   length = int(imageBytesLength)
-  
+
   if not (address or length):
     print 'Could not get image data.'
     return
@@ -47,7 +47,7 @@ def _showImage(commandForImage):
   process = lldb.debugger.GetSelectedTarget().GetProcess()
   error = lldb.SBError()
   mem = process.ReadMemory(address, length, error)
-  
+
   if error is not None and str(error) != 'success':
     print error
   else:
@@ -104,7 +104,7 @@ def _dataIsString(data):
 
 def _visualize(target):
   target = '(' + target + ')'
-  
+
   if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + target + ') == (unsigned long)CGImageGetTypeID()'):
     _showImage('(id)[UIImage imageWithCGImage:' + target + ']')
   else:
