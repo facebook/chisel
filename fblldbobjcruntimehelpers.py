@@ -42,7 +42,7 @@ def currentArch():
 
 def functionPreambleExpressionForSelf():
   import re
-  
+
   arch = currentArch()
   expressionForSelf = None
   if arch == 'i386':
@@ -57,7 +57,7 @@ def functionPreambleExpressionForSelf():
 
 def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
   import re
-  
+
   arch = currentArch()
   expresssion = None
   if arch == 'i386':
@@ -81,7 +81,7 @@ def isMacintoshArch():
   arch = currentArch()
   if not arch == 'x86_64':
     return False
-  
+
   nsClassName ='NSApplication'
   command = '(void*)objc_getClass("{}")'.format(nsClassName)
 
