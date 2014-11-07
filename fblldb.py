@@ -64,7 +64,7 @@ def makeRunCommand(command, filename):
     # thing.
     options = command.options()
     if len(options) == 0:
-      if not '--' in splitInput:
+      if '--' not in splitInput:
         splitInput.insert(0, '--')
 
     parser = optionParserForCommand(command)
