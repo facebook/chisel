@@ -82,7 +82,7 @@ def isMacintoshArch():
   if not arch == 'x86_64':
     return False
 
-  nsClassName ='NSApplication'
+  nsClassName = 'NSApplication'
   command = '(void*)objc_getClass("{}")'.format(nsClassName)
 
   return (fb.evaluateBooleanExpression(command + '!= nil'))
