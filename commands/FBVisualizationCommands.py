@@ -37,7 +37,7 @@ def _showImage(commandForImage):
   imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
   imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
 
-  address = int(imageBytesStartAddress,16)
+  address = int(imageBytesStartAddress, 16)
   length = int(imageBytesLength)
 
   if not (address or length):
