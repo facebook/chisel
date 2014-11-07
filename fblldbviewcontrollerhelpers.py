@@ -51,3 +51,4 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
       s += '\n// \'*M\' means the view controller is presented modally.'
 
   return string + s
+
