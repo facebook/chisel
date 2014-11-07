@@ -47,7 +47,7 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
 
     if isModal:
       modalVC = fb.evaluateObjectExpression('(id)[(id)%s presentedViewController]' % (vc))
-      s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(modalVC, string, childPrefix + '  *M' , nextPrefix)
+      s += _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(modalVC, string, childPrefix + '  *M', nextPrefix)
       s += '\n// \'*M\' means the view controller is presented modally.'
 
   return string + s
