@@ -144,26 +144,26 @@ def argumentAsString(frame, address, encoding):
     encoding = encoding[1:len(encoding)-1]
 
   encodingMap = {
-    'c' : 'char',
-    'i' : 'int',
-    's' : 'short',
-    'l' : 'long',
-    'q' : 'long long',
+    'c': 'char',
+    'i': 'int',
+    's': 'short',
+    'l': 'long',
+    'q': 'long long',
 
-    'C' : 'unsigned char',
-    'I' : 'unsigned int',
-    'S' : 'unsigned short',
-    'L' : 'unsigned long',
-    'Q' : 'unsigned long long',
+    'C': 'unsigned char',
+    'I': 'unsigned int',
+    'S': 'unsigned short',
+    'L': 'unsigned long',
+    'Q': 'unsigned long long',
 
-    'f' : 'float',
-    'd' : 'double',
-    'B' : 'bool',
-    'v' : 'void',
-    '*' : 'char *',
-    '@' : 'id',
-    '#' : 'Class',
-    ':' : 'SEL',
+    'f': 'float',
+    'd': 'double',
+    'B': 'bool',
+    'v': 'void',
+    '*': 'char *',
+    '@': 'id',
+    '#': 'Class',
+    ':': 'SEL',
   }
 
   pointers = ''
