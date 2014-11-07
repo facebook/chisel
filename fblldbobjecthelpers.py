@@ -16,4 +16,3 @@ def isKindOfClass(obj, className):
 
 def className(obj):
   return fb.evaluateExpressionValue('(id)[(' + obj + ') class]').GetObjectDescription()
-

@@ -166,4 +166,3 @@ def usageForCommand(command):
       usage += ' ' + arg.argName
 
   return usage
-
