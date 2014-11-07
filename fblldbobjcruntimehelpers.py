@@ -69,7 +69,7 @@ def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
     expresssion = '(id)$' + registersList[parameterIndex]
   elif arch == 'arm64':
     if (parameterIndex > 5):
-      raise Exception("Current implementation can not return object at index greater than 5 for arm64")  
+      raise Exception("Current implementation can not return object at index greater than 5 for arm64")
     expresssion = '(id)$x' + str(parameterIndex + 2)
   elif re.match(r'^armv.*$', arch):
     if (parameterIndex > 3):
