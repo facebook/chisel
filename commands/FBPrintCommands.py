@@ -124,7 +124,7 @@ class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
 def _printIterative(initialValue, generator):
   indent = 0
   for currentValue in generator(initialValue):
-    print '   | '*indent + currentValue
+    print '   | ' * indent + currentValue
     indent += 1
 
 

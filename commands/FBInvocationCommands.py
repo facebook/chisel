@@ -134,14 +134,14 @@ def prettyPrintInvocation(frame, invocation):
         print readableString
       else:
         if encoding[0] == '{':
-          encoding = encoding[1:len(encoding)-1]
+          encoding = encoding[1:]
         print (hex(address) + ', address of ' + encoding + ' ' + description).strip()
 
       index += 1
 
 def argumentAsString(frame, address, encoding):
   if encoding[0] == '{':
-    encoding = encoding[1:len(encoding)-1]
+    encoding = encoding[1:]
 
   encodingMap = {
     'c': 'char',
