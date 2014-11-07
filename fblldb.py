@@ -74,7 +74,7 @@ def makeRunCommand(command, filename):
     # the initial args form an expression and combine them into a single arg.
     if len(args) > len(command.args()):
       overhead = len(args) - len(command.args())
-      head = args[:overhead+1] # Take N+1 and reduce to 1.
+      head = args[:overhead + 1] # Take N+1 and reduce to 1.
       args = [' '.join(head)] + args[-overhead:]
 
     if validateArgsForCommand(args, command):
