@@ -145,8 +145,8 @@ def helpForCommand(command, filename):
       help += '; ' + option.help
 
       optionSyntax += ' [{name}{arg}]'.format(
-        name= option.longName or option.shortName,
-        arg = '' if option.boolean else ('=' + option.argName)
+        name=(option.longName or option.shortName),
+        arg=('' if option.boolean else ('=' + option.argName))
       )
 
   help += '\n\nSyntax: ' + command.name() + optionSyntax + argSyntax
