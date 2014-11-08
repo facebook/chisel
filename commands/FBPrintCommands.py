@@ -51,7 +51,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     maxDepth = int(options.depth)
     isMac = runtimeHelpers.isMacintoshArch()
 
-    if (arguments[0] == '__keyWindow_dynamic__'):
+    if arguments[0] == '__keyWindow_dynamic__':
       arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
 
       if isMac:
@@ -66,7 +66,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
     else:
       printingMethod = 'recursiveDescription'
-      if (isMac):
+      if isMac:
         printingMethod = '_subtreeDescription'
 
       description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' ' + printingMethod + ']').GetObjectDescription()
@@ -102,9 +102,9 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
   def run(self, arguments, options):
     isMac = runtimeHelpers.isMacintoshArch()
 
-    if (arguments[0] == '__keyWindow_rootVC_dynamic__'):
+    if arguments[0] == '__keyWindow_rootVC_dynamic__':
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
-      if (isMac):
+      if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]'
 
     print vcHelpers.viewControllerRecursiveDescription(arguments[0])
