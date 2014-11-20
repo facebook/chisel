@@ -287,9 +287,14 @@ class FBPrintKeyPath(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    keypath = arguments[0]
-    objectToMessage, keypath = keypath.split('.', 1)
-    object = fb.evaluateObjectExpression(objectToMessage)
+    keys = arguments[0].split('.')
 
-    printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+    if keys.count == 1:
+      print '"' + arguments[0] + '" is not a keypath =('
+      return
+
+    object = keys[0]
+    keys = keys[1:len(keys)]
+    keypath = ".".join(keys)
+    printCommand = 'po [(NSObject *){} valueForKeyPath:@"{}"]'.format(object, keypath)
     lldb.debugger.HandleCommand(printCommand)
