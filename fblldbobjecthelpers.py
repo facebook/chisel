@@ -20,12 +20,12 @@ def className(obj):
 def valueForKey(obj, key):
   return fb.evaluateExpressionValue('(id)[%s valueForKey:@"%s"]' % (obj, key)).GetObjectDescription()
 
-def isNil(obj)
-  return obj == "<nil>" || obj == "<object returned empty description>"
+def isNil(obj):
+  return obj == "<nil>" or obj == "<object returned empty description>"
 
 def displayValueForKey(obj, key):
   value = valueForKey(obj, key)
-  return "{}='{}'".format(key, value) if !isNil(value) else ""
+  return "{}='{}'".format(key, value) if not isNil(value) else ""
 
 def displayValueForKeys(obj, keys):
   def displayValueForThisObjectKey(key):
