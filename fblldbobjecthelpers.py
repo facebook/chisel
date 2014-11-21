@@ -15,4 +15,30 @@ def isKindOfClass(obj, className):
   return fb.evaluateBooleanExpression(isKindOfClassStr.format(className))
 
 def className(obj):
-  return fb.evaluateExpressionValue('(id)[(' + obj + ') class]').GetObjectDescription()
+  return fb.evaluateExpressionValue('(id)[(%s) class]' % (obj)).GetObjectDescription()
+
+def valueForKey(obj, key):
+  return fb.evaluateExpressionValue('(id)[%s valueForKey:@"%s"]' % (obj, key)).GetObjectDescription()
+
+def isNil(obj)
+  return obj == "<nil>" || obj == "<object returned empty description>"
+
+def displayValueForKey(obj, key):
+  value = valueForKey(obj, key)
+  return "{}='{}'".format(key, value) if !isNil(value) else ""
+
+def displayValueForKeys(obj, keys):
+  def displayValueForThisObjectKey(key):
+    return displayValueForKey(obj, key)
+  return " ".join(map(displayValueForThisObjectKey, keys))
+
+def displayObjectWithString(obj, string):
+  return "<{}:{} {}>".format(
+    className(obj),
+    obj,
+    string)
+
+def displayObjectWithKeys(obj, keys):
+  return displayObjectWithString(obj, displayValueForKeys(obj, keys))
+
+  

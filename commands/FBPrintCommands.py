@@ -15,6 +15,7 @@ import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
 import fblldbviewhelpers as viewHelpers
 import fblldbobjcruntimehelpers as runtimeHelpers
+import fblldbobjecthelpers as objectHelpers
 
 def lldbcommands():
   return [
@@ -301,7 +302,7 @@ class FBPrintAccessibilityTree(fb.FBCommand):
     return 'pae'
 
   def description(self):
-    return "Print out the view heirarchy with accessibility"
+    return "Print out the accessibility heirarchy.   Traverses the accessibilityElements if present, otherwise the subviews."
 
   def args(self):
     return [

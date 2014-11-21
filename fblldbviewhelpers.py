@@ -10,6 +10,7 @@
 import lldb
 import re
 import fblldbbase as fb
+import fblldbobjecthelpers as objectHelpers
 
 def flushCoreAnimationTransaction():
   lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
@@ -93,7 +94,7 @@ def upwardsRecursiveDescription(view, maxDepth=0):
 #  [UITableViewSectionElement]{0x79eb2280} section: 0 (isHeader: 1)
 #  [UITableViewCellAccessibilityElement - 0x79eac160] <.....
 # So, just get the first hex address
-def GetFirstHexInDescription(object):
+def firstHexInDescription(object):
   return re.findall(r'0x[0-9A-F]+', "{}".format(object), re.I)[0]
 
 def evaluateIntegerExpression(expression):
@@ -101,11 +102,10 @@ def evaluateIntegerExpression(expression):
   return int (output, 10)
 
 def accessibilityDescription(object):
-  return "AE<{} l=({}) v=({}) h=({})>".format(
-    object,
-    fb.evaluateExpressionValue('(id)[%s accessibilityLabel]' % (object)).GetObjectDescription(),
-    fb.evaluateExpressionValue('(id)[%s accessibilityValue]' % (object)).GetObjectDescription(),
-    fb.evaluateExpressionValue('(id)[%s accessibilityHint]'  % (object)).GetObjectDescription())
+  if isAccessibilityElement(object):
+    return objectHelpers.displayObjectWithKeys(object, ["accessibilityLabel", "accessibilityValue", "accessibilityHint"])
+  else:
+    return objectHelpers.displayObjectWithString(object, "isAccessibilityElement=NO")
 
 def accessibilityElementCount(object):
   cmd = "(int)[%s accessibilityElementCount]" % (object)
@@ -116,7 +116,7 @@ def isAccessibilityElement(object):
   
 def accessibilityElementAtIndex(object, index):
   cmd = '(id)[%s accessibilityElementAtIndex:%s]' % (object, index)
-  obj = GetFirstHexInDescription(fb.evaluateExpressionValue(cmd))
+  obj = firstHexInDescription(fb.evaluateExpressionValue(cmd))
   return obj
 
 def accessibilityChildren(object):
@@ -126,12 +126,6 @@ def accessibilityChildren(object):
     for i in range(0, accessibilityCount):
       aeChildren.append(accessibilityElementAtIndex(object, i))
   return aeChildren
-
-def accessibilityElementDescriptionForObject(object):
-  if isAccessibilityElement(object):
-    return "X {}".format(object)
-  else:
-    return accessibilityDescription(object)
 
 def subviews(view):
   subviewResult = []
@@ -146,12 +140,14 @@ def subviews(view):
   return subviewResult
 
       
-def accessibilityRecursiveDescription(object, prefix=""):
-  print '%s%s' % (prefix, accessibilityElementDescriptionForObject(object))
+def accessibilityRecursiveDescription(object, prefix="", childType=""):
+  print '%s%s%s' % (prefix, childType, accessibilityDescription(object))
   nextPrefix = prefix + '    |'
-  for ae in accessibilityChildren(object):
-      accessibilityRecursiveDescription(ae, nextPrefix)
-  
-  for subview in subviews(object):
-      accessibilityRecursiveDescription(subview, nextPrefix)
+  aeChildren = accessibilityChildren(object)
+  for ae in aeChildren:
+      accessibilityRecursiveDescription(ae, nextPrefix, 'A ')
+
+  if len(aeChildren) == 0:
+    for subview in subviews(object):
+      accessibilityRecursiveDescription(subview, nextPrefix, 'S ')
 
