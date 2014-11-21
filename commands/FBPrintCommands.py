@@ -15,6 +15,7 @@ import fblldbbase as fb
 import fblldbviewcontrollerhelpers as vcHelpers
 import fblldbviewhelpers as viewHelpers
 import fblldbobjcruntimehelpers as runtimeHelpers
+import fblldbobjecthelpers as objectHelpers
 
 def lldbcommands():
   return [
@@ -28,6 +29,8 @@ def lldbcommands():
     FBPrintOnscreenTableViewCells(),
     FBPrintInternals(),
     FBPrintInstanceVariable(),
+    FBPrintKeyPath(),
+    FBPrintAccessibilityTree(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -272,3 +275,40 @@ class FBPrintInstanceVariable(fb.FBCommand):
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
     lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+
+class FBPrintKeyPath(fb.FBCommand):
+  def name(self):
+    return 'pkp'
+
+  def description(self):
+    return "Print out the value of the key path expression using -valueForKeyPath:"
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='keypath', type='NSString *', help='The keypath to print'),
+    ]
+
+  def run(self, arguments, options):
+    if len(arguments[0].split('.')) == 1:
+      print '"' + arguments[0] + '" is not a keypath =('
+      return
+
+    object, keypath = arguments[0].split('.', 1)
+    printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+    lldb.debugger.HandleCommand(printCommand)
+
+class FBPrintAccessibilityTree(fb.FBCommand):
+  def name(self):
+    return 'pae'
+
+  def description(self):
+    return "Print out the accessibility heirarchy.   Traverses the accessibilityElements if present, otherwise the subviews."
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='object', type='id', help='The object to print accessibility information for'),
+    ]
+
+  def run(self, arguments, options):
+    object = fb.evaluateObjectExpression(arguments[0])
+    return viewHelpers.accessibilityRecursiveDescription(object, "")
