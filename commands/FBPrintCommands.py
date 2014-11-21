@@ -279,7 +279,7 @@ class FBPrintKeyPath(fb.FBCommand):
     return 'pkp'
 
   def description(self):
-    return "Print out the value of [self valueForKeyPath:<>]."
+    return "Print out the value of the key path expression using -valueForKeyPath:"
 
   def args(self):
     return [
@@ -287,14 +287,10 @@ class FBPrintKeyPath(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    keys = arguments[0].split('.')
-
-    if keys.count == 1:
+    if len(arguments[0].split('.')) == 1:
       print '"' + arguments[0] + '" is not a keypath =('
       return
 
-    object = keys[0]
-    keys = keys[1:len(keys)]
-    keypath = ".".join(keys)
-    printCommand = 'po [(NSObject *){} valueForKeyPath:@"{}"]'.format(object, keypath)
+    object, keypath = arguments[0].split('.', 1)
+    printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
     lldb.debugger.HandleCommand(printCommand)
