@@ -29,6 +29,7 @@ def lldbcommands():
     FBPrintInternals(),
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
+    FBPrintAccessibilityTree(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -294,3 +295,19 @@ class FBPrintKeyPath(fb.FBCommand):
     object, keypath = arguments[0].split('.', 1)
     printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
     lldb.debugger.HandleCommand(printCommand)
+
+class FBPrintAccessibilityTree(fb.FBCommand):
+  def name(self):
+    return 'pae'
+
+  def description(self):
+    return "Print out the view heirarchy with accessibility"
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='object', type='id', help='The object to print accessibility information for'),
+    ]
+
+  def run(self, arguments, options):
+    object = fb.evaluateObjectExpression(arguments[0])
+    return viewHelpers.accessibilityRecursiveDescription(object, "")

@@ -8,7 +8,7 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import lldb
-
+import re
 import fblldbbase as fb
 
 def flushCoreAnimationTransaction():
@@ -84,6 +84,74 @@ def upwardsRecursiveDescription(view, maxDepth=0):
   builder = ""
   for viewDescription in recursiveDescription:
     builder += currentPrefix + viewDescription + "\n"
-    currentPrefix += "   | "
-  
+  currentPrefix += "   | "
+
   return builder
+
+# GetObjectDescription will try to return the pointer.
+# However on UIAccessibilityElements, the result will look like this:
+#  [UITableViewSectionElement]{0x79eb2280} section: 0 (isHeader: 1)
+#  [UITableViewCellAccessibilityElement - 0x79eac160] <.....
+# So, just get the first hex address
+def GetFirstHexInDescription(object):
+  return re.findall(r'0x[0-9A-F]+', "{}".format(object), re.I)[0]
+
+def evaluateIntegerExpression(expression):
+  output = fb.evaluateExpression('(int)(' + expression + ')', True).replace('\'', '')
+  return int (output, 10)
+
+def accessibilityDescription(object):
+  return "AE<{} l=({}) v=({}) h=({})>".format(
+    object,
+    fb.evaluateExpressionValue('(id)[%s accessibilityLabel]' % (object)).GetObjectDescription(),
+    fb.evaluateExpressionValue('(id)[%s accessibilityValue]' % (object)).GetObjectDescription(),
+    fb.evaluateExpressionValue('(id)[%s accessibilityHint]'  % (object)).GetObjectDescription())
+
+def accessibilityElementCount(object):
+  cmd = "(int)[%s accessibilityElementCount]" % (object)
+  return evaluateIntegerExpression(cmd)
+
+def isAccessibilityElement(object):
+  return fb.evaluateBooleanExpression('[(id)%s isAccessibilityElement]' % object)
+  
+def accessibilityElementAtIndex(object, index):
+  cmd = '(id)[%s accessibilityElementAtIndex:%s]' % (object, index)
+  obj = GetFirstHexInDescription(fb.evaluateExpressionValue(cmd))
+  return obj
+
+def accessibilityChildren(object):
+  accessibilityCount = accessibilityElementCount(object)
+  aeChildren = []
+  if accessibilityCount != 0x7fffffff:
+    for i in range(0, accessibilityCount):
+      aeChildren.append(accessibilityElementAtIndex(object, i))
+  return aeChildren
+
+def accessibilityElementDescriptionForObject(object):
+  if isAccessibilityElement(object):
+    return "X {}".format(object)
+  else:
+    return accessibilityDescription(object)
+
+def subviews(view):
+  subviewResult = []
+  responds = fb.evaluateBooleanExpression('[(id)%s respondsToSelector:(SEL)@selector(subviews)]' % view)
+  if responds:
+    subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
+    subviewsCount = evaluateIntegerExpression('[(id)%s count]' % subviews)
+    if subviewsCount > 0:
+      for i in range(0, subviewsCount):
+        subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
+        subviewResult.append(subview)
+  return subviewResult
+
+      
+def accessibilityRecursiveDescription(object, prefix=""):
+  print '%s%s' % (prefix, accessibilityElementDescriptionForObject(object))
+  nextPrefix = prefix + '    |'
+  for ae in accessibilityChildren(object):
+      accessibilityRecursiveDescription(ae, nextPrefix)
+  
+  for subview in subviews(object):
+      accessibilityRecursiveDescription(subview, nextPrefix)
+
