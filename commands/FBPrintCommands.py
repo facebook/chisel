@@ -287,10 +287,11 @@ class FBPrintKeyPath(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    if len(arguments[0].split('.')) == 1:
-      print '"' + arguments[0] + '" is not a keypath =('
-      return
-
-    object, keypath = arguments[0].split('.', 1)
-    printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
-    lldb.debugger.HandleCommand(printCommand)
+    command = arguments[0]
+    if len(command.split('.')) == 1:
+      lldb.debugger.HandleCommand("po " + command)
+    else:
+      objectToMessage, keypath = command.split('.', 1)
+      object = fb.evaluateObjectExpression(objectToMessage)
+      printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+      lldb.debugger.HandleCommand(printCommand)
