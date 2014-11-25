@@ -28,6 +28,7 @@ def lldbcommands():
     FBPrintOnscreenTableViewCells(),
     FBPrintInternals(),
     FBPrintInstanceVariable(),
+    FBPrintKeyPath(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -272,3 +273,25 @@ class FBPrintInstanceVariable(fb.FBCommand):
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
     lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+
+class FBPrintKeyPath(fb.FBCommand):
+  def name(self):
+    return 'pkp'
+
+  def description(self):
+    return "Print out the value of the key path expression using -valueForKeyPath:"
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='keypath', type='NSString *', help='The keypath to print'),
+    ]
+
+  def run(self, arguments, options):
+    command = arguments[0]
+    if len(command.split('.')) == 1:
+      lldb.debugger.HandleCommand("po " + command)
+    else:
+      objectToMessage, keypath = command.split('.', 1)
+      object = fb.evaluateObjectExpression(objectToMessage)
+      printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+      lldb.debugger.HandleCommand(printCommand)
