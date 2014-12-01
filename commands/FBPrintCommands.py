@@ -268,7 +268,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
-    ivarTypeCommand = '((char *)ivar_getTypeEncoding((Ivar)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
+    ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
