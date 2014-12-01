@@ -58,11 +58,11 @@ def convertToLayer(viewOrLayer):
 def upwardsRecursiveDescription(view, maxDepth=0):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):
     return None
-  
+
   currentView = view
   recursiveDescription = []
   depth = 0
-  
+
   while currentView and (maxDepth <= 0 or depth <= maxDepth):
     depth += 1
 
@@ -73,17 +73,17 @@ def upwardsRecursiveDescription(view, maxDepth=0):
         currentView = None
     except:
       currentView = None
-    
+
     if viewDescription:
       recursiveDescription.insert(0, viewDescription)
 
   if len(viewDescription) == 0:
-  	return None
-  
+    return None
+
   currentPrefix = ""
   builder = ""
   for viewDescription in recursiveDescription:
     builder += currentPrefix + viewDescription + "\n"
     currentPrefix += "   | "
-  
+
   return builder

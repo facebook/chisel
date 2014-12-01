@@ -46,10 +46,10 @@ class FBDrawBorderCommand(fb.FBCommand):
   def run(self, args, options):
     colorClassName = 'UIColor'
     isMac = runtimeHelpers.isMacintoshArch()
-    
+
     if isMac:
       colorClassName = 'NSColor'
-    
+
     layer = viewHelpers.convertToLayer(args[0])
     lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, options.width))
     lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClassName, options.color))

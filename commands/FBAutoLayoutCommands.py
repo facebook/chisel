@@ -36,13 +36,13 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
 def setBorderOnAmbiguousViewRecursive(view, width, color):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view):
     return
-  
+
   isAmbiguous = fb.evaluateBooleanExpression('(BOOL)[%s hasAmbiguousLayout]' % view)
   if isAmbiguous:
     layer = viewHelpers.convertToLayer(view)
     lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
     lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
-  
+
   subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
   subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
   if subviewsCount > 0:
