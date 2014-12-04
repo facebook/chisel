@@ -136,6 +136,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
     breakpointClassName = objc.class_getName(nextClass)
     breakpointFullName = '{}[{} {}]'.format(methodTypeCharacter, breakpointClassName, selector)
+    breakpointPattern = '{}\[{}(\(.+\))? {}\]'.format(methodTypeCharacter, breakpointClassName, selector)
 
     breakpointCondition = None
     if targetIsClass:
@@ -145,7 +146,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
     print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
 
-    lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+    lldb.debugger.HandleCommand('breakpoint set --func-regex "{}" --condition "{}"'.format(breakpointPattern, breakpointCondition))
 
 def classItselfImplementsSelector(klass, selector):
   thisMethod = objc.class_getInstanceMethod(klass, selector)
