@@ -3,7 +3,8 @@
 
 [[Installation](#installation) &bull; [Commands](#commands) &bull; [Custom Commands](#custom-commands) &bull; [Development Workflow](#development-workflow) [Contributing](#contributing) &bull; [License](#license)]
 
-For an a comprehensive overview of LLDB, and how Chisel compliments it, read Ari Grant's [Dancing in the Debugger — A Waltz with LLDB](http://www.objc.io/issue-19/lldb-debugging.html) in issue 19 of [objc.io](http://www.objc.io/).
+For a comprehensive overview of LLDB, and how Chisel compliments it, read Ari Grant's [Dancing in the Debugger — A Waltz with LLDB](http://www.objc.io/issue-19/lldb-debugging.html) in issue 19 of [objc.io](http://www.objc.io/).
+
 ## Installation
 
 ```
