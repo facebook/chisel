@@ -85,8 +85,8 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     methodPattern = re.compile(r"""
       (?P<scope>[-+])?
       \[
-        (?P<class>.*?)
-        (?:\(.+\))? # Optional Category
+        (?P<target>.*?)
+        (?P<category>\(.+\))?
         \s+
         (?P<selector>.*)
       \]
@@ -104,7 +104,8 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       return
 
     methodTypeCharacter = match.group('scope')
-    classNameOrExpression = match.group('class')
+    classNameOrExpression = match.group('target')
+    category = match.group('category')
     selector = match.group('selector')
 
     methodIsClassMethod = (methodTypeCharacter == '+')
@@ -145,8 +146,8 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       return
 
     breakpointClassName = objc.class_getName(nextClass)
-    breakpointFullName = '{}[{} {}]'.format(methodTypeCharacter, breakpointClassName, selector)
-    breakpointPattern = '{}\[{}(\(.+\))? {}\]'.format(methodTypeCharacter, breakpointClassName, selector)
+    formattedCategory = category if category else ''
+    breakpointFullName = '{}[{}{} {}]'.format(methodTypeCharacter, breakpointClassName, formattedCategory, selector)
 
     breakpointCondition = None
     if targetIsClass:
@@ -156,7 +157,11 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
     print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
 
-    lldb.debugger.HandleCommand('breakpoint set --func-regex "{}" --condition "{}"'.format(breakpointPattern, breakpointCondition))
+    if category:
+      lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+    else:
+      breakpointPattern = '{}\[{}(\(.+\))? {}\]'.format(methodTypeCharacter, breakpointClassName, selector)
+      lldb.debugger.HandleCommand('breakpoint set --func-regex "{}" --condition "{}"'.format(breakpointPattern, breakpointCondition))
 
 def classItselfImplementsSelector(klass, selector):
   thisMethod = objc.class_getInstanceMethod(klass, selector)
