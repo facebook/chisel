@@ -82,7 +82,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
   def run(self, arguments, options):
     expression = arguments[0]
 
-    match = re.match(r'([-+])*\[(.*) (.*)\]', expression)
+    match = re.match(r'([-+])*\[(.*?)(?:\(.+\))? (.*)\]', expression)
 
     if not match:
       print 'Failed to parse expression. Do you even Objective-C?!'
