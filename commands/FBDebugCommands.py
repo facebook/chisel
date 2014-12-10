@@ -82,7 +82,17 @@ class FBMethodBreakpointCommand(fb.FBCommand):
   def run(self, arguments, options):
     expression = arguments[0]
 
-    match = re.match(r'([-+])*\[(.*?)(?:\(.+\))? (.*)\]', expression)
+    methodPattern = re.compile(r"""
+      (?P<scope>[-+])?
+      \[
+        (?P<class>.*?)
+        (?:\(.+\))? # Optional Category
+        \s+
+        (?P<selector>.*)
+      \]
+""", re.VERBOSE)
+
+    match = methodPattern.match(expression)
 
     if not match:
       print 'Failed to parse expression. Do you even Objective-C?!'
@@ -93,9 +103,9 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
       return
 
-    methodTypeCharacter = match.group(1)
-    classNameOrExpression = match.group(2)
-    selector = match.group(3)
+    methodTypeCharacter = match.group('scope')
+    classNameOrExpression = match.group('class')
+    selector = match.group('selector')
 
     methodIsClassMethod = (methodTypeCharacter == '+')
 
