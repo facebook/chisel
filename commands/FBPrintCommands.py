@@ -103,6 +103,10 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
     isMac = runtimeHelpers.isMacintoshArch()
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
+      if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
+        lldb.debugger.HandleCommand('po [UIViewController _printHierarchy]')
+        return
+
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
       if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]'
