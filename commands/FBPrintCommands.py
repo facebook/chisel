@@ -307,11 +307,11 @@ class FBPrintAccessibilityTree(fb.FBCommand):
     return 'pae'
 
   def description(self):
-    return "Print out the accessibility heirarchy.   Traverses the accessibilityElements if present, otherwise the subviews."
+    return "Print out the accessibility heirarchy.   Traverses the accessibilityElements if present and the accessibility inspector is  enabled, otherwise the subviews."
 
   def args(self):
     return [
-      fb.FBCommandArgument(arg='object', type='id', help='The object to print accessibility information for'),
+      fb.FBCommandArgument(arg='object', type='id', default="[[UIApplication sharedApplication] keyWindow]", help='The object to print accessibility information for'),
     ]
 
   def run(self, arguments, options):
