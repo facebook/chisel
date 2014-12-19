@@ -35,6 +35,7 @@ class FBCommand:
   def run(self, arguments, option):
     pass
 
+NSNOTFOUND32BIT = 0x7fffffff
 
 def evaluateExpressionValue(expression, printErrors=True):
   # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
