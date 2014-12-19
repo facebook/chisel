@@ -47,11 +47,14 @@ def evaluateExpressionValue(expression, printErrors=True):
 
 def evaluateIntegerExpression(expression, printErrors=True):
   output = evaluateExpression('(int)(' + expression + ')', printErrors).replace('\'', '')
+  value = 0
   if output.startswith('\\x'): # Booleans may display as \x01 (Hex)
-    output = output[2:]
+    value = int(output[2:], 16)
   elif output.startswith('\\'): # Or as \0 (Dec)
-    output = output[1:]
-  return int(output, 16)
+    value = int(output[1:], 10)
+  else:
+    value = int(output, 10)
+  return value
 
 def evaluateBooleanExpression(expression, printErrors=True):
   return (int(evaluateIntegerExpression('(BOOL)(' + expression + ')', printErrors)) != 0)

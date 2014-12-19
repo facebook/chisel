@@ -97,19 +97,11 @@ def upwardsRecursiveDescription(view, maxDepth=0):
 def firstHexInDescription(object):
   return re.findall(r'0x[0-9A-F]+', "{}".format(object), re.I)[0]
 
-def evaluateIntegerExpression(expression):
-  output = fb.evaluateExpression('(int)(' + expression + ')', True).replace('\'', '')
-  return int (output, 10)
-
 def accessibilityDescription(object):
   if isAccessibilityElement(object):
     return objectHelpers.displayObjectWithKeys(object, ["accessibilityLabel", "accessibilityValue", "accessibilityHint"])
   else:
     return objectHelpers.displayObjectWithString(object, "isAccessibilityElement=NO")
-
-def accessibilityElementCount(object):
-  cmd = "(int)[%s accessibilityElementCount]" % (object)
-  return evaluateIntegerExpression(cmd)
 
 def isAccessibilityElement(object):
   return fb.evaluateBooleanExpression('[(id)%s isAccessibilityElement]' % object)
@@ -120,7 +112,7 @@ def accessibilityElementAtIndex(object, index):
   return obj
 
 def accessibilityChildren(object):
-  accessibilityCount = accessibilityElementCount(object)
+  accessibilityCount = fb.evaluateIntegerExpression("(int)[%s accessibilityElementCount]" % (object))
   aeChildren = []
   if accessibilityCount < fb.NSNOTFOUND32BIT:
     for i in range(0, accessibilityCount):
@@ -132,7 +124,7 @@ def subviews(view):
   responds = fb.evaluateBooleanExpression('[(id)%s respondsToSelector:(SEL)@selector(subviews)]' % view)
   if responds:
     subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
-    subviewsCount = evaluateIntegerExpression('[(id)%s count]' % subviews)
+    subviewsCount = fb.evaluateIntegerExpression('[(id)%s count]' % subviews)
     if subviewsCount > 0:
       for i in range(0, subviewsCount):
         subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
