@@ -123,7 +123,7 @@ Developing commands, whether for local use or contributing to `Chisel` directly,
 4. Run the command you are working on
 5. Modify the command
 6. Optionally run `script reload(modulename)`
-7. Repeat steps 3-5 until the command becomes a source of happiness
+7. Repeat steps 3-6 until the command becomes a source of happiness
 
 ## Contributing
 Please contribute any generic commands that you make. If it helps you then it will likely help many others! :D See `CONTRIBUTING.md` to learn how to contribute.
