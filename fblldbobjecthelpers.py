@@ -15,7 +15,7 @@ def isKindOfClass(obj, className):
   return fb.evaluateBooleanExpression(isKindOfClassStr.format(className))
 
 def className(obj):
-  return fb.evaluateExpressionValue('(id)[(%s) class]' % (obj)).GetObjectDescription()
+  return fb.evaluateExpressionValue('(id)[(' + obj + ') class]').GetObjectDescription()
 
 def valueForKey(obj, key):
   return fb.evaluateExpressionValue('(id)[%s valueForKey:@"%s"]' % (obj, key)).GetObjectDescription()
@@ -40,5 +40,3 @@ def displayObjectWithString(obj, string):
 
 def displayObjectWithKeys(obj, keys):
   return displayObjectWithString(obj, displayValueForKeys(obj, keys))
-
-  

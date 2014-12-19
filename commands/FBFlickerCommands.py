@@ -110,10 +110,10 @@ class FlickerWalker:
     elif input == 'p':
       recusionName = 'recursiveDescription'
       isMac = runtimeHelpers.isMacintoshArch()
-      
+
       if isMac:
         recursionName = '_subtreeDescription'
-      
+
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'

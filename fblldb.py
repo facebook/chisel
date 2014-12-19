@@ -64,7 +64,7 @@ def makeRunCommand(command, filename):
     # thing.
     options = command.options()
     if len(options) == 0:
-      if not '--' in splitInput:
+      if '--' not in splitInput:
         splitInput.insert(0, '--')
 
     parser = optionParserForCommand(command)
@@ -74,7 +74,7 @@ def makeRunCommand(command, filename):
     # the initial args form an expression and combine them into a single arg.
     if len(args) > len(command.args()):
       overhead = len(args) - len(command.args())
-      head = args[:overhead+1] # Take N+1 and reduce to 1.
+      head = args[:overhead + 1] # Take N+1 and reduce to 1.
       args = [' '.join(head)] + args[-overhead:]
 
     if validateArgsForCommand(args, command):
@@ -145,8 +145,8 @@ def helpForCommand(command, filename):
       help += '; ' + option.help
 
       optionSyntax += ' [{name}{arg}]'.format(
-        name= option.longName or option.shortName,
-        arg = '' if option.boolean else ('=' + option.argName)
+        name=(option.longName or option.shortName),
+        arg=('' if option.boolean else ('=' + option.argName))
       )
 
   help += '\n\nSyntax: ' + command.name() + optionSyntax + argSyntax
@@ -166,4 +166,3 @@ def usageForCommand(command):
       usage += ' ' + arg.argName
 
   return usage
-

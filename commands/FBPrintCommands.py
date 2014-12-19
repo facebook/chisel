@@ -52,10 +52,10 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
   def run(self, arguments, options):
     maxDepth = int(options.depth)
     isMac = runtimeHelpers.isMacintoshArch()
-    
-    if (arguments[0] == '__keyWindow_dynamic__'):
+
+    if arguments[0] == '__keyWindow_dynamic__':
       arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
-      
+
       if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]'
 
@@ -68,9 +68,9 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
     else:
       printingMethod = 'recursiveDescription'
-      if (isMac):
+      if isMac:
         printingMethod = '_subtreeDescription'
-      
+
       description = fb.evaluateExpressionValue('(id)[' + arguments[0] + ' ' + printingMethod + ']').GetObjectDescription()
       if maxDepth > 0:
         separator = re.escape("   | ")
@@ -103,10 +103,14 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     isMac = runtimeHelpers.isMacintoshArch()
-    
-    if (arguments[0] == '__keyWindow_rootVC_dynamic__'):
+
+    if arguments[0] == '__keyWindow_rootVC_dynamic__':
+      if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
+        lldb.debugger.HandleCommand('po [UIViewController _printHierarchy]')
+        return
+
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
-      if (isMac):
+      if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]'
 
     print vcHelpers.viewControllerRecursiveDescription(arguments[0])
@@ -126,7 +130,7 @@ class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
 def _printIterative(initialValue, generator):
   indent = 0
   for currentValue in generator(initialValue):
-    print '   | '*indent + currentValue
+    print '   | ' * indent + currentValue
     indent += 1
 
 
@@ -270,7 +274,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
-    ivarTypeCommand = '((char *)ivar_getTypeEncoding((Ivar)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
+    ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
     printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
@@ -289,13 +293,14 @@ class FBPrintKeyPath(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    if len(arguments[0].split('.')) == 1:
-      print '"' + arguments[0] + '" is not a keypath =('
-      return
-
-    object, keypath = arguments[0].split('.', 1)
-    printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
-    lldb.debugger.HandleCommand(printCommand)
+    command = arguments[0]
+    if len(command.split('.')) == 1:
+      lldb.debugger.HandleCommand("po " + command)
+    else:
+      objectToMessage, keypath = command.split('.', 1)
+      object = fb.evaluateObjectExpression(objectToMessage)
+      printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+      lldb.debugger.HandleCommand(printCommand)
 
 class FBPrintAccessibilityTree(fb.FBCommand):
   def name(self):

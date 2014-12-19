@@ -98,7 +98,7 @@ def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
     view = match.groups()[-1]
     className = fb.evaluateExpressionValue('(id)[(' + view + ') class]').GetObjectDescription()
     print('{} {}'.format(view, className))
-    if first == None:
+    if first is None:
       first = view
       cmd = 'echo %s | tr -d "\n" | pbcopy' % view
       os.system(cmd)
@@ -125,7 +125,7 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
       if re.match(r'.*' + needle + '.*', a11yLabel, re.IGNORECASE):
         print('{} {}'.format(view, a11yLabel))
 
-        if first == None:
+        if first is None:
           first = view
           cmd = 'echo %s | tr -d "\n" | pbcopy' % first
           os.system(cmd)

@@ -31,12 +31,12 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
 
     objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
 
-    ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((Ivar)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
+    ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void*)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
     ivarOffset = fb.evaluateIntegerExpression(ivarOffsetCommand)
 
     # A multi-statement command allows for variables scoped to the command, not permanent in the session like $variables.
     ivarSizeCommand = ('unsigned int size = 0;'
-                       'char *typeEncoding = (char *)ivar_getTypeEncoding((Ivar)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
+                       'char *typeEncoding = (char *)ivar_getTypeEncoding((void*)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
                        '(char *)NSGetSizeAndAlignment(typeEncoding, &size, 0);'
                        'size').format(objectAddress, ivarName)
     ivarSize = int(fb.evaluateExpression(ivarSizeCommand), 0)
@@ -82,7 +82,17 @@ class FBMethodBreakpointCommand(fb.FBCommand):
   def run(self, arguments, options):
     expression = arguments[0]
 
-    match = re.match(r'([-+])*\[(.*) (.*)\]', expression)
+    methodPattern = re.compile(r"""
+      (?P<scope>[-+])?
+      \[
+        (?P<target>.*?)
+        (?P<category>\(.+\))?
+        \s+
+        (?P<selector>.*)
+      \]
+""", re.VERBOSE)
+
+    match = methodPattern.match(expression)
 
     if not match:
       print 'Failed to parse expression. Do you even Objective-C?!'
@@ -93,9 +103,10 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
       return
 
-    methodTypeCharacter = match.group(1)
-    classNameOrExpression = match.group(2)
-    selector = match.group(3)
+    methodTypeCharacter = match.group('scope')
+    classNameOrExpression = match.group('target')
+    category = match.group('category')
+    selector = match.group('selector')
 
     methodIsClassMethod = (methodTypeCharacter == '+')
 
@@ -135,7 +146,8 @@ class FBMethodBreakpointCommand(fb.FBCommand):
       return
 
     breakpointClassName = objc.class_getName(nextClass)
-    breakpointFullName = '{}[{} {}]'.format(methodTypeCharacter, breakpointClassName, selector)
+    formattedCategory = category if category else ''
+    breakpointFullName = '{}[{}{} {}]'.format(methodTypeCharacter, breakpointClassName, formattedCategory, selector)
 
     breakpointCondition = None
     if targetIsClass:
@@ -145,7 +157,11 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
     print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
 
-    lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+    if category:
+      lldb.debugger.HandleCommand('breakpoint set --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
+    else:
+      breakpointPattern = '{}\[{}(\(.+\))? {}\]'.format(methodTypeCharacter, breakpointClassName, selector)
+      lldb.debugger.HandleCommand('breakpoint set --func-regex "{}" --condition "{}"'.format(breakpointPattern, breakpointCondition))
 
 def classItselfImplementsSelector(klass, selector):
   thisMethod = objc.class_getInstanceMethod(klass, selector)

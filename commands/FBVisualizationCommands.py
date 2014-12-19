@@ -33,13 +33,13 @@ def _showImage(commandForImage):
     else:
       raise
 
-  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation((id)' + commandForImage +')')
+  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation((id)' + commandForImage + ')')
   imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
   imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
 
-  address = int(imageBytesStartAddress,16)
+  address = int(imageBytesStartAddress, 16)
   length = int(imageBytesLength)
-  
+
   if not (address or length):
     print 'Could not get image data.'
     return
@@ -47,7 +47,7 @@ def _showImage(commandForImage):
   process = lldb.debugger.GetSelectedTarget().GetProcess()
   error = lldb.SBError()
   mem = process.ReadMemory(address, length, error)
-  
+
   if error is not None and str(error) != 'success':
     print error
   else:
@@ -76,35 +76,35 @@ def _dataIsImage(data):
   data = '(' + data + ')'
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']');
+  result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0;
+    return 0
   else:
-    isImage = result.GetValueAsUnsigned() != 0;
+    isImage = result.GetValueAsUnsigned() != 0
     if isImage:
-      return 1;
+      return 1
     else:
-      return 0;
+      return 0
 
 def _dataIsString(data):
   data = '(' + data + ')'
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]');
+  result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0;
+    return 0
   else:
-    isString = result.GetValueAsUnsigned() != 0;
+    isString = result.GetValueAsUnsigned() != 0
     if isString:
-      return 1;
+      return 1
     else:
-      return 0;
+      return 0
 
 def _visualize(target):
   target = '(' + target + ')'
-  
+
   if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + target + ') == (unsigned long)CGImageGetTypeID()'):
     _showImage('(id)[UIImage imageWithCGImage:' + target + ']')
   else:
@@ -116,11 +116,11 @@ def _visualize(target):
       _showLayer(target)
     elif objectHelpers.isKindOfClass(target, 'NSData'):
       if _dataIsImage(target):
-        _showImage('(id)[UIImage imageWithData:' + target + ']');
+        _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
         lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
-        print 'Data isn\'t an image and isn\'t a string.';
+        print 'Data isn\'t an image and isn\'t a string.'
     else:
       print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
 
