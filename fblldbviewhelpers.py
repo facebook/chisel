@@ -122,7 +122,7 @@ def accessibilityElementAtIndex(object, index):
 def accessibilityChildren(object):
   accessibilityCount = accessibilityElementCount(object)
   aeChildren = []
-  if accessibilityCount != 0x7fffffff:
+  if accessibilityCount < 0x7fffffff:
     for i in range(0, accessibilityCount):
       aeChildren.append(accessibilityElementAtIndex(object, i))
   return aeChildren
