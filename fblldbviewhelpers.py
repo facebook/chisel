@@ -28,7 +28,7 @@ def maskView(viewOrLayer, color, alpha):
                                                origin.GetChildMemberWithName('y').GetValue(),
                                                size.GetChildMemberWithName('width').GetValue(),
                                                size.GetChildMemberWithName('height').GetValue())
-  mask = fb.evaluateExpression('[((UIView *)[UIView alloc]) initWithFrame:%s]' % rectExpr)
+  mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
   lldb.debugger.HandleCommand('expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
   lldb.debugger.HandleCommand('expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
