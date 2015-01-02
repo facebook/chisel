@@ -47,7 +47,7 @@ def functionPreambleExpressionForSelf():
   expressionForSelf = None
   if arch == 'i386':
     expressionForSelf = '*(id*)($esp+4)'
-  elif arch == 'x86_64':
+  elif arch == 'x86_64' or 'x86_64h':
     expressionForSelf = '(id)$rdi'
   elif arch == 'arm64':
     expressionForSelf = '(id)$x0'
@@ -62,7 +62,7 @@ def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
   expresssion = None
   if arch == 'i386':
     expresssion = '*(id*)($esp + ' + str(12 + parameterIndex * 4) + ')'
-  elif arch == 'x86_64':
+  elif arch == 'x86_64' or 'x86_64h':
     if parameterIndex > 3:
       raise Exception("Current implementation can not return object at index greater than 3 for arc x86_64")
     registersList = ['rdx', 'rcx', 'r8', 'r9']
@@ -79,7 +79,7 @@ def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
 
 def isMacintoshArch():
   arch = currentArch()
-  if not arch == 'x86_64':
+  if not arch == 'x86_64' or 'x86_64h':
     return False
 
   nsClassName = 'NSApplication'
