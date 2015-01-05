@@ -38,6 +38,8 @@ def class_getInstanceMethod(klass, selector):
 def currentArch():
   targetTriple = lldb.debugger.GetSelectedTarget().GetTriple()
   arch = targetTriple.split('-')[0]
+  if arch == 'x86_64h':
+    arch = 'x86_64'
   return arch
 
 def functionPreambleExpressionForSelf():
