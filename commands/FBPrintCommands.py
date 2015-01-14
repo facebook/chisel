@@ -29,6 +29,7 @@ def lldbcommands():
     FBPrintInternals(),
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
+    FBPrintApplicationDocumentsPath(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -299,3 +300,15 @@ class FBPrintKeyPath(fb.FBCommand):
       object = fb.evaluateObjectExpression(objectToMessage)
       printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
       lldb.debugger.HandleCommand(printCommand)
+
+
+class FBPrintApplicationDocumentsPath(fb.FBCommand):
+  def name(self):
+    return 'ppath'
+
+  def description(self):
+    return "Print application's 'Documents' directory path."
+
+  def run(self, arguments, options):
+    lldb.debugger.HandleCommand('po [NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')  # NSDocumentDirectory == 9 NSUserDomainMask == 1
+
