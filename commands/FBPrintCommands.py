@@ -304,7 +304,7 @@ class FBPrintKeyPath(fb.FBCommand):
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
   def name(self):
-    return 'ppath'
+    return 'pdocspath'
 
   def description(self):
     return "Print application's 'Documents' directory path."
