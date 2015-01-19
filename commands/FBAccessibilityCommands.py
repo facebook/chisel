@@ -49,14 +49,14 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     forceStartAccessibilityServer()
-    rootView = fb.evaluateExpression('(id)[[UIApplication sharedApplication] keyWindow]')
-    accessibilityGrepHierarchy(rootView, arguments[0])
+    rootView = fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
+    accessibilityGrepHierarchy(rootView, arguments[0], False)
 
 def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
   if not fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]'):
     #Starting accessibility server is different for simulator and device
-    if fb.evaluateBooleanExpression('((NSRange)[(NSString *)[(id)[(id)[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"simulator"]).location != __LONG_MAX__'):
+    if fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0:
       lldb.debugger.HandleCommand('expr (void)[[UIApplication sharedApplication] accessibilityActivate]')
     else:
       lldb.debugger.HandleCommand('expr (void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
@@ -74,26 +74,26 @@ def printAccessibilityHierarchy(view, indent = 0):
   if int(a11yLabel.GetValue(), 16) == 0:
     print indentString + ('{} {}'.format(classDesc, view))
     #We call private method that gives back all visible accessibility children for view
-    accessibilityElements = fb.evaluateExpression('(id)[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
-    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % accessibilityElements))
+    accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
+    accessibilityElementsCount = fb.evaluateIntegerExpression('[%s count]' % accessibilityElements)
     for index in range(0, accessibilityElementsCount):
-      subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (accessibilityElements, index))
+      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
       printAccessibilityHierarchy(subview, indent + 1)
   else:
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
-def accessibilityGrepHierarchy(view, needle):
-  foundLocally = False
+def accessibilityGrepHierarchy(view, needle, found):
+  foundLocally = found
   a11yLabel = accessibilityLabel(view)
 
   #if we don't have any accessibility string - we should have some children
   if int(a11yLabel.GetValue(), 16) == 0:
     #We call private method that gives back all visible accessibility children for view
-    accessibilityElements = fb.evaluateExpression('(id)[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
-    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % accessibilityElements))
+    accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
+    accessibilityElementsCount = fb.evaluateIntegerExpression('[%s count]' % accessibilityElements)
     for index in range(0, accessibilityElementsCount):
-      subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (accessibilityElements, index))
-      foundLocally |= accessibilityGrepHierarchy(subview, needle)
+      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
+      foundLocally |= accessibilityGrepHierarchy(subview, needle, foundLocally)
   elif re.match(r'.*' + needle + '.*', a11yLabel.GetObjectDescription(), re.IGNORECASE):
     classDesc = objHelpers.className(view)
     print('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
