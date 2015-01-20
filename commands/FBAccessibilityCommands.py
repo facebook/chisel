@@ -37,6 +37,8 @@ class FBPrintAccessibilityLabels(fb.FBCommand):
     forceStartAccessibilityServer();
     printAccessibilityHierarchy(arguments[0])
 
+foundElement = False
+
 class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
   def name(self):
     return 'fa11y'
@@ -50,7 +52,8 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
   def run(self, arguments, options):
     forceStartAccessibilityServer()
     rootView = fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
-    accessibilityGrepHierarchy(rootView, arguments[0], False)
+    foundElement = False
+    accessibilityGrepHierarchy(rootView, arguments[0])
 
 def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
@@ -82,8 +85,7 @@ def printAccessibilityHierarchy(view, indent = 0):
   else:
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
-def accessibilityGrepHierarchy(view, needle, found):
-  foundLocally = found
+def accessibilityGrepHierarchy(view, needle):
   a11yLabel = accessibilityLabel(view)
 
   #if we don't have any accessibility string - we should have some children
@@ -93,16 +95,14 @@ def accessibilityGrepHierarchy(view, needle, found):
     accessibilityElementsCount = fb.evaluateIntegerExpression('[%s count]' % accessibilityElements)
     for index in range(0, accessibilityElementsCount):
       subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
-      foundLocally |= accessibilityGrepHierarchy(subview, needle, foundLocally)
+      accessibilityGrepHierarchy(subview, needle)
   elif re.match(r'.*' + needle + '.*', a11yLabel.GetObjectDescription(), re.IGNORECASE):
     classDesc = objHelpers.className(view)
     print('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
     #First element that is found is copied to clipboard
-    if not foundLocally:
-      foundLocally = True
+    if not foundElement:
+      foundElement = True
       cmd = 'echo %s | tr -d "\n" | pbcopy' % view
       os.system(cmd)
-
-  return foundLocally
 
