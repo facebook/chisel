@@ -308,7 +308,19 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
 
   def description(self):
     return "Print application's 'Documents' directory path."
+  
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-o', long='--open', arg='open', boolean=True, default=False, help='open in Finder'),
+    ]
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po [NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')  # NSDocumentDirectory == 9 NSUserDomainMask == 1
+    if options.open:
+      path = fb.evaluateExpressionValue('(NSString *)[NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')
+      pathString = '{}'.format(path).split('"')[1]
+      print pathString
+      lldb.debugger.HandleCommand('script os.system("open {}")'.format(pathString))
+    else:
+      lldb.debugger.HandleCommand('po [NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')  # NSDocumentDirectory == 9 NSUserDomainMask == 1
+      
 
