@@ -28,7 +28,7 @@ def maskView(viewOrLayer, color, alpha):
                                                origin.GetChildMemberWithName('y').GetValue(),
                                                size.GetChildMemberWithName('width').GetValue(),
                                                size.GetChildMemberWithName('height').GetValue())
-  mask = fb.evaluateExpression('[((UIView *)[UIView alloc]) initWithFrame:%s]' % rectExpr)
+  mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
   lldb.debugger.HandleCommand('expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
   lldb.debugger.HandleCommand('expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
@@ -58,11 +58,11 @@ def convertToLayer(viewOrLayer):
 def upwardsRecursiveDescription(view, maxDepth=0):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):
     return None
-  
+
   currentView = view
   recursiveDescription = []
   depth = 0
-  
+
   while currentView and (maxDepth <= 0 or depth <= maxDepth):
     depth += 1
 
@@ -73,17 +73,17 @@ def upwardsRecursiveDescription(view, maxDepth=0):
         currentView = None
     except:
       currentView = None
-    
+
     if viewDescription:
       recursiveDescription.insert(0, viewDescription)
 
   if len(viewDescription) == 0:
-  	return None
-  
+    return None
+
   currentPrefix = ""
   builder = ""
   for viewDescription in recursiveDescription:
     builder += currentPrefix + viewDescription + "\n"
     currentPrefix += "   | "
-  
+
   return builder

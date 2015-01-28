@@ -36,7 +36,7 @@ class FBCommand:
     pass
 
 
-def evaluateExpressionValue(expression, printErrors = True):
+def evaluateExpressionValue(expression, printErrors=True):
   # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   value = frame.EvaluateExpression(expression)
@@ -44,7 +44,7 @@ def evaluateExpressionValue(expression, printErrors = True):
     print value.GetError()
   return value
 
-def evaluateIntegerExpression(expression, printErrors = True):
+def evaluateIntegerExpression(expression, printErrors=True):
   output = evaluateExpression('(int)(' + expression + ')', printErrors).replace('\'', '')
   if output.startswith('\\x'): # Booleans may display as \x01 (Hex)
     output = output[2:]
@@ -52,11 +52,11 @@ def evaluateIntegerExpression(expression, printErrors = True):
     output = output[1:]
   return int(output, 16)
 
-def evaluateBooleanExpression(expression, printErrors = True):
+def evaluateBooleanExpression(expression, printErrors=True):
   return (int(evaluateIntegerExpression('(BOOL)(' + expression + ')', printErrors)) != 0)
 
-def evaluateExpression(expression, printErrors = True):
+def evaluateExpression(expression, printErrors=True):
   return evaluateExpressionValue(expression, printErrors).GetValue()
 
-def evaluateObjectExpression(expression, printErrors = True):
+def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)

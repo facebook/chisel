@@ -33,9 +33,9 @@ class FBInputHandler:
     self.inputReader.SetIsDone(True)
 
   def handleInput(self, inputReader, notification, bytes):
-    if (notification == lldb.eInputReaderGotToken):
+    if notification == lldb.eInputReaderGotToken:
       self.callback(bytes)
-    elif (notification == lldb.eInputReaderInterrupt):
+    elif notification == lldb.eInputReaderInterrupt:
       self.stop()
-    
+
     return len(bytes)
