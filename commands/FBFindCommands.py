@@ -19,7 +19,6 @@ def lldbcommands():
   return [
     FBFindViewControllerCommand(),
     FBFindViewCommand(),
-    FBFindViewByAccessibilityLabelCommand(),
     FBTapLoggerCommand(),
   ]
 
@@ -102,33 +101,6 @@ def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
       first = view
       cmd = 'echo %s | tr -d "\n" | pbcopy' % view
       os.system(cmd)
-
-
-class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
-  def name(self):
-    return 'fa11y'
-
-  def description(self):
-      return 'Find the views whose accessibility labels match labelRegex and puts the address of the first result on the clipboard.'
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='labelRegex', type='string', help='The accessibility label regex to search the view hierarchy for.') ]
-
-  def run(self, arguments, options):
-    first = None
-    haystack = fb.evaluateExpressionValue('(id)[[[UIApplication sharedApplication] keyWindow] recursiveDescription]').GetObjectDescription()
-    needle = arguments[0]
-
-    allViews = re.findall('.* (0x[0-9a-fA-F]*);.*', haystack)
-    for view in allViews:
-      a11yLabel = fb.evaluateExpressionValue('(id)[(' + view + ') accessibilityLabel]').GetObjectDescription()
-      if re.match(r'.*' + needle + '.*', a11yLabel, re.IGNORECASE):
-        print('{} {}'.format(view, a11yLabel))
-
-        if first is None:
-          first = view
-          cmd = 'echo %s | tr -d "\n" | pbcopy' % first
-          os.system(cmd)
 
 
 class FBTapLoggerCommand(fb.FBCommand):
