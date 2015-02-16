@@ -87,3 +87,6 @@ def upwardsRecursiveDescription(view, maxDepth=0):
     currentPrefix += "   | "
 
   return builder
+
+def slowAnimation(speed=1):
+  lldb.debugger.HandleCommand('expr -- for (UIWindow *$w in (NSArray *)[[UIApplication sharedApplication] windows]) { [[$w layer] setSpeed:(CGFloat)%s]; }' % (speed))
