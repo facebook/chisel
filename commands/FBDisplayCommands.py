@@ -157,7 +157,7 @@ class FBSlowAnimationCommand(fb.FBCommand):
     return 'Slows down animations. Works on the iOS Simulator and a device.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='speed', type='float', help='Animation speed.') ]
+    return [ fb.FBCommandArgument(arg='speed', type='float', default=0.1, help='Animation speed (default 0.1).') ]
 
   def run(self, args, option):
     viewHelpers.slowAnimation(args[0])
