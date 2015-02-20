@@ -86,6 +86,7 @@ def printAccessibilityHierarchy(view, indent = 0):
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
 def accessibilityGrepHierarchy(view, needle):
+  global foundElement
   a11yLabel = accessibilityLabel(view)
 
   #if we don't have any accessibility string - we should have some children
