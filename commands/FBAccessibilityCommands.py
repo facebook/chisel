@@ -37,8 +37,6 @@ class FBPrintAccessibilityLabels(fb.FBCommand):
     forceStartAccessibilityServer();
     printAccessibilityHierarchy(arguments[0])
 
-foundElement = False
-
 class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
   def name(self):
     return 'fa11y'
@@ -49,11 +47,31 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='labelRegex', type='string', help='The accessibility label regex to search the view hierarchy for.') ]
 
+  def accessibilityGrepHierarchy(self, view, needle):
+    a11yLabel = accessibilityLabel(view)
+    #if we don't have any accessibility string - we should have some children
+    if int(a11yLabel.GetValue(), 16) == 0:
+      #We call private method that gives back all visible accessibility children for view
+      accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
+      accessibilityElementsCount = fb.evaluateIntegerExpression('[%s count]' % accessibilityElements)
+      for index in range(0, accessibilityElementsCount):
+        subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
+        self.accessibilityGrepHierarchy(subview, needle)
+    elif re.match(r'.*' + needle + '.*', a11yLabel.GetObjectDescription(), re.IGNORECASE):
+      classDesc = objHelpers.className(view)
+      print('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
+
+      #First element that is found is copied to clipboard
+      if not self.foundElement:
+        self.foundElement = True
+        cmd = 'echo %s | tr -d "\n" | pbcopy' % view
+        os.system(cmd)
+
   def run(self, arguments, options):
     forceStartAccessibilityServer()
     rootView = fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
-    foundElement = False
-    accessibilityGrepHierarchy(rootView, arguments[0])
+    self.foundElement = False
+    self.accessibilityGrepHierarchy(rootView, arguments[0])
 
 def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
@@ -85,24 +103,4 @@ def printAccessibilityHierarchy(view, indent = 0):
   else:
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
-def accessibilityGrepHierarchy(view, needle):
-  a11yLabel = accessibilityLabel(view)
-
-  #if we don't have any accessibility string - we should have some children
-  if int(a11yLabel.GetValue(), 16) == 0:
-    #We call private method that gives back all visible accessibility children for view
-    accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
-    accessibilityElementsCount = fb.evaluateIntegerExpression('[%s count]' % accessibilityElements)
-    for index in range(0, accessibilityElementsCount):
-      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
-      accessibilityGrepHierarchy(subview, needle)
-  elif re.match(r'.*' + needle + '.*', a11yLabel.GetObjectDescription(), re.IGNORECASE):
-    classDesc = objHelpers.className(view)
-    print('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
-
-    #First element that is found is copied to clipboard
-    if not foundElement:
-      foundElement = True
-      cmd = 'echo %s | tr -d "\n" | pbcopy' % view
-      os.system(cmd)
 
