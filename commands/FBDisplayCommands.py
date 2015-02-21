@@ -12,6 +12,7 @@ import os
 import time
 
 import fblldbviewhelpers as viewHelpers
+import fblldbviewcontrollerhelpers as viewControllerHelpers
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
@@ -145,3 +146,17 @@ class FBHideViewCommand(fb.FBCommand):
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
+
+
+class FBDismissViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'dismiss'
+
+  def description(self):
+    return 'Dismiss a view controller.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='viewController', type='UIViewController *', help='The view controller to dismiss.') ]
+
+  def run(self, args, options):
+    viewControllerHelpers.dismissViewController(args[0])

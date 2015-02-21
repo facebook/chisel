@@ -11,6 +11,22 @@ import lldb
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
+def dismissViewController(viewController):
+  vc = '(%s)' % (viewController)
+  
+  if fb.evaluateBooleanExpression('%s != nil && ((id)[(id)%s isKindOfClass:(Class)[UIViewController class]])' % (vc, vc)):
+    if fb.evaluateBooleanExpression('((id)[(id)%s navigationController]) != nil' % vc):
+      isModal = fb.evaluateBooleanExpression('((id)[(id)[(id)%s presentingViewController] presentedViewController]) == ((id)[(id)%s navigationController])' % (vc, vc))
+      
+      if isModal:
+        lldb.debugger.HandleCommand('expr (void)[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]' % vc)
+      else:
+        raise Exception('Argument must be modally presented')
+    else:
+      raise Exception('Argument must reside in a navigation controller')
+  else:
+    raise Exception('Argument must be a UIViewController')
+
 def viewControllerRecursiveDescription(vc):
   return _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(fb.evaluateObjectExpression(vc), '', '', '')
 
