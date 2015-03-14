@@ -24,6 +24,8 @@ def lldbcommands():
     FBUnmaskViewCommand(),
     FBShowViewCommand(),
     FBHideViewCommand(),
+    FBSlowAnimationCommand(),
+    FBUnslowAnimationCommand()
   ]
 
 
@@ -145,3 +147,28 @@ class FBHideViewCommand(fb.FBCommand):
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
+
+
+class FBSlowAnimationCommand(fb.FBCommand):
+  def name(self):
+    return 'slowanim'
+
+  def description(self):
+    return 'Slows down animations. Works on the iOS Simulator and a device.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='speed', type='float', default=0.1, help='Animation speed (default 0.1).') ]
+
+  def run(self, args, option):
+    viewHelpers.slowAnimation(args[0])
+
+
+class FBUnslowAnimationCommand(fb.FBCommand):
+  def name(self):
+    return 'unslowanim'
+
+  def description(self):
+    return 'Turn off slow animations.'
+
+  def run(self, args, option):
+    viewHelpers.slowAnimation()
