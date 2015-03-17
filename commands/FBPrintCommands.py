@@ -315,12 +315,13 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
+    # in iOS SDK NSDocumentDirectory == 9  NSUserDomainMask == 1 
+    NSDocumentDirectory = '9' 
+    NSUserDomainMask = '1'
+    path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
+    pathString = '{}'.format(path).split('"')[1]
+    print pathString
     if options.open:
-      path = fb.evaluateExpressionValue('(NSString *)[NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')
-      pathString = '{}'.format(path).split('"')[1]
-      print pathString
-      lldb.debugger.HandleCommand('script os.system("open {}")'.format(pathString))
-    else:
-      lldb.debugger.HandleCommand('po [NSSearchPathForDirectoriesInDomains(9, 1, YES) lastObject]')  # NSDocumentDirectory == 9 NSUserDomainMask == 1
+      os.system('open '+ pathString)
       
 
