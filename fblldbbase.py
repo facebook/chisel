@@ -36,13 +36,26 @@ class FBCommand:
     pass
 
 
-def evaluateExpressionValue(expression, printErrors=True):
+def evaluateExpressionValueWithLanguage(expression, language, printErrors):
   # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  value = frame.EvaluateExpression(expression)
+  expr_options = lldb.SBExpressionOptions()
+  expr_options.SetLanguage(language)  # requires lldb r210874 (2014-06-13) / Xcode 6
+  value = frame.EvaluateExpression(expression, expr_options)
   if printErrors and value.GetError() is not None and str(value.GetError()) != 'success':
     print value.GetError()
   return value
+
+def evaluateExpressionValueInFrameLanguage(expression, printErrors=True):
+  # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  language = frame.GetCompileUnit().GetLanguage()  # requires lldb r222189 (2014-11-17)
+  return evaluateExpressionValueWithLanguage(expression, language, printErrors)
+
+# evaluates expression in Objective-C++ context, so it will work even for
+# Swift projects
+def evaluateExpressionValue(expression, printErrors=True):
+  return evaluateExpressionValueWithLanguage(expression, lldb.eLanguageTypeObjC_plus_plus, printErrors)
 
 def evaluateIntegerExpression(expression, printErrors=True):
   output = evaluateExpression('(int)(' + expression + ')', printErrors).replace('\'', '')
