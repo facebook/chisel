@@ -320,6 +320,8 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
     NSUserDomainMask = '1'
     path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
     pathString = '{}'.format(path).split('"')[1]
+    cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
+    os.system(cmd)
     print pathString
     if options.open:
       os.system('open '+ pathString)
