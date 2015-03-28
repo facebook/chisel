@@ -29,6 +29,7 @@ def lldbcommands():
     FBPrintInternals(),
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
+    FBPrintApplicationDocumentsPath(),
     FBPrintData(),
   ]
 
@@ -300,6 +301,32 @@ class FBPrintKeyPath(fb.FBCommand):
       object = fb.evaluateObjectExpression(objectToMessage)
       printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
       lldb.debugger.HandleCommand(printCommand)
+
+
+class FBPrintApplicationDocumentsPath(fb.FBCommand):
+  def name(self):
+    return 'pdocspath'
+
+  def description(self):
+    return "Print application's 'Documents' directory path."
+  
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-o', long='--open', arg='open', boolean=True, default=False, help='open in Finder'),
+    ]
+
+  def run(self, arguments, options):
+    # in iOS SDK NSDocumentDirectory == 9  NSUserDomainMask == 1 
+    NSDocumentDirectory = '9' 
+    NSUserDomainMask = '1'
+    path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
+    pathString = '{}'.format(path).split('"')[1]
+    cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
+    os.system(cmd)
+    print pathString
+    if options.open:
+      os.system('open '+ pathString)
+      
 
 class FBPrintData(fb.FBCommand):
   def name(self):
