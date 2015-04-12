@@ -29,6 +29,8 @@ def lldbcommands():
     FBPrintInternals(),
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
+    FBPrintApplicationDocumentsPath(),
+    FBPrintData(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -299,3 +301,100 @@ class FBPrintKeyPath(fb.FBCommand):
       object = fb.evaluateObjectExpression(objectToMessage)
       printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
       lldb.debugger.HandleCommand(printCommand)
+
+
+class FBPrintApplicationDocumentsPath(fb.FBCommand):
+  def name(self):
+    return 'pdocspath'
+
+  def description(self):
+    return "Print application's 'Documents' directory path."
+  
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-o', long='--open', arg='open', boolean=True, default=False, help='open in Finder'),
+    ]
+
+  def run(self, arguments, options):
+    # in iOS SDK NSDocumentDirectory == 9  NSUserDomainMask == 1 
+    NSDocumentDirectory = '9' 
+    NSUserDomainMask = '1'
+    path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
+    pathString = '{}'.format(path).split('"')[1]
+    cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
+    os.system(cmd)
+    print pathString
+    if options.open:
+      os.system('open '+ pathString)
+      
+
+class FBPrintData(fb.FBCommand):
+  def name(self):
+    return 'pdata'
+
+  def description(self):
+    return 'Print the contents of NSData object as string.\n' \
+           'Supported encodings:\n' \
+           '- ascii,\n' \
+           '- utf8,\n' \
+           '- utf16, unicode,\n' \
+           '- utf16l (Little endian),\n' \
+           '- utf16b (Big endian),\n' \
+           '- utf32,\n' \
+           '- utf32l (Little endian),\n' \
+           '- utf32b (Big endian),\n' \
+           '- latin1, iso88591 (88591),\n' \
+           '- latin2, iso88592 (88592),\n' \
+           '- cp1251 (1251),\n' \
+           '- cp1252 (1252),\n' \
+           '- cp1253 (1253),\n' \
+           '- cp1254 (1254),\n' \
+           '- cp1250 (1250),' \
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(arg='encoding', short='-e', long='--encoding', type='string', help='Used encoding (default utf-8).', default='utf-8')
+    ]
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='data', type='NSData *', help='NSData object.')
+    ]
+
+  def run(self, arguments, option):
+    # Normalize encoding.
+    encoding_text = option.encoding.lower().replace(' -', '')
+    enc = 4  # Default encoding UTF-8.
+    if encoding_text == 'ascii':
+      enc = 1
+    elif encoding_text == 'utf8':
+      enc = 4
+    elif encoding_text == 'latin1' or encoding_text == '88591' or encoding_text == 'iso88591':
+      enc = 5
+    elif encoding_text == 'latin2' or encoding_text == '88592' or encoding_text == 'iso88592':
+      enc = 9
+    elif encoding_text == 'unicode' or encoding_text == 'utf16':
+      enc = 10
+    elif encoding_text == '1251' or encoding_text == 'cp1251':
+      enc = 11
+    elif encoding_text == '1252' or encoding_text == 'cp1252':
+      enc = 12
+    elif encoding_text == '1253' or encoding_text == 'cp1253':
+      enc = 13
+    elif encoding_text == '1254' or encoding_text == 'cp1254':
+      enc = 14
+    elif encoding_text == '1250' or encoding_text == 'cp1250':
+      enc = 15
+    elif encoding_text == 'utf16b':
+      enc = 0x90000100
+    elif encoding_text == 'utf16l':
+      enc = 0x94000100
+    elif encoding_text == 'utf32':
+      enc = 0x8c000100
+    elif encoding_text == 'utf32b':
+      enc = 0x98000100
+    elif encoding_text == 'utf32l':
+      enc = 0x9c000100
+
+    print_command = 'po (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
+    lldb.debugger.HandleCommand(print_command)
