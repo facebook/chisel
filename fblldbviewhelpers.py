@@ -12,10 +12,10 @@ import lldb
 import fblldbbase as fb
 
 def flushCoreAnimationTransaction():
-  lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[CATransaction flush]')
 
 def setViewHidden(object, hidden):
-  lldb.debugger.HandleCommand('expr (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
   flushCoreAnimationTransaction()
 
 def maskView(viewOrLayer, color, alpha):
@@ -30,16 +30,16 @@ def maskView(viewOrLayer, color, alpha):
                                                size.GetChildMemberWithName('height').GetValue())
   mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
-  lldb.debugger.HandleCommand('expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  lldb.debugger.HandleCommand('expr (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  lldb.debugger.HandleCommand('expr (void)[%s addSubview:%s]' % (window, mask))
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s addSubview:%s]' % (window, mask))
   flushCoreAnimationTransaction()
 
 def unmaskView(viewOrLayer):
   window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
   mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s removeFromSuperview]' % mask)
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s removeFromSuperview]' % mask)
   flushCoreAnimationTransaction()
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):

@@ -59,8 +59,8 @@ def _showImage(commandForImage):
 def _showLayer(layer):
   layer = '(' + layer + ')'
 
-  lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + layer + ' bounds]).size, NO, 0.0)')
-  lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + layer + ' bounds]).size, NO, 0.0)')
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -70,7 +70,7 @@ def _showLayer(layer):
     image = result.GetValue()
     _showImage(image)
 
-  lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+  lldb.debugger.HandleCommand('expr -l objc++ -- (void)UIGraphicsEndImageContext()')
 
 def _dataIsImage(data):
   data = '(' + data + ')'
@@ -118,7 +118,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
+        lldb.debugger.HandleCommand('expr -O -l objc++ -- (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:

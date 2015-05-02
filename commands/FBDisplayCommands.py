@@ -53,8 +53,8 @@ class FBDrawBorderCommand(fb.FBCommand):
       colorClassName = 'NSColor'
 
     layer = viewHelpers.convertToLayer(args[0])
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, options.width))
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClassName, options.color))
+    lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, options.width))
+    lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClassName, options.color))
     lldb.debugger.HandleCommand('caflush')
 
 
@@ -70,7 +70,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     layer = viewHelpers.convertToLayer(args[0])
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
+    lldb.debugger.HandleCommand('expr -l objc++ -- (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
     lldb.debugger.HandleCommand('caflush')
 
 
