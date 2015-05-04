@@ -9,6 +9,7 @@
 
 import os
 import time
+import sys
 
 import lldb
 import fblldbbase as fb
@@ -62,20 +63,14 @@ class FBViewSearchCommand(fb.FBCommand):
 
 class FlickerWalker:
   def __init__(self, startView):
-    self.setCurrentView(startView)
-
-    self.handler = inputHelpers.FBInputHandler(lldb.debugger, self.inputCallback)
-    self.handler.start()
+    self.setCurrentView(startView, None)
 
   def run(self):
-    while self.handler.isValid():
-      self.flicker()
-
-  def flicker(self):
-    viewHelpers.setViewHidden(self.currentView, True)
-    time.sleep(0.1)
-    viewHelpers.setViewHidden(self.currentView, False)
-    time.sleep(0.3)
+    self.keepRunning = True
+    lldb.debugger.SetAsync (True)
+    while self.keepRunning:
+      charRead = sys.stdin.readline().rstrip("\n") #removes /n char added by readLine
+      self.inputCallback(charRead)
 
   def inputCallback(self, input):
     oldView = self.currentView
@@ -85,28 +80,29 @@ class FlickerWalker:
       os.system(cmd)
 
       print '\nI hope ' + oldView + ' was what you were looking for. I put it on your clipboard.'
+      viewHelpers.unmaskView(oldView)
+      self.keepRunning = False
 
-      self.handler.stop()
     elif input == 'w':
       v = superviewOfView(self.currentView)
       if not v:
         print 'There is no superview. Where are you trying to go?!'
-      self.setCurrentView(v)
+      self.setCurrentView(v, oldView)
     elif input == 's':
       v = firstSubviewOfView(self.currentView)
       if not v:
         print '\nThe view has no subviews.\n'
-      self.setCurrentView(v)
+      self.setCurrentView(v, oldView)
     elif input == 'd':
       v = nthSiblingOfView(self.currentView, -1)
       if v == oldView:
         print '\nThere are no sibling views to this view.\n'
-      self.setCurrentView(v)
+      self.setCurrentView(v, oldView)
     elif input == 'a':
       v = nthSiblingOfView(self.currentView, 1)
       if v == oldView:
         print '\nThere are no sibling views to this view.\n'
-      self.setCurrentView(v)
+      self.setCurrentView(v, oldView)
     elif input == 'p':
       recusionName = 'recursiveDescription'
       isMac = runtimeHelpers.isMacintoshArch()
@@ -116,13 +112,16 @@ class FlickerWalker:
 
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
     else:
-      print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
+      print '\nChisel - VS Mode: I really have no idea what you meant by \'' + input + '\'... =\\\n'
 
     viewHelpers.setViewHidden(oldView, False)
 
-  def setCurrentView(self, view):
+  def setCurrentView(self, view, oldView):
     if view:
       self.currentView = view
+      if oldView:
+        viewHelpers.unmaskView(oldView)
+      viewHelpers.maskView(self.currentView, 'red', '0.4')
       lldb.debugger.HandleCommand('po (id)' + view)
 
 def superviewOfView(view):
