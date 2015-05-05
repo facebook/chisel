@@ -67,10 +67,13 @@ class FlickerWalker:
 
   def run(self):
     self.keepRunning = True
-    lldb.debugger.SetAsync (True)
+    initialAsync = lldb.debugger.GetAsync()
+    lldb.debugger.SetAsync(True) #needed so XCode doesn't hang if tap on Continue while lldb is waiting for user input in 'vs' mode
     while self.keepRunning:
-      charRead = sys.stdin.readline().rstrip("\n") #removes /n char added by readLine
+      charRead = sys.stdin.readline().rstrip("\n")
       self.inputCallback(charRead)
+    else:
+      lldb.debugger.SetAsync(initialAsync) #restore to init value
 
   def inputCallback(self, input):
     oldView = self.currentView
@@ -114,9 +117,7 @@ class FlickerWalker:
     else:
       print '\nChisel - VS Mode: I really have no idea what you meant by \'' + input + '\'... =\\\n'
 
-    viewHelpers.setViewHidden(oldView, False)
-
-  def setCurrentView(self, view, oldView):
+  def setCurrentView(self, view, oldView=None):
     if view:
       self.currentView = view
       if oldView:
