@@ -63,17 +63,17 @@ class FBViewSearchCommand(fb.FBCommand):
 
 class FlickerWalker:
   def __init__(self, startView):
-    self.setCurrentView(startView, None)
+    self.setCurrentView(startView)
 
   def run(self):
     self.keepRunning = True
     initialAsync = lldb.debugger.GetAsync()
-    lldb.debugger.SetAsync(True) #needed so XCode doesn't hang if tap on Continue while lldb is waiting for user input in 'vs' mode
+    lldb.debugger.SetAsync(True) #Needed so XCode doesn't hang if tap on Continue while lldb is waiting for user input in 'vs' mode
     while self.keepRunning:
       charRead = sys.stdin.readline().rstrip("\n")
       self.inputCallback(charRead)
     else:
-      lldb.debugger.SetAsync(initialAsync) #restore to init value
+      lldb.debugger.SetAsync(initialAsync)
 
   def inputCallback(self, input):
     oldView = self.currentView
