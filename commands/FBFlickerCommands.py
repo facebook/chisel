@@ -115,7 +115,7 @@ class FlickerWalker:
 
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
     else:
-      print '\nChisel - VS Mode: I really have no idea what you meant by \'' + input + '\'... =\\\n'
+      print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
 
   def setCurrentView(self, view, oldView=None):
     if view:
