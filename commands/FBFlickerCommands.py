@@ -8,14 +8,12 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import os
-import time
 import sys
 
 import lldb
 import fblldbbase as fb
 import fblldbviewhelpers as viewHelpers
-import fblldbinputhelpers as inputHelpers
-import fblldbobjcruntimehelpers as runtimeHelpers
+
 
 def lldbcommands():
   return [
@@ -108,11 +106,6 @@ class FlickerWalker:
       self.setCurrentView(v, oldView)
     elif input == 'p':
       recusionName = 'recursiveDescription'
-      isMac = runtimeHelpers.isMacintoshArch()
-
-      if isMac:
-        recursionName = '_subtreeDescription'
-
       lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
