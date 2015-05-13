@@ -149,7 +149,6 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     formattedCategory = category if category else ''
     breakpointFullName = '{}[{}{} {}]'.format(methodTypeCharacter, breakpointClassName, formattedCategory, selector)
 
-    breakpointCondition = None
     if targetIsClass:
       breakpointCondition = '(void*)object_getClass({}) == {}'.format(expressionForSelf, targetClass)
     else:

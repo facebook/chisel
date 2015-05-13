@@ -7,6 +7,8 @@
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 
+import re
+
 import lldb
 import fblldbbase as fb
 
@@ -58,8 +60,6 @@ def functionPreambleExpressionForSelf():
   return expressionForSelf
 
 def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
-  import re
-
   arch = currentArch()
   expresssion = None
   if arch == 'i386':

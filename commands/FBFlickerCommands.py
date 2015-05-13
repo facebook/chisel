@@ -8,13 +8,11 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import os
-import time
 import sys
 
 import lldb
 import fblldbbase as fb
 import fblldbviewhelpers as viewHelpers
-import fblldbinputhelpers as inputHelpers
 import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
