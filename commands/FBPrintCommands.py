@@ -30,6 +30,7 @@ def lldbcommands():
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
     FBPrintData(),
+    FBPrintTargetActions(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -371,3 +372,28 @@ class FBPrintData(fb.FBCommand):
 
     print_command = 'po (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
     lldb.debugger.HandleCommand(print_command)
+
+class FBPrintTargetActions(fb.FBCommand):
+
+  def name(self):
+    return 'pactions'
+
+  def description(self):
+    return 'Print the actions and targets of a control.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='control', type='UIControl *', help='The control to inspect the actions of.') ]
+
+  def run(self, arguments, options):
+    control = arguments[0]
+    targets = fb.evaluateObjectExpression('[[{control} allTargets] allObjects]'.format(control=control))
+    targetCount = fb.evaluateIntegerExpression('[{targets} count]'.format(targets=targets))
+
+    for index in range(0, targetCount):
+      target = fb.evaluateObjectExpression('[{targets} objectAtIndex:{index}]'.format(targets=targets, index=index))
+      actions = fb.evaluateObjectExpression('[{control} actionsForTarget:{target} forControlEvent:0]'.format(control=control, target=target))
+
+      targetDescription = fb.evaluateExpressionValue('(id){target}'.format(target=target)).GetObjectDescription()
+      actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@","]'.format(actions=actions)).GetObjectDescription()
+
+      print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
