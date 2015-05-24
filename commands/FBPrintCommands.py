@@ -394,6 +394,6 @@ class FBPrintTargetActions(fb.FBCommand):
       actions = fb.evaluateObjectExpression('[{control} actionsForTarget:{target} forControlEvent:0]'.format(control=control, target=target))
 
       targetDescription = fb.evaluateExpressionValue('(id){target}'.format(target=target)).GetObjectDescription()
-      actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@","]'.format(actions=actions)).GetObjectDescription()
+      actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@", "]'.format(actions=actions)).GetObjectDescription()
 
       print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
