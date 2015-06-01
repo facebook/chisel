@@ -45,19 +45,10 @@ def currentArch():
   return arch
 
 def functionPreambleExpressionForSelf():
-  import re
-
-  arch = currentArch()
-  expressionForSelf = None
-  if arch == 'i386':
-    expressionForSelf = '*(id*)($esp+4)'
-  elif arch == 'x86_64':
-    expressionForSelf = '(id)$rdi'
-  elif arch == 'arm64':
-    expressionForSelf = '(id)$x0'
-  elif re.match(r'^armv.*$', arch):
-    expressionForSelf = '(id)$r0'
-  return expressionForSelf
+  if currentArch() == 'i386':
+    return '*(id*)($esp+4)'
+  else:
+    return '(id)$arg1'
 
 def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
   arch = currentArch()
