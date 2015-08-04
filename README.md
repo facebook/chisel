@@ -7,7 +7,7 @@ For a comprehensive overview of LLDB, and how Chisel complements it, read Ari Gr
 
 ## Installation
 
-```
+```shell
 brew update
 brew install chisel
 ```
@@ -79,7 +79,7 @@ All of the commands provided by `Chisel` come with verbose help. Be sure to read
 ## Custom Commands
 You can add local, custom commands. Here's a contrived example.
 
-```
+```python
 #!/usr/bin/python
 # Example file with custom commands, located at /magical/commands/example.py
 
