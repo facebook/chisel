@@ -119,7 +119,7 @@ Developing commands, whether for local use or contributing to `Chisel` directly,
 
 1. Start `LLDB`
 2. Reach a breakpoint (or simply pause execution via the pause button in `Xcode`'s debug bar or `process interrupt` if attached directly)
-3. Execute _command source ~/.lldbinit_ in `LLDB` to source the commands
+3. Execute `command source ~/.lldbinit` in LLDB to source the commands
 4. Run the command you are working on
 5. Modify the command
 6. Optionally run `script reload(modulename)`
