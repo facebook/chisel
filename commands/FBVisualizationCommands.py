@@ -65,13 +65,10 @@ def _colorIsCGColorRef(color):
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
     print "got error: {}".format(result)
-    return 0
+    return False
   else:
     isCFColor = result.GetValueAsUnsigned() != 0
-    if isCFColor:
-      return 1
-    else:
-      return 0
+    return isCFColor
 
 def _showColor(color):
     color = '(' + color + ')'
@@ -124,13 +121,10 @@ def _dataIsImage(data):
   result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0
+    return False
   else:
     isImage = result.GetValueAsUnsigned() != 0
-    if isImage:
-      return 1
-    else:
-      return 0
+    return isImage
 
 def _dataIsString(data):
   data = '(' + data + ')'
@@ -139,13 +133,10 @@ def _dataIsString(data):
   result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0
+    return False
   else:
     isString = result.GetValueAsUnsigned() != 0
-    if isString:
-      return 1
-    else:
-      return 0
+    return isString
 
 def _visualize(target):
   target = '(' + target + ')'
