@@ -57,6 +57,47 @@ def _showImage(commandForImage):
     imgFile.close()
     os.system('open ' + imagePath)
 
+def _colorIsCGColorRef(color):
+  color = '(CGColorRef)(' + color + ')'
+
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  result = frame.EvaluateExpression('(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()'.format(color=color))
+
+  if result.GetError() is not None and str(result.GetError()) != 'success':
+    print "got error: {}".format(result)
+    return False
+  else:
+    isCFColor = result.GetValueAsUnsigned() != 0
+    return isCFColor
+
+def _showColor(color):
+    color = '(' + color + ')'
+
+    colorToUse = color
+    isCF = _colorIsCGColorRef(color)
+    if isCF:
+      colorToUse = '[[UIColor alloc] initWithCGColor:(CGColorRef){}]'.format(color)
+    else:
+      isCI = objectHelpers.isKindOfClass(color, 'CIColor')
+      if isCI:
+        colorToUse = '[UIColor colorWithCIColor:(CIColor *){}]'.format(color)
+
+    imageSize = 58
+    lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
+    lldb.debugger.HandleCommand('expr (void)[(id){} setFill]'.format(colorToUse))
+    lldb.debugger.HandleCommand('expr (void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
+
+    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+    result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
+    if result.GetError() is not None and str(result.GetError()) != 'success':
+      print "got error {}".format(result)
+      print result.GetError()
+    else:
+      image = result.GetValue()
+      _showImage(image)
+
+    lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+
 def _showLayer(layer):
   layer = '(' + layer + ')'
 
@@ -80,13 +121,10 @@ def _dataIsImage(data):
   result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0
+    return False
   else:
     isImage = result.GetValueAsUnsigned() != 0
-    if isImage:
-      return 1
-    else:
-      return 0
+    return isImage
 
 def _dataIsString(data):
   data = '(' + data + ')'
@@ -95,13 +133,10 @@ def _dataIsString(data):
   result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    return 0
+    return False
   else:
     isString = result.GetValueAsUnsigned() != 0
-    if isString:
-      return 1
-    else:
-      return 0
+    return isString
 
 def _visualize(target):
   target = '(' + target + ')'
@@ -115,6 +150,8 @@ def _visualize(target):
       _showLayer('[(id)' + target + ' layer]')
     elif objectHelpers.isKindOfClass(target, 'CALayer'):
       _showLayer(target)
+    elif objectHelpers.isKindOfClass(target, 'UIColor') or objectHelpers.isKindOfClass(target, 'CIColor') or _colorIsCGColorRef(target):
+      _showColor(target)
     elif objectHelpers.isKindOfClass(target, 'NSData'):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
@@ -123,7 +160,7 @@ def _visualize(target):
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:
-      print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer or NSData.'.format(objectHelpers.className(target))
+      print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.'.format(objectHelpers.className(target))
 
 class FBVisualizeCommand(fb.FBCommand):
   def name(self):
