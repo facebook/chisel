@@ -12,7 +12,7 @@ import lldb
 import imp
 import os
 import shlex
-import sys
+
 from optparse import OptionParser
 
 import fblldbbase as fb
@@ -54,8 +54,6 @@ def loadCommand(module, command, directory, filename, extension):
 def makeRunCommand(command, filename):
   def runCommand(debugger, input, result, dict):
     splitInput = shlex.split(input)
-    options = None
-    args = None
 
     # OptionParser will throw in the case where you want just one big long argument and no
     # options and you enter something that starts with '-' in the argument. e.g.:
@@ -129,13 +127,12 @@ def helpForCommand(command, filename):
     help += '\n\nOptions:'
     for option in command.options():
 
-      optionFlag = ''
       if option.longName and option.shortName:
         optionFlag = option.longName + '/' + option.shortName
       elif option.longName:
         optionFlag = option.longName
       else:
-        optionFlag = optiob.shortName
+        optionFlag = option.shortName
 
       help += '\n  ' + optionFlag + ' '
 

@@ -77,7 +77,7 @@ def upwardsRecursiveDescription(view, maxDepth=0):
     if viewDescription:
       recursiveDescription.insert(0, viewDescription)
 
-  if len(viewDescription) == 0:
+  if not len(viewDescription):
     return None
 
   currentPrefix = ""

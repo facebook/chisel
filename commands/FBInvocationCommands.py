@@ -101,12 +101,6 @@ def findArgAdressAtIndexFromStackFrame(frame, index):
 
 def prettyPrintInvocation(frame, invocation):
   object = fb.evaluateExpression('(id)[(id)' + invocation + ' target]')
-  selector = fb.evaluateExpressionValue('(char *)sel_getName((SEL)[(id)' + invocation + ' selector])').GetSummary()
-  selector = re.sub(r'^"|"$', '', selector)
-
-  objectClassValue = fb.evaluateExpressionValue('(id)object_getClass((id)' + object + ')')
-  objectClass = objectClassValue.GetObjectDescription()
-
   description = fb.evaluateExpressionValue('(id)' + invocation).GetObjectDescription()
   argDescriptions = description.splitlines(True)[4:]
 

@@ -8,6 +8,7 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import lldb
+
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
@@ -36,7 +37,6 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(vc, string, pref
   nextPrefix = childPrefix + '   |'
 
   numChildViewControllers = fb.evaluateIntegerExpression('(int)[(id)[%s childViewControllers] count]' % (vc))
-  childViewControllers = fb.evaluateExpression('(id)[%s childViewControllers]' % (vc))
 
   for i in range(0, numChildViewControllers):
     viewController = fb.evaluateExpression('(id)[(id)[%s childViewControllers] objectAtIndex:%d]' % (vc, i))
