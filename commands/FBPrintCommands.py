@@ -32,6 +32,7 @@ def lldbcommands():
     FBPrintApplicationDocumentsPath(),
     FBPrintData(),
     FBPrintTargetActions(),
+    FBPrintAsCurl(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -424,3 +425,44 @@ class FBPrintTargetActions(fb.FBCommand):
       actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@", "]'.format(actions=actions)).GetObjectDescription()
 
       print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
+
+class FBPrintAsCurl(fb.FBCommand):
+  def name(self):
+    return 'pcurl'
+
+  def description(self):
+    return 'Print the NSURLRequest (HTTP) as curl command.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='request', type='NSURLRequest*/NSMutableURLRequest*', help='The request to convert to the curl command.') ]
+
+  def run(self, arguments, options):
+    request = arguments[0]
+    HTTPHeaderSring = ''
+    HTTPMethod = fb.evaluateExpressionValue('(id)[{request} HTTPMethod]'.format(request=request)).GetObjectDescription()
+    URL = fb.evaluateExpressionValue('(id)[{request} URL]'.format(request=request)).GetObjectDescription()
+    timeout = fb.evaluateExpression('(NSTimeInterval)[{request} timeoutInterval]'.format(request=request))
+    HTTPHeaders = fb.evaluateObjectExpression('(id)[{request} allHTTPHeaderFields]'.format(request=request))
+    HTTPHeadersCount = fb.evaluateIntegerExpression('[{HTTPHeaders} count]'.format(HTTPHeaders=HTTPHeaders)) 
+    allHTTPKeys = fb.evaluateObjectExpression('[{HTTPHeaders} allKeys]'.format(HTTPHeaders=HTTPHeaders))
+    for index in range(0, HTTPHeadersCount):
+        key = fb.evaluateObjectExpression('[{} objectAtIndex:{}]'.format(allHTTPKeys, index))
+        keyDescription = fb.evaluateExpressionValue('(id){}'.format(key)).GetObjectDescription()
+        value = fb.evaluateExpressionValue('(id)[(id){} objectForKey:{}]'.format(HTTPHeaders, key)).GetObjectDescription()
+        if len(HTTPHeaderSring) > 0:
+            HTTPHeaderSring += ' '
+        HTTPHeaderSring += '-H "{}: {}"'.format(keyDescription, value)
+    HTTPData = fb.evaluateObjectExpression('[{request} HTTPBody]'.format(request=request))
+    dataFile = None
+    if fb.evaluateIntegerExpression('[{} length]'.format(HTTPData)) > 0:
+        dataFile = '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
+        fb.evaluateExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile))
+                
+    commandString = 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
+    if len(HTTPHeaderSring) > 0:
+        commandString += ' ' + HTTPHeaderSring
+    if dataFile is not None:
+        commandString += ' --data-binary @"{}"'.format(dataFile)
+        
+    commandString += ' "{}"'.format(URL)
+    print commandString
