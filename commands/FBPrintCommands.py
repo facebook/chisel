@@ -458,18 +458,23 @@ class FBPrintAsCurl(fb.FBCommand):
   def description(self):
     return 'Print the NSURLRequest (HTTP) as curl command.'
 
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-p', long='--portable', arg='portable', boolean=True, default=False, help='Embed request data as base64.'),
+    ]
+
   def args(self):
     return [ fb.FBCommandArgument(arg='request', type='NSURLRequest*/NSMutableURLRequest*', help='The request to convert to the curl command.') ]
 
   def run(self, arguments, options):
     request = arguments[0]
     HTTPHeaderSring = ''
-    HTTPMethod = fb.evaluateExpressionValue('(id)[{request} HTTPMethod]'.format(request=request)).GetObjectDescription()
-    URL = fb.evaluateExpressionValue('(id)[{request} URL]'.format(request=request)).GetObjectDescription()
-    timeout = fb.evaluateExpression('(NSTimeInterval)[{request} timeoutInterval]'.format(request=request))
-    HTTPHeaders = fb.evaluateObjectExpression('(id)[{request} allHTTPHeaderFields]'.format(request=request))
-    HTTPHeadersCount = fb.evaluateIntegerExpression('[{HTTPHeaders} count]'.format(HTTPHeaders=HTTPHeaders)) 
-    allHTTPKeys = fb.evaluateObjectExpression('[{HTTPHeaders} allKeys]'.format(HTTPHeaders=HTTPHeaders))
+    HTTPMethod = fb.evaluateExpressionValue('(id)[{} HTTPMethod]'.format(request)).GetObjectDescription()
+    URL = fb.evaluateExpressionValue('(id)[{} URL]'.format(request)).GetObjectDescription()
+    timeout = fb.evaluateExpression('(NSTimeInterval)[{} timeoutInterval]'.format(request))
+    HTTPHeaders = fb.evaluateObjectExpression('(id)[{} allHTTPHeaderFields]'.format(request))
+    HTTPHeadersCount = fb.evaluateIntegerExpression('[{} count]'.format(HTTPHeaders)) 
+    allHTTPKeys = fb.evaluateObjectExpression('[{} allKeys]'.format(HTTPHeaders))
     for index in range(0, HTTPHeadersCount):
         key = fb.evaluateObjectExpression('[{} objectAtIndex:{}]'.format(allHTTPKeys, index))
         keyDescription = fb.evaluateExpressionValue('(id){}'.format(key)).GetObjectDescription()
@@ -477,13 +482,24 @@ class FBPrintAsCurl(fb.FBCommand):
         if len(HTTPHeaderSring) > 0:
             HTTPHeaderSring += ' '
         HTTPHeaderSring += '-H "{}: {}"'.format(keyDescription, value)
-    HTTPData = fb.evaluateObjectExpression('[{request} HTTPBody]'.format(request=request))
+    HTTPData = fb.evaluateObjectExpression('[{} HTTPBody]'.format(request))
     dataFile = None
+    dataAsString = None
     if fb.evaluateIntegerExpression('[{} length]'.format(HTTPData)) > 0:
         dataFile = '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
-        fb.evaluateExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile))
-                
-    commandString = 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
+        if options.portable:
+          if fb.evaluateIntegerExpression('[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]'.format(HTTPData)):
+            dataAsString = fb.evaluateExpressionValue('(id)[(id){} base64EncodedStringWithOptions:0]'.format(HTTPData)).GetObjectDescription()
+        elif not runtimeHelpers.isIOSDevice():
+          fb.evaluateExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile))
+        else:
+          print 'HTTPBody data for iOS Device is supported only with "--portable" flag'
+          return False
+
+    commandString = ''
+    if dataAsString is not None and len(dataAsString) > 0:
+      commandString += 'echo "{}" | base64 -D -o "{}"; '.format(dataAsString, dataFile)
+    commandString += 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
     if len(HTTPHeaderSring) > 0:
         commandString += ' ' + HTTPHeaderSring
     if dataFile is not None:
