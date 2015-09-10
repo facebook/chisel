@@ -460,7 +460,7 @@ class FBPrintAsCurl(fb.FBCommand):
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-p', long='--portable', arg='portable', boolean=True, default=False, help='Embed request data as base64.'),
+      fb.FBCommandArgument(short='-e', long='--embed-data', arg='embed', boolean=True, default=False, help='Embed request data as base64.'),
     ]
 
   def args(self):
@@ -487,7 +487,7 @@ class FBPrintAsCurl(fb.FBCommand):
     dataAsString = None
     if fb.evaluateIntegerExpression('[{} length]'.format(HTTPData)) > 0:
         dataFile = '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
-        if options.portable:
+        if options.embed:
           if fb.evaluateIntegerExpression('[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]'.format(HTTPData)):
             dataAsString = fb.evaluateExpressionValue('(id)[(id){} base64EncodedStringWithOptions:0]'.format(HTTPData)).GetObjectDescription()
         elif not runtimeHelpers.isIOSDevice():
