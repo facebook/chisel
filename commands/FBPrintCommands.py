@@ -449,3 +449,4 @@ class FBPrintJSON(fb.FBCommand):
     jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:{} encoding:4]'.format(jsonData)).GetObjectDescription()
     
     print jsonString
+    
