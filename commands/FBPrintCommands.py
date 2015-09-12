@@ -32,6 +32,7 @@ def lldbcommands():
     FBPrintApplicationDocumentsPath(),
     FBPrintData(),
     FBPrintTargetActions(),
+    FBPrintJSON(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -424,3 +425,28 @@ class FBPrintTargetActions(fb.FBCommand):
       actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@", "]'.format(actions=actions)).GetObjectDescription()
 
       print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
+
+class FBPrintJSON(fb.FBCommand):
+    
+  def name(self):
+    return 'pjson'
+
+  def description(self):
+    return 'Print JSON representation of NSDictionary or NSArray object'
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(arg='plain', short='-p', long='--plain', boolean=True, default=False, help='Plain JSON')
+    ]
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='object', type='id', help='The NSDictionary or NSArray object to print') ]
+
+  def run(self, arguments, options):
+    objectToPrint = arguments[0]
+    pretty = 1 if options.plain is None else 0
+    jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:{} options:{} error:nil]'.format(objectToPrint, pretty))
+    jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:{} encoding:4]'.format(jsonData)).GetObjectDescription()
+    
+    print jsonString
+    
