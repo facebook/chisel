@@ -493,12 +493,12 @@ class FBPrintAsCurl(fb.FBCommand):
         elif not runtimeHelpers.isIOSDevice():
           fb.evaluateExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile))
         else:
-          print 'HTTPBody data for iOS Device is supported only with "--portable" flag'
+          print 'HTTPBody data for iOS Device is supported only with "--embed-data" flag'
           return False
 
     commandString = ''
     if dataAsString is not None and len(dataAsString) > 0:
-      commandString += 'echo "{}" | base64 -D -o "{}"; '.format(dataAsString, dataFile)
+      commandString += 'echo "{}" | base64 -D -o "{}" && '.format(dataAsString, dataFile)
     commandString += 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
     if len(HTTPHeaderSring) > 0:
         commandString += ' ' + HTTPHeaderSring
