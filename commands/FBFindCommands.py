@@ -93,7 +93,7 @@ class FBFindViewCommand(fb.FBCommand):
 
 def printMatchesInViewOutputStringAndCopyFirstToClipboard(needle, haystack):
   first = None
-  for match in re.finditer('.*<.*(' + needle + ').*: (0x[0-9a-fA-F]*);.*', haystack, re.IGNORECASE):
+  for match in re.finditer('.*<.*(' + needle + ')\\S*: (0x[0-9a-fA-F]*);.*', haystack, re.IGNORECASE):
     view = match.groups()[-1]
     className = fb.evaluateExpressionValue('(id)[(' + view + ') class]').GetObjectDescription()
     print('{} {}'.format(view, className))
