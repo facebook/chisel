@@ -466,6 +466,9 @@ class FBPrintAsCurl(fb.FBCommand):
   def args(self):
     return [ fb.FBCommandArgument(arg='request', type='NSURLRequest*/NSMutableURLRequest*', help='The request to convert to the curl command.') ]
 
+  def generateTmpFilePath(self):
+    return '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
+
   def run(self, arguments, options):
     request = arguments[0]
     HTTPHeaderSring = ''
@@ -486,18 +489,24 @@ class FBPrintAsCurl(fb.FBCommand):
     dataFile = None
     dataAsString = None
     if fb.evaluateIntegerExpression('[{} length]'.format(HTTPData)) > 0:
-        dataFile = '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
         if options.embed:
           if fb.evaluateIntegerExpression('[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]'.format(HTTPData)):
             dataAsString = fb.evaluateExpressionValue('(id)[(id){} base64EncodedStringWithOptions:0]'.format(HTTPData)).GetObjectDescription()
+          else :
+            print 'This version of OS doesn\'t supports base64 data encoding'
+            return False
         elif not runtimeHelpers.isIOSDevice():
-          fb.evaluateExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile))
+          dataFile = self.generateTmpFilePath()
+          if not fb.evaluateBooleanExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile)):
+            print 'Can\'t write data to file {}'.format(dataFile)
+            return False
         else:
           print 'HTTPBody data for iOS Device is supported only with "--embed-data" flag'
           return False
 
     commandString = ''
     if dataAsString is not None and len(dataAsString) > 0:
+      dataFile = self.generateTmpFilePath()
       commandString += 'echo "{}" | base64 -D -o "{}" && '.format(dataAsString, dataFile)
     commandString += 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
     if len(HTTPHeaderSring) > 0:
