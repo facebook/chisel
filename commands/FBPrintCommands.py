@@ -32,10 +32,7 @@ def lldbcommands():
     FBPrintApplicationDocumentsPath(),
     FBPrintData(),
     FBPrintTargetActions(),
-<<<<<<< HEAD
     FBPrintJSON(),
-=======
->>>>>>> origin/pcurl
     FBPrintAsCurl(),
   ]
 
@@ -430,7 +427,6 @@ class FBPrintTargetActions(fb.FBCommand):
 
       print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
 
-<<<<<<< HEAD
 class FBPrintJSON(fb.FBCommand):
     
   def name(self):
@@ -455,8 +451,6 @@ class FBPrintJSON(fb.FBCommand):
     
     print jsonString
     
-=======
->>>>>>> origin/pcurl
 class FBPrintAsCurl(fb.FBCommand):
   def name(self):
     return 'pcurl'
