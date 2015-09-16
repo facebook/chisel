@@ -22,7 +22,7 @@ def lldbcommands():
 
 class FBPrintClassInstanceMethods(fb.FBCommand):
   def name(self):
-    return 'pci'
+    return 'pclassinstancemethod'
 
   def description(self):
     return 'Print the class instance methods.'
@@ -34,12 +34,15 @@ class FBPrintClassInstanceMethods(fb.FBCommand):
     ocarray = instanceMethosOfClass(arguments[0])
     methodAddrs = covertOCArrayToPyArray(ocarray)
     methods = createMethodsFromPointers(methodAddrs)
-    print methods
+    for i in methods:
+      print i
 
+# I find that a method that has variable parameter can not b.evaluateExpression
+# so I use numberWithLongLong: rather than -[NSString stringWithFormat:]
 def instanceMethosOfClass(klass):
   tmpString = """
     unsigned int outCount;
-    void **methods = (void **)class_copyMethodList([self class], &outCount);
+    void **methods = (void **)class_copyMethodList((Class)$cls, &outCount);
     NSMutableArray *result = [NSMutableArray array];
     for (int i = 0; i < outCount; i++) {
       NSNumber *num = (NSNumber *)[NSNumber numberWithLongLong:(long long)methods[i]];
@@ -68,7 +71,7 @@ def covertOCArrayToPyArray(oc_array):
 
   for i in range(int(count)):
     value = fb.evaluateExpression("(id)[{} objectAtIndex:{}]".format(oc_array, i))
-    value = fb.evaluateExpression("(id)[{} longLongValue]".format(value))
+    value = fb.evaluateExpression("(long long)[{} longLongValue]".format(value))
     result.append(value)
 
   return result
@@ -79,6 +82,9 @@ class Method:
     self.name = name
     self.type = type_encoding
     self.imp = imp
+
+  def __str__(self):
+    return self.name + " --- " + self.type + " --- " + self.imp
 
 def createMethodsFromPointers(pointers):
   methods = []
@@ -91,19 +97,17 @@ def createMethodsFromPointers(pointers):
     name = process.ReadCStringFromMemory(int(nameValue, 16), 256, error)
 
     if not error.Success():
-      print "--debug--"
+      print "--error--"
       continue
 
     typeEncodingValue = fb.evaluateExpression("(char *)method_getTypeEncoding({})".format(p))
     type_encoding = process.ReadCStringFromMemory(int(typeEncodingValue, 16), 256, error)
 
     if not error.Success():
-      print "--debug--"
+      print "--error--"
       continue
 
     imp = fb.evaluateExpression("(void *)method_getImplementation({})".format(p))
-
-    print name, type_encoding, imp
     methods.append(Method(name, type_encoding, imp));
 
   return methods
