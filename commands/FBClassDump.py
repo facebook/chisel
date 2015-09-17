@@ -1,12 +1,5 @@
 #!/usr/bin/python
 
-# Copyright (c) 2014, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
 import os
 import re
 import string
@@ -17,7 +10,8 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
-    FBPrintClassInstanceMethods()
+    FBPrintClassInstanceMethods(),
+    FBPrintClassMethods()
   ]
 
 class FBPrintClassInstanceMethods(fb.FBCommand):
@@ -33,9 +27,38 @@ class FBPrintClassInstanceMethods(fb.FBCommand):
   def run(self, arguments, options):
     ocarray = instanceMethosOfClass(arguments[0])
     methodAddrs = covertOCArrayToPyArray(ocarray)
-    methods = createMethodsFromPointers(methodAddrs)
-    for i in methods:
-      print i
+
+    methods = []
+    for i in methodAddrs:
+      method = createMethodFromOCMethod(i)
+      if method is not None:
+        methods.append(method)
+        print "- " + method.prettyPrint()
+
+class FBPrintClassMethods(fb.FBCommand):
+  def name(self):
+    return 'pclassmethod'
+
+  def description(self):
+    return 'Print the class`s class methods.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='class', type='Class', help='an OC Class.') ]
+
+  def run(self, arguments, options):
+    ocarray = instanceMethosOfClass(runtimeHelpers.object_getClass(arguments[0]))
+    if not ocarray:
+      print "-- have none method -- "
+      return
+
+    methodAddrs = covertOCArrayToPyArray(ocarray)
+
+    methods = []
+    for i in methodAddrs:
+      method = createMethodFromOCMethod(i)
+      if method is not None:
+        methods.append(method)
+        print "+ " + method.prettyPrint()
 
 # I find that a method that has variable parameter can not b.evaluateExpression
 # so I use numberWithLongLong: rather than -[NSString stringWithFormat:]
@@ -55,8 +78,10 @@ def instanceMethosOfClass(klass):
 
   command = string.Template(tmpString).substitute(cls=klass)
   command = '({' + command + '})'
-
-  return fb.evaluateExpression(command)
+  ret = fb.evaluateExpression(command)
+  if int(ret, 16) == 0: # return nil
+    ret = None
+  return ret
 
 # OC array only can hold id, 
 # @return an array whose instance type is str of the oc object`s address
@@ -78,36 +103,80 @@ def covertOCArrayToPyArray(oc_array):
 
 
 class Method:
-  def __init__(self, name, type_encoding, imp):
+
+  encodeMap = {
+    'c': 'char',
+    'i': 'int',
+    's': 'short',
+    'l': 'long',
+    'q': 'long long',
+
+    'C': 'unsigned char',
+    'I': 'unsigned int',
+    'S': 'unsigned short',
+    'L': 'unsigned long',
+    'Q': 'unsigned long long',
+
+    'f': 'float',
+    'd': 'double',
+    'B': 'bool',
+    'v': 'void',
+    '*': 'char *',
+    '@': 'id',
+    '#': 'Class',
+    ':': 'SEL',
+  }
+
+  def __init__(self, name, type_encoding, imp, oc_method):
     self.name = name
     self.type = type_encoding
     self.imp = imp
+    self.oc_method = self.toHex(oc_method)
+
+  def prettyPrint(self):
+    # mast be bigger then 2, 0-idx for self, 1-st for SEL
+    argnum = fb.evaluateIntegerExpression("method_getNumberOfArguments({})".format(self.oc_method))
+    names = self.name.split(':')
+
+    for i in range(2, argnum):
+      arg_type = fb.evaluateCStringExpression("(char *)method_copyArgumentType({}, {})".format(self.oc_method, i))
+      names[i-2] = names[i-2] + ":(" +  self.decode(arg_type) + ")arg" + str(i-2)
+
+    string = " ".join(names)
+
+    ret_type = fb.evaluateCStringExpression("(char *)method_copyReturnType({})".format(self.oc_method))
+    return "({}){}".format(self.decode(ret_type), string)
+
+
+  def decode(self, type):
+    ret = type
+    if type in Method.encodeMap:
+      ret = Method.encodeMap[type]
+    return ret
+
+  def toHex(self, addr):
+    return addr
 
   def __str__(self):
-    return self.name + " --- " + self.type + " --- " + self.imp
+    return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp 
 
-def createMethodsFromPointers(pointers):
-  methods = []
-  for p in pointers:
-    nameValue = fb.evaluateExpression("(char *)method_getName({})".format(p))
+def createMethodFromOCMethod(method):
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
 
-    process = lldb.debugger.GetSelectedTarget().GetProcess()
-    error = lldb.SBError()
+  nameValue = fb.evaluateExpression("(char *)method_getName({})".format(method))
+  name = process.ReadCStringFromMemory(int(nameValue, 16), 256, error)
 
-    name = process.ReadCStringFromMemory(int(nameValue, 16), 256, error)
+  if not error.Success():
+    print "--error--"
+    return None
 
-    if not error.Success():
-      print "--error--"
-      continue
+  typeEncodingValue = fb.evaluateExpression("(char *)method_getTypeEncoding({})".format(method))
+  type_encoding = process.ReadCStringFromMemory(int(typeEncodingValue, 16), 256, error)
 
-    typeEncodingValue = fb.evaluateExpression("(char *)method_getTypeEncoding({})".format(p))
-    type_encoding = process.ReadCStringFromMemory(int(typeEncodingValue, 16), 256, error)
+  if not error.Success():
+    print "--error--"
+    return None
 
-    if not error.Success():
-      print "--error--"
-      continue
-
-    imp = fb.evaluateExpression("(void *)method_getImplementation({})".format(p))
-    methods.append(Method(name, type_encoding, imp));
-
-  return methods
+  imp = fb.evaluateExpression("(void *)method_getImplementation({})".format(method))
+  return Method(name, type_encoding, imp, method)
