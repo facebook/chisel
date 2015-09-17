@@ -73,3 +73,16 @@ def evaluateExpression(expression, printErrors=True):
 
 def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)
+
+def evaluateCStringExpression(expression, printErrors=True):
+  ret = evaluateExpression(expression, printErrors)
+
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
+  ret = process.ReadCStringFromMemory(int(ret, 16), 256, error)
+  if error.Success():
+    return ret
+  else:
+    if printErrors:
+      print error
+    return None
