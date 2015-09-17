@@ -16,7 +16,7 @@ def lldbcommands():
 
 class FBPrintClassInstanceMethods(fb.FBCommand):
   def name(self):
-    return 'pclassinstancemethod'
+    return 'pinstancemethod'
 
   def description(self):
     return 'Print the class instance methods.'
