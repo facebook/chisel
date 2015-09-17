@@ -26,6 +26,10 @@ class FBPrintClassInstanceMethods(fb.FBCommand):
 
   def run(self, arguments, options):
     ocarray = instanceMethosOfClass(arguments[0])
+    if not ocarray:
+      print "-- have none method or an error occur-- "
+      return
+
     methodAddrs = covertOCArrayToPyArray(ocarray)
 
     methods = []
@@ -48,7 +52,7 @@ class FBPrintClassMethods(fb.FBCommand):
   def run(self, arguments, options):
     ocarray = instanceMethosOfClass(runtimeHelpers.object_getClass(arguments[0]))
     if not ocarray:
-      print "-- have none method -- "
+      print "-- have none method or an error occur -- "
       return
 
     methodAddrs = covertOCArrayToPyArray(ocarray)
@@ -78,7 +82,11 @@ def instanceMethosOfClass(klass):
 
   command = string.Template(tmpString).substitute(cls=klass)
   command = '({' + command + '})'
-  ret = fb.evaluateExpression(command)
+  ret = fb.evaluateExpressionValue(command)
+  if ret.GetError() is not None:
+    return None
+
+  ret = ret.GetValue()
   if int(ret, 16) == 0: # return nil
     ret = None
   return ret
