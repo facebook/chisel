@@ -168,14 +168,14 @@ def createMethodFromOCMethod(method):
   name = process.ReadCStringFromMemory(int(nameValue, 16), 256, error)
 
   if not error.Success():
-    print "--error--"
+    print error
     return None
 
   typeEncodingValue = fb.evaluateExpression("(char *)method_getTypeEncoding({})".format(method))
   type_encoding = process.ReadCStringFromMemory(int(typeEncodingValue, 16), 256, error)
 
   if not error.Success():
-    print "--error--"
+    print error
     return None
 
   imp = fb.evaluateExpression("(void *)method_getImplementation({})".format(method))
