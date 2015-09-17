@@ -83,7 +83,7 @@ def instanceMethosOfClass(klass):
   command = string.Template(tmpString).substitute(cls=klass)
   command = '({' + command + '})'
   ret = fb.evaluateExpressionValue(command)
-  if ret.GetError() is not None:
+  if not ret.GetError().Success():
     return None
 
   ret = ret.GetValue()
