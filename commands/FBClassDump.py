@@ -10,59 +10,50 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
-    FBPrintClassInstanceMethods(),
-    FBPrintClassMethods()
+    FBPrintMethods()
   ]
 
-class FBPrintClassInstanceMethods(fb.FBCommand):
+class FBPrintMethods(fb.FBCommand):
   def name(self):
-    return 'pinstancemethod'
+    return 'pmethods'
 
   def description(self):
     return 'Print the class instance methods.'
 
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-a', long='--all', arg='all', help='If display all methos include class and instance methods', default=False, boolean=True),
+      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods only', default=False, boolean=True)
+    ]
+
   def args(self):
-    return [ fb.FBCommandArgument(arg='class', type='Class', help='an OC Class.') ]
+    return [ fb.FBCommandArgument(arg='class', type='Class', help='an Object-C Class.') ]
 
   def run(self, arguments, options):
-    ocarray = instanceMethosOfClass(arguments[0])
+    if options.all:
+        printClassMethods(arguments[0])
+        printInstanceMethods(arguments[0])
+    elif options.clsmethod:
+        printClassMethods(arguments[0])
+    else:
+        printInstanceMethods(arguments[0])
+
+def printInstanceMethods(cls, prefix='-'):
+    ocarray = instanceMethosOfClass(cls)
     if not ocarray:
       print "-- have none method or an error occur-- "
       return
 
     methodAddrs = covertOCArrayToPyArray(ocarray)
-
     methods = []
     for i in methodAddrs:
       method = createMethodFromOCMethod(i)
       if method is not None:
         methods.append(method)
-        print "- " + method.prettyPrint()
+        print prefix + ' ' + method.prettyPrint()
 
-class FBPrintClassMethods(fb.FBCommand):
-  def name(self):
-    return 'pclassmethod'
-
-  def description(self):
-    return 'Print the class`s class methods.'
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='class', type='Class', help='an OC Class.') ]
-
-  def run(self, arguments, options):
-    ocarray = instanceMethosOfClass(runtimeHelpers.object_getClass(arguments[0]))
-    if not ocarray:
-      print "-- have none method or an error occur -- "
-      return
-
-    methodAddrs = covertOCArrayToPyArray(ocarray)
-
-    methods = []
-    for i in methodAddrs:
-      method = createMethodFromOCMethod(i)
-      if method is not None:
-        methods.append(method)
-        print "+ " + method.prettyPrint()
+def printClassMethods(cls):
+    printInstanceMethods(runtimeHelpers.object_getClass(cls), '+')
 
 # I find that a method that has variable parameter can not b.evaluateExpression
 # so I use numberWithLongLong: rather than -[NSString stringWithFormat:]
@@ -91,7 +82,7 @@ def instanceMethosOfClass(klass):
     ret = None
   return ret
 
-# OC array only can hold id, 
+# OC array only can hold id,
 # @return an array whose instance type is str of the oc object`s address
 
 def covertOCArrayToPyArray(oc_array):
@@ -166,7 +157,7 @@ class Method:
     return addr
 
   def __str__(self):
-    return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp 
+    return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp
 
 def createMethodFromOCMethod(method):
   process = lldb.debugger.GetSelectedTarget().GetProcess()
