@@ -27,16 +27,25 @@ class FBPrintMethods(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='class', type='Class', help='an Object-C Class.') ]
+    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Object-C Class.') ]
 
   def run(self, arguments, options):
+    cls = arguments[0]
+    if not isClassObject(cls):
+        cls = runtimeHelpers.object_getClass(cls)
+        if not isClassObject(cls):
+            raise Exception('parameter invalide, not a id or Class')
+
     if options.all:
-        printClassMethods(arguments[0])
-        printInstanceMethods(arguments[0])
+        printClassMethods(cls)
+        printInstanceMethods(cls)
     elif options.clsmethod:
-        printClassMethods(arguments[0])
+        printClassMethods(cls)
     else:
-        printInstanceMethods(arguments[0])
+        printInstanceMethods(cls)
+
+def isClassObject(arg):
+    return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
 def printInstanceMethods(cls, prefix='-'):
     ocarray = instanceMethosOfClass(cls)

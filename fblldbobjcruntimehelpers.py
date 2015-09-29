@@ -32,6 +32,10 @@ def class_getSuperclass(klass):
   value = fb.evaluateExpression(command)
   return value
 
+def class_isMetaClass(klass):
+    command = '(BOOL)class_isMetaClass((Class){})'.format(klass)
+    return fb.evaluateBooleanExpression(command)
+
 def class_getInstanceMethod(klass, selector):
   command = '(void*)class_getInstanceMethod((Class){}, @selector({}))'.format(klass, selector)
   value = fb.evaluateExpression(command)
