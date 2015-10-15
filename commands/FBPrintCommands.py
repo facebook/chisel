@@ -34,6 +34,8 @@ def lldbcommands():
     FBPrintTargetActions(),
     FBPrintJSON(),
     FBPrintAsCurl(),
+    FBPrintInObjc(),
+    FBPrintInSwift(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -516,3 +518,35 @@ class FBPrintAsCurl(fb.FBCommand):
         
     commandString += ' "{}"'.format(URL)
     print commandString
+
+class FBPrintInObjc(fb.FBCommand):
+  def name(self):
+    return 'pobjc'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++ -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
+
+class FBPrintInSwift(fb.FBCommand):
+  def name(self):
+    return 'pswift'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in a Swift context. (Shortcut for "expression -l Swift -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)
