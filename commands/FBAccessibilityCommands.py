@@ -96,7 +96,7 @@ def printAccessibilityHierarchy(view, indent = 0):
     print indentString + ('{} {}'.format(classDesc, view))
     #We call private method that gives back all visible accessibility children for view
     accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
-    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % accessibilityElements))
+    accessibilityElementsCount = fb.evaluateIntegerExpression('(int)[%s count]' % accessibilityElements)
     for index in range(0, accessibilityElementsCount):
       subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
       printAccessibilityHierarchy(subview, indent + 1)

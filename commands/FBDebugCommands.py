@@ -32,7 +32,7 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
     objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
 
     ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void*)object_getInstanceVariable((id){}, "{}", 0))'.format(objectAddress, ivarName)
-    ivarOffset = int(fb.evaluateExpression(ivarOffsetCommand), 0)
+    ivarOffset = fb.evaluateIntegerExpression(ivarOffsetCommand)
 
     # A multi-statement command allows for variables scoped to the command, not permanent in the session like $variables.
     ivarSizeCommand = ('unsigned int size = 0;'
