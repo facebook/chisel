@@ -38,6 +38,8 @@ def lldbcommands():
     FBPrintInSwift(),
     FBPrintObjectInObjc(),
     FBPrintObjectInSwift(),
+    FBExpressionInObjc(),
+    FBExpressionInSwift(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -584,3 +586,45 @@ class FBPrintObjectInSwift(fb.FBCommand):
   def run(self, arguments, options):
     expression = arguments[0]
     lldb.debugger.HandleCommand('expression -O -l Swift -- ' + expression)
+
+class FBExpressionInObjc(fb.FBCommand):
+  def name(self):
+    return 'eobjc'
+
+  def description(self):
+    return 'Run expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++" )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    values = arguments[0].split("--", 1)
+    if len(values) is 2:
+        (arguments, expression) = arguments
+        lldb.debugger.HandleCommand('expression -l ObjC++ ' + arguments + " -- " + expression)
+    else:
+        expression = arguments[0]
+        lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
+
+class FBExpressionInSwift(fb.FBCommand):
+  def name(self):
+    return 'eswift'
+
+  def description(self):
+    return 'Run expression run in a Swift context. (Shortcut for "expression -l Swift" )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    values = arguments[0].split("--", 1)
+    if len(values) is 2:
+        (arguments, expression) = arguments
+        lldb.debugger.HandleCommand('expression -l Swift ' + arguments + " -- " + expression)
+    else:
+        expression = arguments[0]
+        lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)
