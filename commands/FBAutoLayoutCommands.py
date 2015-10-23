@@ -40,8 +40,8 @@ def setBorderOnAmbiguousViewRecursive(view, width, color):
   isAmbiguous = fb.evaluateBooleanExpression('(BOOL)[%s hasAmbiguousLayout]' % view)
   if isAmbiguous:
     layer = viewHelpers.convertToLayer(view)
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
+    lldb.debugger.HandleCommand('eobjc (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+    lldb.debugger.HandleCommand('eobjc (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
 
   subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
   subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
