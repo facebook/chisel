@@ -100,8 +100,15 @@ def _showColor(color):
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
+  size = '((CGRect)[(id)' + layer + ' bounds]).size'
 
-  lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + layer + ' bounds]).size, NO, 0.0)')
+  width = float(fb.evaluateExpression(size + '.width'))
+  height = float(fb.evaluateExpression(size + '.height'))
+  if width == 0.0 or height == 0.0:
+    print 'Nothing to see here - the size of this element is {} x {}.'.format(width, height)
+    return
+
+  lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
   lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
