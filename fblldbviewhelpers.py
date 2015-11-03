@@ -55,6 +55,24 @@ def convertToLayer(viewOrLayer):
   else:
     raise Exception('Argument must be a CALayer, UIView, or NSView.')
 
+def isUIView(obj):
+    return fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % obj)
+
+# Generates a BFS of the views tree starting at the given view as root.
+# Yields a tuple of the current view in the tree and its level (view, level)
+def subviewsOfView(view):
+  views = [(view, 0)]
+  yield views[0]
+  while views:
+    (view, level) = views.pop(0)
+    subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
+    subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
+    if subviewsCount > 0:
+      for i in range(0, subviewsCount):
+        subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
+        views.append((subview, level+1))
+        yield (subview, level+1)
+
 def upwardsRecursiveDescription(view, maxDepth=0):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):
     return None
