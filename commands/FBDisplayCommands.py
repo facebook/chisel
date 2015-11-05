@@ -71,7 +71,7 @@ class FBDrawBorderCommand(fb.FBCommand):
     if isMac:
       colorClassName = 'NSColor'
 
-    if viewHelpers.isUIView(args[0]):
+    if viewHelpers.isView(args[0]):
       prevLevel = 0
       for view, level in viewHelpers.subviewsOfView(args[0]):
         if level > depth:
@@ -82,7 +82,7 @@ class FBDrawBorderCommand(fb.FBCommand):
         layer = viewHelpers.convertToLayer(view)
         setBorder(layer, options.width, color, colorClassName)
     else:
-      assert depth <= 0, "Recursive bordering is only supported for UIViews"
+      assert depth <= 0, "Recursive bordering is only supported for UIViews or NSViews"
       layer = viewHelpers.convertToLayer(args[0])
       setBorder(layer, options.width, color, colorClassName)
 
@@ -112,14 +112,14 @@ class FBRemoveBorderCommand(fb.FBCommand):
         lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
     depth = int(options.depth)
-    if viewHelpers.isUIView(args[0]):
+    if viewHelpers.isView(args[0]):
       for view, level in viewHelpers.subviewsOfView(args[0]):
         if level > depth:
            break
         layer = viewHelpers.convertToLayer(view)
         setUnborder(layer)
     else:
-      assert depth <= 0, "Recursive unbordering is only supported for UIViews"
+      assert depth <= 0, "Recursive unbordering is only supported for UIViews or NSViews"
       layer = viewHelpers.convertToLayer(args[0])
       setUnborder(layer)
 
