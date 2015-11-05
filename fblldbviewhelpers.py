@@ -10,6 +10,7 @@
 import lldb
 
 import fblldbbase as fb
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
   lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
@@ -56,10 +57,10 @@ def convertToLayer(viewOrLayer):
     raise Exception('Argument must be a CALayer, UIView, or NSView.')
 
 def isUIView(obj):
-    return fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % obj)
+    return not runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % obj)
 
 def isNSView(obj):
-    return fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % obj)
+    return runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % obj)
 
 def isView(obj):
     return isUIView(obj) or isNSView(obj)

@@ -63,6 +63,7 @@ class FBDrawBorderCommand(fb.FBCommand):
       lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
       lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
 
+    obj = args[0]
     depth = int(options.depth)
     isMac = runtimeHelpers.isMacintoshArch()
     color = options.color
@@ -71,9 +72,9 @@ class FBDrawBorderCommand(fb.FBCommand):
     if isMac:
       colorClassName = 'NSColor'
 
-    if viewHelpers.isView(args[0]):
+    if viewHelpers.isView(obj):
       prevLevel = 0
-      for view, level in viewHelpers.subviewsOfView(args[0]):
+      for view, level in viewHelpers.subviewsOfView(obj):
         if level > depth:
            break
         if prevLevel != level:
@@ -82,8 +83,9 @@ class FBDrawBorderCommand(fb.FBCommand):
         layer = viewHelpers.convertToLayer(view)
         setBorder(layer, options.width, color, colorClassName)
     else:
+      # `obj` is not a view, make sure recursive bordering is not requested
       assert depth <= 0, "Recursive bordering is only supported for UIViews or NSViews"
-      layer = viewHelpers.convertToLayer(args[0])
+      layer = viewHelpers.convertToLayer(obj)
       setBorder(layer, options.width, color, colorClassName)
 
     lldb.debugger.HandleCommand('caflush')
@@ -111,16 +113,18 @@ class FBRemoveBorderCommand(fb.FBCommand):
     def setUnborder(layer):
         lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
+    obj = args[0]
     depth = int(options.depth)
-    if viewHelpers.isView(args[0]):
-      for view, level in viewHelpers.subviewsOfView(args[0]):
+    if viewHelpers.isView(obj):
+      for view, level in viewHelpers.subviewsOfView(obj):
         if level > depth:
            break
         layer = viewHelpers.convertToLayer(view)
         setUnborder(layer)
     else:
+      # `obj` is not a view, make sure recursive unbordering is not requested
       assert depth <= 0, "Recursive unbordering is only supported for UIViews or NSViews"
-      layer = viewHelpers.convertToLayer(args[0])
+      layer = viewHelpers.convertToLayer(obj)
       setUnborder(layer)
 
     lldb.debugger.HandleCommand('caflush')
