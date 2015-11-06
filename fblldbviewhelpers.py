@@ -10,6 +10,7 @@
 import lldb
 
 import fblldbbase as fb
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
   lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
@@ -54,6 +55,29 @@ def convertToLayer(viewOrLayer):
     return fb.evaluateExpression('(CALayer *)[%s layer]' % viewOrLayer)
   else:
     raise Exception('Argument must be a CALayer, UIView, or NSView.')
+
+def isUIView(obj):
+    return not runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % obj)
+
+def isNSView(obj):
+    return runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % obj)
+
+def isView(obj):
+    return isUIView(obj) or isNSView(obj)
+
+# Generates a BFS of the views tree starting at the given view as root.
+# Yields a tuple of the current view in the tree and its level (view, level)
+def subviewsOfView(view):
+  views = [(view, 0)]
+  yield views[0]
+  while views:
+    (view, level) = views.pop(0)
+    subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
+    subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
+    for i in xrange(subviewsCount):
+      subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
+      views.append((subview, level+1))
+      yield (subview, level+1)
 
 def upwardsRecursiveDescription(view, maxDepth=0):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):

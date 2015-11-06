@@ -28,11 +28,25 @@ def lldbcommands():
 
 
 class FBDrawBorderCommand(fb.FBCommand):
+  colors = [
+    "black",
+    "gray",
+    "red",
+    "green",
+    "blue",
+    "cyan",
+    "yellow",
+    "magenta",
+    "orange",
+    "purple",
+    "brown",
+  ]
+
   def name(self):
     return 'border'
 
   def description(self):
-    return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided.'
+    return 'Draws a border around <viewOrLayer>. Color and width can be optionally provided. Additionally depth can be provided in order to recursively border subviews.'
 
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to border. NSViews must be layer-backed.') ]
@@ -40,21 +54,45 @@ class FBDrawBorderCommand(fb.FBCommand):
   def options(self):
     return [
       fb.FBCommandArgument(short='-c', long='--color', arg='color', type='string', default='red', help='A color name such as \'red\', \'green\', \'magenta\', etc.'),
-      fb.FBCommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.')
+      fb.FBCommandArgument(short='-w', long='--width', arg='width', type='CGFloat', default=2.0, help='Desired width of border.'),
+      fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default=0, help='Number of levels of subviews to border. Each level gets a different color beginning with the provided or default color'),
     ]
 
   def run(self, args, options):
-    colorClassName = 'UIColor'
-    isMac = runtimeHelpers.isMacintoshArch()
+    def setBorder(layer, width, color, colorClass):
+      lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+      lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
 
+    obj = args[0]
+    depth = int(options.depth)
+    isMac = runtimeHelpers.isMacintoshArch()
+    color = options.color
+    assert color in self.colors, "Color must be one of the following: {}".format(" ".join(self.colors))
+    colorClassName = 'UIColor'
     if isMac:
       colorClassName = 'NSColor'
 
-    layer = viewHelpers.convertToLayer(args[0])
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, options.width))
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClassName, options.color))
+    if viewHelpers.isView(obj):
+      prevLevel = 0
+      for view, level in viewHelpers.subviewsOfView(obj):
+        if level > depth:
+           break
+        if prevLevel != level:
+          color = self.nextColorAfterColor(color)
+          prevLevel = level
+        layer = viewHelpers.convertToLayer(view)
+        setBorder(layer, options.width, color, colorClassName)
+    else:
+      # `obj` is not a view, make sure recursive bordering is not requested
+      assert depth <= 0, "Recursive bordering is only supported for UIViews or NSViews"
+      layer = viewHelpers.convertToLayer(obj)
+      setBorder(layer, options.width, color, colorClassName)
+
     lldb.debugger.HandleCommand('caflush')
 
+  def nextColorAfterColor(self, color):
+    assert color in self.colors, "{} is not a supported color".format(color)
+    return self.colors[(self.colors.index(color)+1) % len(self.colors)]
 
 class FBRemoveBorderCommand(fb.FBCommand):
   def name(self):
@@ -63,14 +101,33 @@ class FBRemoveBorderCommand(fb.FBCommand):
   def description(self):
     return 'Removes border around <viewOrLayer>.'
 
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default=0, help='Number of levels of subviews to unborder.')
+    ]
+
   def args(self):
     return [ fb.FBCommandArgument(arg='viewOrLayer', type='UIView/NSView/CALayer *', help='The view/layer to unborder.') ]
 
   def run(self, args, options):
-    layer = viewHelpers.convertToLayer(args[0])
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
-    lldb.debugger.HandleCommand('caflush')
+    def setUnborder(layer):
+        lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
+    obj = args[0]
+    depth = int(options.depth)
+    if viewHelpers.isView(obj):
+      for view, level in viewHelpers.subviewsOfView(obj):
+        if level > depth:
+           break
+        layer = viewHelpers.convertToLayer(view)
+        setUnborder(layer)
+    else:
+      # `obj` is not a view, make sure recursive unbordering is not requested
+      assert depth <= 0, "Recursive unbordering is only supported for UIViews or NSViews"
+      layer = viewHelpers.convertToLayer(obj)
+      setUnborder(layer)
+
+    lldb.debugger.HandleCommand('caflush')
 
 class FBMaskViewCommand(fb.FBCommand):
   def name(self):
