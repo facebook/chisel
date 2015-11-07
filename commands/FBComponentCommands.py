@@ -60,7 +60,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
     upwards = 'YES' if options.upwards else 'NO'
     showViews = 'YES' if options.showViews == 'YES' else 'NO'
 
-    lldb.debugger.HandleCommand('po (id)[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
+    lldb.debugger.HandleCommand('poobjc (id)[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
 
 class FBComponentsReflowCommand(fb.FBCommand):
   def name(self):

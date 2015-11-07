@@ -30,7 +30,7 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='view', type='UIView *', help='The view to print the Auto Layout trace for.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po (id)[{} _autolayoutTrace]'.format(arguments[0]))
+    lldb.debugger.HandleCommand('poobjc (id)[{} _autolayoutTrace]'.format(arguments[0]))
 
 
 def setBorderOnAmbiguousViewRecursive(view, width, color):
