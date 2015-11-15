@@ -60,8 +60,8 @@ class FBDrawBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setBorder(layer, width, color, colorClass):
-      lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
-      lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
+      lldb.debugger.HandleCommand('eobjc (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+      lldb.debugger.HandleCommand('eobjc (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
 
     obj = args[0]
     depth = int(options.depth)
@@ -111,7 +111,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setUnborder(layer):
-        lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
+        lldb.debugger.HandleCommand('eobjc (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
     obj = args[0]
     depth = int(options.depth)
