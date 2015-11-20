@@ -77,20 +77,21 @@ def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
   if not fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]'):
     #Starting accessibility server is different for simulator and device
-    if fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] name]').GetObjectDescription().lower().find('simulator') >= 0:
-      lldb.debugger.HandleCommand('eobjc (void)[[UIApplication sharedApplication] accessibilityActivate]')
+    if (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0) | (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] name]').GetObjectDescription().lower().find('simulator') >= 0):
+      lldb.debugger.HandleCommand('expr (void)[[UIApplication sharedApplication] accessibilityActivate]')
     else:
-      lldb.debugger.HandleCommand('eobjc (void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
+      lldb.debugger.HandleCommand('expr (void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
 
 def accessibilityLabel(view):
   #using Apple private API to get real value of accessibility string for element.
   return fb.evaluateExpressionValue('(id)[%s accessibilityAttributeValue:%i]' % (view, ACCESSIBILITY_LABEL_KEY), False)
 
 def accessibilityElements(view):
-  a11yElements = fb.evaluateExpression('(id)[%s accessibilityElements]' % view, False)
-  if int(a11yElements, 16) != 0:
-    return a11yElements
-  elif fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(_accessibleSubviews)]' % view):
+  if fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(accessibilityElements)]'):
+    a11yElements = fb.evaluateExpression('(id)[%s accessibilityElements]' % view, False)
+    if int(a11yElements, 16) != 0:
+      return a11yElements
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(_accessibleSubviews)]' % view):
     return fb.evaluateExpression('(id)[%s _accessibleSubviews]' % (view), False)
   else:
     return fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
