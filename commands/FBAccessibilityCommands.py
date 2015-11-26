@@ -73,11 +73,14 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
     self.foundElement = False
     self.accessibilityGrepHierarchy(rootView, arguments[0])
 
+def isRunningInSimulator():
+  return ((fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0) or (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] name]').GetObjectDescription().lower().find('simulator') >= 0))
+
 def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
   if not fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]'):
     #Starting accessibility server is different for simulator and device
-    if (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0) | (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] name]').GetObjectDescription().lower().find('simulator') >= 0):
+    if isRunningInSimulator():
       lldb.debugger.HandleCommand('eobjc (void)[[UIApplication sharedApplication] accessibilityActivate]')
     else:
       lldb.debugger.HandleCommand('eobjc (void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
