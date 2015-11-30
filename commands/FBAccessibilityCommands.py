@@ -73,11 +73,14 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
     self.foundElement = False
     self.accessibilityGrepHierarchy(rootView, arguments[0])
 
+def isRunningInSimulator():
+  return ((fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0) or (fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] name]').GetObjectDescription().lower().find('simulator') >= 0))
+
 def forceStartAccessibilityServer():
   #We try to start accessibility server only if we don't have needed method active
   if not fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]'):
     #Starting accessibility server is different for simulator and device
-    if fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0:
+    if isRunningInSimulator():
       lldb.debugger.HandleCommand('eobjc (void)[[UIApplication sharedApplication] accessibilityActivate]')
     else:
       lldb.debugger.HandleCommand('eobjc (void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
@@ -85,6 +88,16 @@ def forceStartAccessibilityServer():
 def accessibilityLabel(view):
   #using Apple private API to get real value of accessibility string for element.
   return fb.evaluateExpressionValue('(id)[%s accessibilityAttributeValue:%i]' % (view, ACCESSIBILITY_LABEL_KEY), False)
+
+def accessibilityElements(view):
+  if fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(accessibilityElements)]'):
+    a11yElements = fb.evaluateExpression('(id)[%s accessibilityElements]' % view, False)
+    if int(a11yElements, 16) != 0:
+      return a11yElements
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(_accessibleSubviews)]' % view):
+    return fb.evaluateExpression('(id)[%s _accessibleSubviews]' % (view), False)
+  else:
+    return fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
 
 def printAccessibilityHierarchy(view, indent = 0):
   a11yLabel = accessibilityLabel(view)
@@ -95,10 +108,10 @@ def printAccessibilityHierarchy(view, indent = 0):
   if int(a11yLabel.GetValue(), 16) == 0:
     print indentString + ('{} {}'.format(classDesc, view))
     #We call private method that gives back all visible accessibility children for view
-    accessibilityElements = fb.evaluateObjectExpression('[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]' % view)
-    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % accessibilityElements))
+    a11yElements = accessibilityElements(view)
+    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % a11yElements))
     for index in range(0, accessibilityElementsCount):
-      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (accessibilityElements, index))
+      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (a11yElements, index))
       printAccessibilityHierarchy(subview, indent + 1)
   else:
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
