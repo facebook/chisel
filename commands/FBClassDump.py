@@ -22,35 +22,42 @@ class FBPrintMethods(fb.FBCommand):
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-a', long='--all', arg='all', help='If display all methos include class and instance methods', default=False, boolean=True),
-      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods only', default=False, boolean=True)
+      fb.FBCommandArgument(short='-a', long='--address', arg='showaddr', help='Print the implementation address of the method', default=False, boolean=True),
+      fb.FBCommandArgument(short='-i', long='--instance', arg='insmethod', help='Print the instance methods', default=False, boolean=True),
+      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods', default=False, boolean=True)
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Object-C Class.') ]
+    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
     cls = arguments[0]
     if not isClassObject(cls):
         cls = runtimeHelpers.object_getClass(cls)
         if not isClassObject(cls):
-            raise Exception('parameter invalide, not a id or Class')
+            raise Exception('Invalid argument. Please specify an instance or a Class.')
 
-    if options.all:
-        printClassMethods(cls)
-        printInstanceMethods(cls)
-    elif options.clsmethod:
-        printClassMethods(cls)
-    else:
-        printInstanceMethods(cls)
+    if options.clsmethod:
+      print 'Class Methods:'
+      printClassMethods(cls, options.showaddr)
+
+    if options.insmethod:
+      print '\nInstance Methods:'
+      printInstanceMethods(cls, options.showaddr)
+
+    if not options.clsmethod and not options.insmethod:
+      print 'Class Methods:'
+      printClassMethods(cls, options.showaddr)
+      print '\nInstance Methods:'
+      printInstanceMethods(cls, options.showaddr)
 
 def isClassObject(arg):
     return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
-def printInstanceMethods(cls, prefix='-'):
-    ocarray = instanceMethosOfClass(cls)
+def printInstanceMethods(cls, showaddr=False, prefix='-'):
+    ocarray = instanceMethodsOfClass(cls)
     if not ocarray:
-      print "-- have none method or an error occur-- "
+      print "No instance methods were found."
       return
 
     methodAddrs = covertOCArrayToPyArray(ocarray)
@@ -59,14 +66,18 @@ def printInstanceMethods(cls, prefix='-'):
       method = createMethodFromOCMethod(i)
       if method is not None:
         methods.append(method)
-        print prefix + ' ' + method.prettyPrint()
+        if showaddr:
+          print prefix + ' ' + method.prettyPrint() + ' ' + method.imp
+        else:
+          print prefix + ' ' + method.prettyPrint()
 
-def printClassMethods(cls):
-    printInstanceMethods(runtimeHelpers.object_getClass(cls), '+')
 
-# I find that a method that has variable parameter can not b.evaluateExpression
-# so I use numberWithLongLong: rather than -[NSString stringWithFormat:]
-def instanceMethosOfClass(klass):
+def printClassMethods(cls, showaddr=False):
+    printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
+
+# Use numberWithLongLong: rather than -[NSString stringWithFormat:] 
+# since evaluateExpression doesn't work with variable arguments.
+def instanceMethodsOfClass(klass):
   tmpString = """
     unsigned int outCount;
     void **methods = (void **)class_copyMethodList((Class)$cls, &outCount);
@@ -142,10 +153,10 @@ class Method:
     self.oc_method = self.toHex(oc_method)
 
   def prettyPrint(self):
-    # mast be bigger then 2, 0-idx for self, 1-st for SEL
     argnum = fb.evaluateIntegerExpression("method_getNumberOfArguments({})".format(self.oc_method))
     names = self.name.split(':')
 
+    # the argnum count must be bigger then 2, index 0 for self, index 1 for SEL
     for i in range(2, argnum):
       arg_type = fb.evaluateCStringExpression("(char *)method_copyArgumentType({}, {})".format(self.oc_method, i))
       names[i-2] = names[i-2] + ":(" +  self.decode(arg_type) + ")arg" + str(i-2)
