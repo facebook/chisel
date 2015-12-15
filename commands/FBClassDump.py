@@ -77,6 +77,7 @@ def printClassMethods(cls, showaddr=False):
 
 # Use numberWithLongLong: rather than -[NSString stringWithFormat:] 
 # since evaluateExpression doesn't work with variable arguments.
+# I remove the free(methods) because it would cause evaluateExpressionValue fail some time.
 def instanceMethodsOfClass(klass):
   tmpString = """
     unsigned int outCount;
