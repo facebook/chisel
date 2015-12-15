@@ -32,10 +32,10 @@ class FBComponentsDebugCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     if options.set:
-      lldb.debugger.HandleCommand('expr (void)[CKComponentDebugController setDebugMode:YES]')
+      lldb.debugger.HandleCommand('eobjc (void)[CKComponentDebugController setDebugMode:YES]')
       print 'Debug mode for ComponentKit has been set.'
     elif options.unset:
-      lldb.debugger.HandleCommand('expr (void)[CKComponentDebugController setDebugMode:NO]')
+      lldb.debugger.HandleCommand('eobjc (void)[CKComponentDebugController setDebugMode:NO]')
       print 'Debug mode for ComponentKit has been unset.'
     else:
       print 'No option for ComponentKit Debug mode specified.'
@@ -60,7 +60,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
     upwards = 'YES' if options.upwards else 'NO'
     showViews = 'YES' if options.showViews == 'YES' else 'NO'
 
-    lldb.debugger.HandleCommand('po (id)[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
+    lldb.debugger.HandleCommand('poobjc (id)[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
 
 class FBComponentsReflowCommand(fb.FBCommand):
   def name(self):

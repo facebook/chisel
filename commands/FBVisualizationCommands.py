@@ -83,9 +83,9 @@ def _showColor(color):
         colorToUse = '[UIColor colorWithCIColor:(CIColor *){}]'.format(color)
 
     imageSize = 58
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
-    lldb.debugger.HandleCommand('expr (void)[(id){} setFill]'.format(colorToUse))
-    lldb.debugger.HandleCommand('expr (void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
+    lldb.debugger.HandleCommand('eobjc (void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
+    lldb.debugger.HandleCommand('eobjc (void)[(id){} setFill]'.format(colorToUse))
+    lldb.debugger.HandleCommand('eobjc (void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
 
     frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
     result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -96,13 +96,20 @@ def _showColor(color):
       image = result.GetValue()
       _showImage(image)
 
-    lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+    lldb.debugger.HandleCommand('eobjc (void)UIGraphicsEndImageContext()')
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
+  size = '((CGRect)[(id)' + layer + ' bounds]).size'
 
-  lldb.debugger.HandleCommand('expr (void)UIGraphicsBeginImageContextWithOptions(((CGRect)[(id)' + layer + ' bounds]).size, NO, 0.0)')
-  lldb.debugger.HandleCommand('expr (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
+  width = float(fb.evaluateExpression(size + '.width'))
+  height = float(fb.evaluateExpression(size + '.height'))
+  if width == 0.0 or height == 0.0:
+    print 'Nothing to see here - the size of this element is {} x {}.'.format(width, height)
+    return
+
+  lldb.debugger.HandleCommand('eobjc (void)UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
+  lldb.debugger.HandleCommand('eobjc (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -112,7 +119,7 @@ def _showLayer(layer):
     image = result.GetValue()
     _showImage(image)
 
-  lldb.debugger.HandleCommand('expr (void)UIGraphicsEndImageContext()')
+  lldb.debugger.HandleCommand('eobjc (void)UIGraphicsEndImageContext()')
 
 def _dataIsImage(data):
   data = '(' + data + ')'
@@ -156,7 +163,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        lldb.debugger.HandleCommand('po (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
+        lldb.debugger.HandleCommand('poobjc (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:
