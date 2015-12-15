@@ -86,7 +86,6 @@ def instanceMethodsOfClass(klass):
       NSNumber *num = (NSNumber *)[NSNumber numberWithLongLong:(long long)methods[i]];
       [result addObject:num];
     }
-    (void)free(methods);
     id ret = result.count ? [result copy] : nil;
     ret;
   """
