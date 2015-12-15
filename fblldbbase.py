@@ -8,6 +8,7 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import lldb
+import json
 
 class FBCommandArgument:
   def __init__(self, short='', long='', arg='', type='', help='', default='', boolean=False):
@@ -73,3 +74,49 @@ def evaluateExpression(expression, printErrors=True):
 
 def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)
+
+RET_MACRO = """
+#define IS_JSON_OBJ(obj)\
+    (obj != nil && ((bool)[NSJSONSerialization isValidJSONObject:obj] ||\
+    (bool)[obj isKindOfClass:[NSString class]] ||\
+    (bool)[obj isKindOfClass:[NSNumber class]]))
+#define RET(ret) ({\
+    if (!IS_JSON_OBJ(ret)) {\
+        (void)[NSException raise:@"RET error" format:@"Invalied return type"];\
+    }\
+    NSDictionary *__dict = @{@"return":ret};\
+    NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\
+    NSString *__str = (id)[[NSString alloc] initWithData:__data encoding:4];\
+    (char *)[__str UTF8String];})
+#define RETCString(ret)\
+    ({NSString *___cstring_ret = [NSString stringWithUTF8String:ret];\
+    RET(___cstring_ret);})
+"""
+
+def check_expr(expr):
+    return expr.strip().split('\n')[-1].find('RET') != -1
+
+# evaluates a batch of OC expression, the last expression must contain a RET marco
+# and it will automatic transform the RET OC object to python object
+# Example:
+#       >>> fblldbbase.eval('NSString *str = @"hello world"; RET(@{@"key": str});')
+#       {u'key': u'hello world'}
+#
+def eval(expr):
+    if not check_expr(expr):
+        raise Exception("expr not Invalied, the last expression should include a RET* marco")
+
+    command = "({" + RET_MACRO + '\n' + expr + "})"
+    ret = evaluateExpressionValue(command, True)
+    if not ret.GetError().Success():
+        raise Exception("eval expression error occur")
+    else:
+        process = lldb.debugger.GetSelectedTarget().GetProcess()
+        error = lldb.SBError()
+        ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 256, error)
+        if not error.Success():
+            print error
+            return None
+        else:
+            ret = json.loads(ret)
+            return ret['return']
