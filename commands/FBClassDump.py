@@ -1,11 +1,5 @@
 #!/usr/bin/python
-
-import os
-import re
 import string
-import json
-import sys
-
 import lldb
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
