@@ -113,11 +113,11 @@ def check_expr(expr):
 # evaluate a batch of Objective-C expressions, the last expression must contain a RETURN marco
 # and it will automatic transform the Objective-C object to Python object
 # Example:
-#       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETUTN(@{@"key": str});')
+#       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETURN(@{@"key": str});')
 #       {u'key': u'hello world'}
 def evaluate(expr):
   if not check_expr(expr):
-    raise Exception("Invalied Expression, the last expression not include a RETURN family marco")
+    raise Exception("Invalid Expression, the last expression not include a RETURN family marco")
 
   command = "({" + RETURN_MACRO + '\n' + expr + "})"
   ret = evaluateExpressionValue(command, True)
