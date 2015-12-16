@@ -8,6 +8,7 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 import lldb
+import json
 
 class FBCommandArgument:
   def __init__(self, short='', long='', arg='', type='', help='', default='', boolean=False):
@@ -86,3 +87,50 @@ def evaluateCStringExpression(expression, printErrors=True):
     if printErrors:
       print error
     return None
+
+
+RETURN_MACRO = """
+#define IS_JSON_OBJ(obj)\
+    (obj != nil && ((bool)[NSJSONSerialization isValidJSONObject:obj] ||\
+    (bool)[obj isKindOfClass:[NSString class]] ||\
+    (bool)[obj isKindOfClass:[NSNumber class]]))
+#define RETURN(ret) ({\
+    if (!IS_JSON_OBJ(ret)) {\
+        (void)[NSException raise:@"Invalied RETRUN argument" format:@""];\
+    }\
+    NSDictionary *__dict = @{@"return":ret};\
+    NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\
+    NSString *__str = (id)[[NSString alloc] initWithData:__data encoding:4];\
+    (char *)[__str UTF8String];})
+#define RETURNCString(ret)\
+    ({NSString *___cstring_ret = [NSString stringWithUTF8String:ret];\
+    RETURN(___cstring_ret);})
+"""
+
+def check_expr(expr):
+  return expr.strip().split('\n')[-1].find('RETURN') != -1
+
+# evaluate a batch of Objective-C expressions, the last expression must contain a RETURN marco
+# and it will automatic transform the Objective-C object to Python object
+# Example:
+#       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETUTN(@{@"key": str});')
+#       {u'key': u'hello world'}
+def evaluate(expr):
+  if not check_expr(expr):
+    raise Exception("Invalied Expression, the last expression not include a RETURN family marco")
+
+  command = "({" + RETURN_MACRO + '\n' + expr + "})"
+  ret = evaluateExpressionValue(command, True)
+  if not ret.GetError().Success():
+    print ret.GetError()
+    return None
+  else:
+    process = lldb.debugger.GetSelectedTarget().GetProcess()
+    error = lldb.SBError()
+    ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
+    if not error.Success():
+      print error
+      return None
+    else:
+      ret = json.loads(ret)
+      return ret['return']

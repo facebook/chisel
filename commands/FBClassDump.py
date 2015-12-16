@@ -3,6 +3,8 @@
 import os
 import re
 import string
+import json
+import sys
 
 import lldb
 import fblldbbase as fb
@@ -55,70 +57,58 @@ def isClassObject(arg):
     return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
-    ocarray = instanceMethodsOfClass(cls)
-    if not ocarray:
-      print "No instance methods were found."
-      return
+    json_method_array = get_oc_methods_json(cls)
+    if json_method_array:
+      for m in json_method_array:
+        method = Method(m)
 
-    methodAddrs = covertOCArrayToPyArray(ocarray)
-    methods = []
-    for i in methodAddrs:
-      method = createMethodFromOCMethod(i)
-      if method is not None:
-        methods.append(method)
         if showaddr:
-          print prefix + ' ' + method.prettyPrint() + ' ' + method.imp
+          print prefix + ' ' + method.prettyPrintString() + ' ' + str(method.imp)
         else:
-          print prefix + ' ' + method.prettyPrint()
+          print prefix + ' ' + method.prettyPrintString()
 
 
 def printClassMethods(cls, showaddr=False):
     printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
 
-# Use numberWithLongLong: rather than -[NSString stringWithFormat:] 
-# since evaluateExpression doesn't work with variable arguments.
-# I remove the free(methods) because it would cause evaluateExpressionValue fail some time.
-def instanceMethodsOfClass(klass):
+# Notice that evaluateExpression doesn't work with variable arguments. such as -[NSString stringWithFormat:]
+# I remove the "free(methods)" because it would cause evaluateExpressionValue to raise exception some time.
+def get_oc_methods_json(klass):
   tmpString = """
     unsigned int outCount;
-    void **methods = (void **)class_copyMethodList((Class)$cls, &outCount);
-    NSMutableArray *result = [NSMutableArray array];
+    Method *methods = (Method *)class_copyMethodList((Class)$cls, &outCount);
+    NSMutableArray *result2 = (id)[NSMutableArray array];
+    
     for (int i = 0; i < outCount; i++) {
-      NSNumber *num = (NSNumber *)[NSNumber numberWithLongLong:(long long)methods[i]];
-      [result addObject:num];
+         
+        NSMutableDictionary *m = (id)[NSMutableDictionary dictionary];
+        
+        SEL name = (SEL)method_getName(methods[i]);
+        [m setObject:(id)NSStringFromSelector(name) forKey:@"name"];
+        
+        char * ecodeing = (char *)method_getTypeEncoding(methods[i]);
+        [m setObject:(id)[NSString stringWithUTF8String:ecodeing] forKey:@"type_encoding"];
+        
+        NSMutableArray *types = (id)[NSMutableArray array];
+        NSInteger args = (NSInteger)method_getNumberOfArguments(methods[i]);
+        for (int idx = 0; idx < args; idx++) {
+            char *type = (char *)method_copyArgumentType(methods[i], idx);
+            [types addObject:(id)[NSString stringWithUTF8String:type]];
+        }
+        [m setObject:types forKey:@"peremeters_type"];
+        
+        char *ret_type = (char *)method_copyReturnType(methods[i]);
+        [m setObject:(id)[NSString stringWithUTF8String:ret_type] forKey:@"return_type"];
+        
+        long imp = (long)method_getImplementation(methods[i]);
+        [m setObject:[NSNumber numberWithLongLong:imp] forKey:@"impletation"];
+        
+        [result2 addObject:m];
     }
-    id ret = result.count ? [result copy] : nil;
-    ret;
+    RETURN(result2);
   """
-
   command = string.Template(tmpString).substitute(cls=klass)
-  command = '({' + command + '})'
-  ret = fb.evaluateExpressionValue(command)
-  if not ret.GetError().Success():
-    return None
-
-  ret = ret.GetValue()
-  if int(ret, 16) == 0: # return nil
-    ret = None
-  return ret
-
-# OC array only can hold id,
-# @return an array whose instance type is str of the oc object`s address
-
-def covertOCArrayToPyArray(oc_array):
-  is_array = fb.evaluateBooleanExpression("[{} isKindOfClass:[NSArray class]]".format(oc_array))
-  if not is_array:
-    return None
-
-  result = []
-  count = fb.evaluateExpression("(int)[{} count]".format(oc_array))
-
-  for i in range(int(count)):
-    value = fb.evaluateExpression("(id)[{} objectAtIndex:{}]".format(oc_array, i))
-    value = fb.evaluateExpression("(long long)[{} longLongValue]".format(value))
-    result.append(value)
-
-  return result
+  return fb.evaluate(command)
 
 
 class Method:
@@ -146,25 +136,24 @@ class Method:
     ':': 'SEL',
   }
 
-  def __init__(self, name, type_encoding, imp, oc_method):
-    self.name = name
-    self.type = type_encoding
-    self.imp = imp
-    self.oc_method = self.toHex(oc_method)
+  def __init__(self, json):
+    self.name = json['name']
+    self.type_encoding = json['type_encoding']
+    self.peremeters_type = json['peremeters_type']
+    self.return_type = json['return_type']
+    self.imp = self.toHex(json['impletation'])
 
-  def prettyPrint(self):
-    argnum = fb.evaluateIntegerExpression("method_getNumberOfArguments({})".format(self.oc_method))
+  def prettyPrintString(self):
+    argnum = len(self.peremeters_type)
     names = self.name.split(':')
 
     # the argnum count must be bigger then 2, index 0 for self, index 1 for SEL
     for i in range(2, argnum):
-      arg_type = fb.evaluateCStringExpression("(char *)method_copyArgumentType({}, {})".format(self.oc_method, i))
+      arg_type = self.peremeters_type[i]
       names[i-2] = names[i-2] + ":(" +  self.decode(arg_type) + ")arg" + str(i-2)
 
     string = " ".join(names)
-
-    ret_type = fb.evaluateCStringExpression("(char *)method_copyReturnType({})".format(self.oc_method))
-    return "({}){}".format(self.decode(ret_type), string)
+    return "({}){}".format(self.decode(self.return_type), string)
 
 
   def decode(self, type):
@@ -174,28 +163,7 @@ class Method:
     return ret
 
   def toHex(self, addr):
-    return addr
+    return hex(addr)
 
   def __str__(self):
     return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp
-
-def createMethodFromOCMethod(method):
-  process = lldb.debugger.GetSelectedTarget().GetProcess()
-  error = lldb.SBError()
-
-  nameValue = fb.evaluateExpression("(char *)method_getName({})".format(method))
-  name = process.ReadCStringFromMemory(int(nameValue, 16), 256, error)
-
-  if not error.Success():
-    print error
-    return None
-
-  typeEncodingValue = fb.evaluateExpression("(char *)method_getTypeEncoding({})".format(method))
-  type_encoding = process.ReadCStringFromMemory(int(typeEncodingValue, 16), 256, error)
-
-  if not error.Success():
-    print error
-    return None
-
-  imp = fb.evaluateExpression("(void *)method_getImplementation({})".format(method))
-  return Method(name, type_encoding, imp, method)
