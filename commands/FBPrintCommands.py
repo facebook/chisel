@@ -33,6 +33,13 @@ def lldbcommands():
     FBPrintData(),
     FBPrintTargetActions(),
     FBPrintJSON(),
+    FBPrintAsCurl(),
+    FBPrintInObjc(),
+    FBPrintInSwift(),
+    FBPrintObjectInObjc(),
+    FBPrintObjectInSwift(),
+    FBExpressionInObjc(),
+    FBExpressionInSwift(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -90,7 +97,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po [NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
+    lldb.debugger.HandleCommand('poobjc (NSString *)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -108,7 +115,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        lldb.debugger.HandleCommand('po [UIViewController _printHierarchy]')
+        lldb.debugger.HandleCommand('poobjc (NSString *)[UIViewController _printHierarchy]')
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
@@ -279,7 +286,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
-    printCommand = 'po' if ('@' in ivarTypeEncodingFirstChar) else 'p'
+    printCommand = 'poobjc' if ('@' in ivarTypeEncodingFirstChar) else 'pobjc'
     lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
 
 class FBPrintKeyPath(fb.FBCommand):
@@ -301,7 +308,7 @@ class FBPrintKeyPath(fb.FBCommand):
     else:
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
-      printCommand = 'po [{} valueForKeyPath:@"{}"]'.format(object, keypath)
+      printCommand = 'poobjc (id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
       lldb.debugger.HandleCommand(printCommand)
 
 
@@ -398,7 +405,7 @@ class FBPrintData(fb.FBCommand):
     elif encoding_text == 'utf32l':
       enc = 0x9c000100
 
-    print_command = 'po (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
+    print_command = 'poobjc (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
     lldb.debugger.HandleCommand(print_command)
 
 class FBPrintTargetActions(fb.FBCommand):
@@ -450,3 +457,174 @@ class FBPrintJSON(fb.FBCommand):
     
     print jsonString
     
+class FBPrintAsCurl(fb.FBCommand):
+  def name(self):
+    return 'pcurl'
+
+  def description(self):
+    return 'Print the NSURLRequest (HTTP) as curl command.'
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-e', long='--embed-data', arg='embed', boolean=True, default=False, help='Embed request data as base64.'),
+    ]
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='request', type='NSURLRequest*/NSMutableURLRequest*', help='The request to convert to the curl command.') ]
+
+  def generateTmpFilePath(self):
+    return '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
+
+  def run(self, arguments, options):
+    request = arguments[0]
+    HTTPHeaderSring = ''
+    HTTPMethod = fb.evaluateExpressionValue('(id)[{} HTTPMethod]'.format(request)).GetObjectDescription()
+    URL = fb.evaluateExpressionValue('(id)[{} URL]'.format(request)).GetObjectDescription()
+    timeout = fb.evaluateExpression('(NSTimeInterval)[{} timeoutInterval]'.format(request))
+    HTTPHeaders = fb.evaluateObjectExpression('(id)[{} allHTTPHeaderFields]'.format(request))
+    HTTPHeadersCount = fb.evaluateIntegerExpression('[{} count]'.format(HTTPHeaders)) 
+    allHTTPKeys = fb.evaluateObjectExpression('[{} allKeys]'.format(HTTPHeaders))
+    for index in range(0, HTTPHeadersCount):
+        key = fb.evaluateObjectExpression('[{} objectAtIndex:{}]'.format(allHTTPKeys, index))
+        keyDescription = fb.evaluateExpressionValue('(id){}'.format(key)).GetObjectDescription()
+        value = fb.evaluateExpressionValue('(id)[(id){} objectForKey:{}]'.format(HTTPHeaders, key)).GetObjectDescription()
+        if len(HTTPHeaderSring) > 0:
+            HTTPHeaderSring += ' '
+        HTTPHeaderSring += '-H "{}: {}"'.format(keyDescription, value)
+    HTTPData = fb.evaluateObjectExpression('[{} HTTPBody]'.format(request))
+    dataFile = None
+    dataAsString = None
+    if fb.evaluateIntegerExpression('[{} length]'.format(HTTPData)) > 0:
+        if options.embed:
+          if fb.evaluateIntegerExpression('[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]'.format(HTTPData)):
+            dataAsString = fb.evaluateExpressionValue('(id)[(id){} base64EncodedStringWithOptions:0]'.format(HTTPData)).GetObjectDescription()
+          else :
+            print 'This version of OS doesn\'t supports base64 data encoding'
+            return False
+        elif not runtimeHelpers.isIOSDevice():
+          dataFile = self.generateTmpFilePath()
+          if not fb.evaluateBooleanExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile)):
+            print 'Can\'t write data to file {}'.format(dataFile)
+            return False
+        else:
+          print 'HTTPBody data for iOS Device is supported only with "--embed-data" flag'
+          return False
+
+    commandString = ''
+    if dataAsString is not None and len(dataAsString) > 0:
+      dataFile = self.generateTmpFilePath()
+      commandString += 'echo "{}" | base64 -D -o "{}" && '.format(dataAsString, dataFile)
+    commandString += 'curl -X {} --connect-timeout {}'.format(HTTPMethod, timeout)
+    if len(HTTPHeaderSring) > 0:
+        commandString += ' ' + HTTPHeaderSring
+    if dataFile is not None:
+        commandString += ' --data-binary @"{}"'.format(dataFile)
+        
+    commandString += ' "{}"'.format(URL)
+    print commandString
+
+class FBPrintInObjc(fb.FBCommand):
+  def name(self):
+    return 'pobjc'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++ -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
+
+class FBPrintInSwift(fb.FBCommand):
+  def name(self):
+    return 'pswift'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in a Swift context. (Shortcut for "expression -l Swift -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)
+
+class FBPrintObjectInObjc(fb.FBCommand):
+  def name(self):
+    return 'poobjc'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -O -l ObjC++ -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -O -l ObjC++ -- ' + expression)
+
+class FBPrintObjectInSwift(fb.FBCommand):
+  def name(self):
+    return 'poswift'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in a Swift context. (Shortcut for "expression -O -l Swift -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -O -l Swift -- ' + expression)
+
+class FBExpressionInObjc(fb.FBCommand):
+  def name(self):
+    return 'eobjc'
+
+  def description(self):
+    return 'Run expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++" )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    values = arguments[0].split("--", 1)
+    if len(values) is 2:
+        (arguments, expression) = arguments
+        lldb.debugger.HandleCommand('expression -l ObjC++ ' + arguments + " -- " + expression)
+    else:
+        expression = arguments[0]
+        lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
+
+class FBExpressionInSwift(fb.FBCommand):
+  def name(self):
+    return 'eswift'
+
+  def description(self):
+    return 'Run expression run in a Swift context. (Shortcut for "expression -l Swift" )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    values = arguments[0].split("--", 1)
+    if len(values) is 2:
+        (arguments, expression) = arguments
+        lldb.debugger.HandleCommand('expression -l Swift ' + arguments + " -- " + expression)
+    else:
+        expression = arguments[0]
+        lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)

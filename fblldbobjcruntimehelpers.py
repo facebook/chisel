@@ -92,3 +92,9 @@ def isMacintoshArch():
   command = '(void*)objc_getClass("{}")'.format(nsClassName)
 
   return (fb.evaluateBooleanExpression(command + '!= nil'))
+
+def isIOSSimulator():
+  return fb.evaluateExpressionValue('(id)[[UIDevice currentDevice] model]').GetObjectDescription().lower().find('simulator') >= 0
+
+def isIOSDevice():
+  return not isMacintoshArch() and not isIOSSimulator()
