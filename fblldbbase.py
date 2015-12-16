@@ -108,7 +108,7 @@ RETURN_MACRO = """
 """
 
 def check_expr(expr):
-  return expr.strip().split('\n')[-1].find('RETURN') != -1
+  return expr.strip().split(';')[-2].find('RETURN') != -1
 
 # evaluate a batch of Objective-C expressions, the last expression must contain a RETURN marco
 # and it will automatic transform the Objective-C object to Python object
