@@ -39,7 +39,6 @@ class FBPrintMethods(fb.FBCommand):
         if not isClassObject(cls):
             raise Exception('Invalid argument. Please specify an instance or a Class.')
 
-
     if options.clsmethod:
       print 'Class Methods:'
       printClassMethods(cls, options.showaddr)
@@ -58,7 +57,6 @@ def isClassObject(arg):
     return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
-
     json_method_array = get_oc_methods_json(cls)
     if json_method_array:
       for m in json_method_array:
@@ -74,7 +72,7 @@ def printClassMethods(cls, showaddr=False):
     printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
 
 # Notice that evaluateExpression doesn't work with variable arguments. such as -[NSString stringWithFormat:]
-# I remove the free(methods) because it would cause evaluateExpressionValue fail some time.
+# I remove the "free(methods)" because it would cause evaluateExpressionValue to raise exception some time.
 def get_oc_methods_json(klass):
   tmpString = """
     unsigned int outCount;
@@ -82,7 +80,7 @@ def get_oc_methods_json(klass):
     NSMutableArray *result2 = (id)[NSMutableArray array];
     
     for (int i = 0; i < outCount; i++) {
-        
+         
         NSMutableDictionary *m = (id)[NSMutableDictionary dictionary];
         
         SEL name = (SEL)method_getName(methods[i]);
@@ -107,10 +105,10 @@ def get_oc_methods_json(klass):
         
         [result2 addObject:m];
     }
-    RET(result2);
+    RETURN(result2);
   """
   command = string.Template(tmpString).substitute(cls=klass)
-  return eval(command)
+  return fb.evaluate(command)
 
 
 class Method:
@@ -169,53 +167,3 @@ class Method:
 
   def __str__(self):
     return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp
-
-
-# For eval
-# TODO: move to base
-
-RET_MACRO = """
-#define IS_JSON_OBJ(obj)\
-    (obj != nil && ((bool)[NSJSONSerialization isValidJSONObject:obj] ||\
-    (bool)[obj isKindOfClass:[NSString class]] ||\
-    (bool)[obj isKindOfClass:[NSNumber class]]))
-#define RET(ret) ({\
-    if (!IS_JSON_OBJ(ret)) {\
-        (void)[NSException raise:@"RET error" format:@"Invalied return type"];\
-    }\
-    NSDictionary *__dict = @{@"return":ret};\
-    NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:1 error:NULL];\
-    NSString *__str = (id)[[NSString alloc] initWithData:__data encoding:4];\
-    (char *)[__str UTF8String];})
-#define RETCString(ret)\
-    ({NSString *___cstring_ret = [NSString stringWithUTF8String:ret];\
-    RET(___cstring_ret);})
-"""
-
-def check_expr(expr):
-    return expr.strip().split('\n')[-1].find('RET') != -1
-
-# evaluates a batch of OC expression, the last expression must contain a RET marco
-# and it will automatic transform the RET OC object to python object
-# Example:
-#       >>> fblldbbase.eval('NSString *str = @"hello world"; RET(@{@"key": str});')
-#       {u'key': u'hello world'}
-#
-def eval(expr):
-    if not check_expr(expr):
-        raise Exception("expr not Invalied, the last expression should include a RET* marco")
-
-    command = "({" + RET_MACRO + '\n' + expr + "})"
-    ret = fb.evaluateExpressionValue(command, True)
-    if not ret.GetError().Success():
-        raise Exception("eval expression error occur")
-    else:
-        process = lldb.debugger.GetSelectedTarget().GetProcess()
-        error = lldb.SBError()
-        ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
-        if not error.Success():
-            print error
-            return None
-        else:
-            ret = json.loads(ret)
-            return ret['return']
