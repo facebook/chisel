@@ -96,7 +96,7 @@ RETURN_MACRO = """
     (bool)[obj isKindOfClass:[NSNumber class]]))
 #define RETURN(ret) ({\
     if (!IS_JSON_OBJ(ret)) {\
-        (void)[NSException raise:@"RET error" format:@"Invalied return type"];\
+        (void)[NSException raise:@"Invalied RETRUN argument" format:@""];\
     }\
     NSDictionary *__dict = @{@"return":ret};\
     NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\
@@ -111,7 +111,7 @@ def check_expr(expr):
   return expr.strip().split('\n')[-1].find('RETURN') != -1
 
 # evaluate a batch of Objective-C expressions, the last expression must contain a RETURN marco
-# and it will automatic transform the Objective-C object to ython object
+# and it will automatic transform the Objective-C object to Python object
 # Example:
 #       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETUTN(@{@"key": str});')
 #       {u'key': u'hello world'}
