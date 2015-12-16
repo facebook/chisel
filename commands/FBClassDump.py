@@ -95,13 +95,13 @@ def get_oc_methods_json(klass):
             char *type = (char *)method_copyArgumentType(methods[i], idx);
             [types addObject:(id)[NSString stringWithUTF8String:type]];
         }
-        [m setObject:types forKey:@"peremeters_type"];
+        [m setObject:types forKey:@"parameters_type"];
         
         char *ret_type = (char *)method_copyReturnType(methods[i]);
         [m setObject:(id)[NSString stringWithUTF8String:ret_type] forKey:@"return_type"];
         
         long imp = (long)method_getImplementation(methods[i]);
-        [m setObject:[NSNumber numberWithLongLong:imp] forKey:@"impletation"];
+        [m setObject:[NSNumber numberWithLongLong:imp] forKey:@"implementation"];
         
         [result2 addObject:m];
     }
@@ -139,9 +139,9 @@ class Method:
   def __init__(self, json):
     self.name = json['name']
     self.type_encoding = json['type_encoding']
-    self.peremeters_type = json['peremeters_type']
+    self.peremeters_type = json['parameters_type']
     self.return_type = json['return_type']
-    self.imp = self.toHex(json['impletation'])
+    self.imp = self.toHex(json['implementation'])
 
   def prettyPrintString(self):
     argnum = len(self.peremeters_type)
