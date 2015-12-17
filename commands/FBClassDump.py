@@ -55,12 +55,10 @@ def printInstanceMethods(cls, showaddr=False, prefix='-'):
   if json_method_array:
     for m in json_method_array:
       method = Method(m)
-
       if showaddr:
         print prefix + ' ' + method.prettyPrintString() + ' ' + str(method.imp)
       else:
         print prefix + ' ' + method.prettyPrintString()
-
 
 def printClassMethods(cls, showaddr=False):
   printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
