@@ -229,6 +229,7 @@ class Property:
     self.attributes_string = json['attributes_string']
     self.attributes = json['attributes']
 
+# https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW1
   def prettyPrintString(self):
     attrs = []
     if self.attributes.has_key('N'):
