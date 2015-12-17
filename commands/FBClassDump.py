@@ -6,7 +6,8 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 
 def lldbcommands():
   return [
-    FBPrintMethods()
+    FBPrintMethods(),
+    FBPrintProperties()
   ]
 
 class FBPrintMethods(fb.FBCommand):
@@ -47,6 +48,30 @@ class FBPrintMethods(fb.FBCommand):
       print '\nInstance Methods:'
       printInstanceMethods(cls, options.showaddr)
 
+
+class FBPrintProperties(fb.FBCommand):
+
+  def name(self):
+    return 'pproperties'
+   
+  def description(self):
+    return "Print the properties of an instance"
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-v', long='--value', arg='showvalue', help='Print the value of a property', default=False, boolean=True),
+    ]
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
+
+  def run(self, arguments, options):
+    cls = runtimeHelpers.object_getClass(arguments[0])
+    if not isClassObject(cls):
+        raise Exception('Invalid argument. Please specify an instance or a Class.')
+    printProperties(cls)
+
+# helpers 
 def isClassObject(arg):
   return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
@@ -62,6 +87,43 @@ def printInstanceMethods(cls, showaddr=False, prefix='-'):
 
 def printClassMethods(cls, showaddr=False):
   printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
+
+def printProperties(cls, showvalue=False):
+  propsJson = getPropertiesJson(cls)
+  if propsJson:
+    for m in propsJson:
+      prop = Property(m)
+      print prop.prettyPrintString()
+
+
+def decode(code):
+  encodeMap = {
+    'c': 'char',
+    'i': 'int',
+    's': 'short',
+    'l': 'long',
+    'q': 'long long',
+
+    'C': 'unsigned char',
+    'I': 'unsigned int',
+    'S': 'unsigned short',
+    'L': 'unsigned long',
+    'Q': 'unsigned long long',
+
+    'f': 'float',
+    'd': 'double',
+    'B': 'bool',
+    'v': 'void',
+    '*': 'char *',
+    '@': 'id',
+    '#': 'Class',
+    ':': 'SEL',
+  }
+
+  ret = code
+  if code in encodeMap:
+    ret = encodeMap[code]
+  return ret
 
 # Notice that evaluateExpression doesn't work with variable arguments. such as -[NSString stringWithFormat:]
 # I remove the "free(methods)" because it would cause evaluateExpressionValue to raise exception some time.
@@ -104,29 +166,6 @@ def get_oc_methods_json(klass):
 
 class Method:
 
-  encodeMap = {
-    'c': 'char',
-    'i': 'int',
-    's': 'short',
-    'l': 'long',
-    'q': 'long long',
-
-    'C': 'unsigned char',
-    'I': 'unsigned int',
-    'S': 'unsigned short',
-    'L': 'unsigned long',
-    'Q': 'unsigned long long',
-
-    'f': 'float',
-    'd': 'double',
-    'B': 'bool',
-    'v': 'void',
-    '*': 'char *',
-    '@': 'id',
-    '#': 'Class',
-    ':': 'SEL',
-  }
-
   def __init__(self, json):
     self.name = json['name']
     self.type_encoding = json['type_encoding']
@@ -141,17 +180,10 @@ class Method:
     # the argnum count must be bigger then 2, index 0 for self, index 1 for SEL
     for i in range(2, argnum):
       arg_type = self.parameters_type[i]
-      names[i-2] = names[i-2] + ":(" +  self.decode(arg_type) + ")arg" + str(i-2)
+      names[i-2] = names[i-2] + ":(" +  decode(arg_type) + ")arg" + str(i-2)
 
     string = " ".join(names)
-    return "({}){}".format(self.decode(self.return_type), string)
-
-
-  def decode(self, type):
-    ret = type
-    if type in Method.encodeMap:
-      ret = Method.encodeMap[type]
-    return ret
+    return "({}){}".format(decode(self.return_type), string)
 
   def toHex(self, addr):
     return hex(addr)
@@ -159,5 +191,66 @@ class Method:
   def __str__(self):
     return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp
 
+def getPropertiesJson(klass):
+  tmpString = """
+      NSMutableArray *result = (id)[NSMutableArray array];
+      unsigned int count;
+      objc_property_t *props = (objc_property_t *)class_copyPropertyList([self class], &count);
+      for (int i = 0; i < count; i++) {
+          NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
+          
+          char *name = (char *)property_getName(props[i]);
+          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:@"name"];
+          
+          char *attrstr = (char *)property_getAttributes(props[i]);
+          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:@"attributes_string"];
+          
+          NSMutableDictionary *attrsDict = (id)[NSMutableDictionary dictionary];
+          unsigned int pcount;
+          objc_property_attribute_t *attrs = (objc_property_attribute_t *)property_copyAttributeList(props[i], &pcount);
+          for (int i = 0; i < pcount; i++) {
+              NSString *name = (id)[NSString stringWithUTF8String:(char *)attrs[i].name];
+              NSString *value = (id)[NSString stringWithUTF8String:(char *)attrs[i].value];
+              [attrsDict setObject:value forKey:name];
+          }
+          [dict setObject:attrsDict forKey:@"attributes"];
+          
+          [result addObject:dict];
+      }
+      RETURN(result);
+    """
+  command = string.Template(tmpString).substitute(cls=klass)
+  return fb.evaluate(command)
 
-# Properties
+class Property:
+
+  def __init__(self, json):
+    self.name = json['name']
+    self.attributes_string = json['attributes_string']
+    self.attributes = json['attributes']
+
+  def prettyPrintString(self):
+    attrs = []
+    if self.attributes.has_key('N'):
+      attrs.append('nonatomic')
+    else:
+      attrs.append('atomic')
+
+    if self.attributes.has_key('&'):
+      attrs.append('strong')
+    elif self.attributes.has_key('C'):
+      attrs.append('copy')
+    elif self.attributes.has_key('W'):
+      attrs.append('weak')
+    else:
+      attrs.append('assign')
+
+    if self.attributes.has_key('R'):
+      attrs.append('readonly')
+
+    if self.attributes.has_key('G'):
+      attrs.append("getter={}".format(self.attributes['G']))
+    if self.attributes.has_key('S'):
+      attrs.append("setter={}".format(self.attributes['S']))
+
+    return "@property ({}) {} {}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
