@@ -79,25 +79,23 @@ def isClassObject(arg):
   return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
-  json_method_array = get_oc_methods_json(cls)
-  if json_method_array:
-    for m in json_method_array:
-      method = Method(m)
-      if showaddr:
-        print prefix + ' ' + method.prettyPrintString() + ' ' + str(method.imp)
-      else:
-        print prefix + ' ' + method.prettyPrintString()
+  methods = getMethods(cls)
+  if not methods:
+    print "No instance methods were found"
+
+  for m in methods:
+    if showaddr:
+      print prefix + ' ' + m.prettyPrintString() + ' ' + str(m.imp)
+    else:
+      print prefix + ' ' + m.prettyPrintString()
 
 def printClassMethods(cls, showaddr=False):
   printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
 
 def printProperties(cls, showvalue=False):
-  propsJson = getPropertiesJson(cls)
-  if propsJson:
-    for m in propsJson:
-      prop = Property(m)
-      print prop.prettyPrintString()
-
+  props = getProperties(cls)
+  for p in props:
+    print p.prettyPrintString()
 
 def decode(code):
   encodeMap = {
@@ -130,7 +128,7 @@ def decode(code):
 
 # Notice that evaluateExpression doesn't work with variable arguments. such as -[NSString stringWithFormat:]
 # I remove the "free(methods)" because it would cause evaluateExpressionValue to raise exception some time.
-def get_oc_methods_json(klass):
+def getMethods(klass):
   tmpString = """
     unsigned int outCount;
     Method *methods = (Method *)class_copyMethodList((Class)$cls, &outCount);
@@ -164,8 +162,8 @@ def get_oc_methods_json(klass):
     RETURN(result);
   """
   command = string.Template(tmpString).substitute(cls=klass)
-  return fb.evaluate(command)
-
+  methods = fb.evaluate(command)
+  return [Method(m) for m in methods]
 
 class Method:
 
@@ -194,7 +192,7 @@ class Method:
   def __str__(self):
     return "<Method:" + self.oc_method + "> " + self.name + " --- " + self.type + " --- " + self.imp
 
-def getPropertiesJson(klass):
+def getProperties(klass):
   tmpString = """
       NSMutableArray *result = (id)[NSMutableArray array];
       unsigned int count;
@@ -223,7 +221,8 @@ def getPropertiesJson(klass):
       RETURN(result);
     """
   command = string.Template(tmpString).substitute(cls=klass)
-  return fb.evaluate(command)
+  propsJson = fb.evaluate(command)
+  return [Property(m) for m in propsJson]
 
 class Property:
 
