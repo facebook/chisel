@@ -66,9 +66,12 @@ class FBPrintProperties(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
-    cls = runtimeHelpers.object_getClass(arguments[0])
+    cls = arguments[0]
     if not isClassObject(cls):
-        raise Exception('Invalid argument. Please specify an instance or a Class.')
+      cls = runtimeHelpers.object_getClass(cls)
+      if not isClassObject(cls):
+          raise Exception('Invalid argument. Please specify an instance or a Class.')
+
     printProperties(cls)
 
 # helpers 
@@ -195,7 +198,7 @@ def getPropertiesJson(klass):
   tmpString = """
       NSMutableArray *result = (id)[NSMutableArray array];
       unsigned int count;
-      objc_property_t *props = (objc_property_t *)class_copyPropertyList([self class], &count);
+      objc_property_t *props = (objc_property_t *)class_copyPropertyList((Class)$cls, &count);
       for (int i = 0; i < count; i++) {
           NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
           
