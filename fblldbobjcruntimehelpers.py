@@ -33,7 +33,7 @@ def class_getSuperclass(klass):
   return value
 
 def class_isMetaClass(klass):
-    command = '(BOOL)class_isMetaClass((Class){})'.format(klass)
+    command = 'class_isMetaClass((Class){})'.format(klass)
     return fb.evaluateBooleanExpression(command)
 
 def class_getInstanceMethod(klass, selector):
