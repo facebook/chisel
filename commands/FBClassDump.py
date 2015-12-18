@@ -21,7 +21,8 @@ class FBPrintMethods(fb.FBCommand):
     return [
       fb.FBCommandArgument(short='-a', long='--address', arg='showaddr', help='Print the implementation address of the method', default=False, boolean=True),
       fb.FBCommandArgument(short='-i', long='--instance', arg='insmethod', help='Print the instance methods', default=False, boolean=True),
-      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods', default=False, boolean=True)
+      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods', default=False, boolean=True), 
+      fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
     ]
 
   def args(self):
@@ -29,10 +30,13 @@ class FBPrintMethods(fb.FBCommand):
 
   def run(self, arguments, options):
     cls = arguments[0]
-    if not isClassObject(cls):
-      cls = runtimeHelpers.object_getClass(cls)
+    if options.clsname:
+      cls = "(Class)NSClassFromString(@\"{}\")".format(cls)
+    else:
       if not isClassObject(cls):
-          raise Exception('Invalid argument. Please specify an instance or a Class.')
+        cls = runtimeHelpers.object_getClass(cls)
+        if not isClassObject(cls):
+            raise Exception('Invalid argument. Please specify an instance or a Class.')
 
     if options.clsmethod:
       print 'Class Methods:'
@@ -59,7 +63,8 @@ class FBPrintProperties(fb.FBCommand):
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-v', long='--value', arg='showvalue', help='Print the value of a property', default=False, boolean=True),
+      fb.FBCommandArgument(short='-v', long='--value', arg='showvalue', help='Print the value of a property, not support for now', default=False, boolean=True),
+      fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
     ]
 
   def args(self):
@@ -67,10 +72,13 @@ class FBPrintProperties(fb.FBCommand):
 
   def run(self, arguments, options):
     cls = arguments[0]
-    if not isClassObject(cls):
-      cls = runtimeHelpers.object_getClass(cls)
+    if options.clsname:
+      cls = "(Class)NSClassFromString(@\"{}\")".format(cls)
+    else:
       if not isClassObject(cls):
-          raise Exception('Invalid argument. Please specify an instance or a Class.')
+        cls = runtimeHelpers.object_getClass(cls)
+        if not isClassObject(cls):
+            raise Exception('Invalid argument. Please specify an instance or a Class.')
 
     printProperties(cls)
 
