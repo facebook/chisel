@@ -132,6 +132,11 @@ def decode(code):
   ret = code
   if code in encodeMap:
     ret = encodeMap[code]
+  elif ret[0:1] == '@':
+    ret = ret[2:-1] + ' *'
+  elif ret[0:1] == '^':
+    ret = decode(ret[1:]) + ' *'
+
   return ret
 
 # Notice that evaluateExpression doesn't work with variable arguments. such as -[NSString stringWithFormat:]
@@ -264,4 +269,4 @@ class Property:
     if self.attributes.has_key('S'):
       attrs.append("setter={}".format(self.attributes['S']))
 
-    return "@property ({}) {} {}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
+    return "@property ({}) {}{}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
