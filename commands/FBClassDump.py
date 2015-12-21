@@ -133,7 +133,10 @@ def decode(code):
   if code in encodeMap:
     ret = encodeMap[code]
   elif ret[0:1] == '@':
-    ret = ret[2:-1] + ' *'
+    if ret[2:3] == '<':  # @"<aDelegate><bDelegate>"
+      ret = 'id' + ret[2:-1].replace('><', ', ') + ' '
+    else:
+      ret = ret[2:-1] + ' *'
   elif ret[0:1] == '^':
     ret = decode(ret[1:]) + ' *'
 
