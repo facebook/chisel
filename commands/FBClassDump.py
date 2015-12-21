@@ -134,7 +134,7 @@ def decode(code):
     ret = encodeMap[code]
   elif ret[0:1] == '@':
     if ret[2:3] == '<':  # @"<aDelegate><bDelegate>"
-      ret = 'id' + ret[2:-1].replace('><', ', ') + ' '
+      ret = 'id' + ret[2:-1].replace('><', ', ')
     else:
       ret = ret[2:-1] + ' *'
   elif ret[0:1] == '^':
@@ -272,4 +272,4 @@ class Property:
     if self.attributes.has_key('S'):
       attrs.append("setter={}".format(self.attributes['S']))
 
-    return "@property ({}) {}{}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
+    return "@property ({}) {} {}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
