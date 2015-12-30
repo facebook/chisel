@@ -7,7 +7,8 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 def lldbcommands():
   return [
     FBPrintMethods(),
-    FBPrintProperties()
+    FBPrintProperties(),
+    FBPrintBlock()
   ]
 
 class FBPrintMethods(fb.FBCommand):
@@ -81,6 +82,89 @@ class FBPrintProperties(fb.FBCommand):
             raise Exception('Invalid argument. Please specify an instance or a Class.')
 
     printProperties(cls)
+
+class FBPrintBlock(fb.FBCommand):
+  def name(self):
+    return 'pblock'
+
+  def description(self):
+    return 'Print the block`s information'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='block', help='The block you want to print'),
+    ]
+
+  def run(self, arguments, options):
+    block = arguments[0]
+
+    # http://clang.llvm.org/docs/Block-ABI-Apple.html
+    tmpString = """
+    enum {
+      BLOCK_HAS_COPY_DISPOSE =  (1 << 25),
+      BLOCK_HAS_CTOR =          (1 << 26), // helpers have C++ code
+      BLOCK_IS_GLOBAL =         (1 << 28),
+      BLOCK_HAS_STRET =         (1 << 29), // IFF BLOCK_HAS_SIGNATURE
+      BLOCK_HAS_SIGNATURE =     (1 << 30),
+    };
+    struct Block_literal_1 {
+      void *isa; // initialized to &_NSConcreteStackBlock or &_NSConcreteGlobalBlock
+      int flags;
+      int reserved;
+      void (*invoke)(void *, ...);
+      struct Block_descriptor_1 {
+          unsigned long int reserved; // NULL
+          unsigned long int size;         // sizeof(struct Block_literal_1)
+          // optional helper functions
+          void (*copy_helper)(void *dst, void *src);     // IFF (1<<25)
+          void (*dispose_helper)(void *src);             // IFF (1<<25)
+          // required ABI.2010.3.16
+          const char *signature;                         // IFF (1<<30)
+      } *descriptor;
+      // imported variables
+    };
+    struct Block_literal_1 real = *((__bridge struct Block_literal_1 *)$block);
+    NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
+    
+    [dict setObject:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
+    
+    if (real.flags & BLOCK_HAS_SIGNATURE) {
+      char *signature;
+      if (real.flags & BLOCK_HAS_COPY_DISPOSE) {
+          signature = (char *)(real.descriptor)->signature;
+      } else {
+          signature = (char *)(real.descriptor)->copy_helper;
+      }
+
+      NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:signature];
+      NSMutableArray *types = [NSMutableArray array];
+
+      [types addObject:(id)[NSString stringWithUTF8String:(char *)[sig methodReturnType]]];
+
+      for (NSUInteger i = 0; i < sig.numberOfArguments; i++) {
+          char *type = (char *)[sig getArgumentTypeAtIndex:i];
+          [types addObject:(id)[NSString stringWithUTF8String:type]];
+      }
+      
+      [dict setObject:types forKey:@"signature"];
+    }
+    
+    RETURN(dict);
+    """
+    command = string.Template(tmpString).substitute(block=block)
+    json = fb.evaluate(command)
+
+    signature = json['signature']
+    if not signature:
+      print 'Imp: ' + hex(json['invoke'])
+      return 
+
+    sigStr = '{} ^('.format(decode(signature[0]))
+    # the block`s implementation always take the block as it`s first argument, so we ignore it
+    sigStr += ', '.join([decode(m) for m in signature[2:]])
+    sigStr += ');'
+    
+    print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr
 
 # helpers 
 def isClassObject(arg):
