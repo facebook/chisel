@@ -9,7 +9,7 @@ import fblldbobjecthelpers as objcHelpers
 def lldbcommands():
   return [ 
     FBPrintWhyViewNotVisible(),
-    FBPrintWhyViewNotInteractible(),
+    FBPrintWhyViewNotInteractable(),
   ]
 
 class FBPrintWhyViewNotVisible(fb.FBCommand):
@@ -137,15 +137,15 @@ class FBPrintWhyViewNotVisible(fb.FBCommand):
       return None
 
 
-class FBPrintWhyViewNotInteractible(fb.FBCommand):
+class FBPrintWhyViewNotInteractable(fb.FBCommand):
   def name(self):
-    return 'wninteractible'
+    return 'wninteractable'
 
   def description(self):
-    return 'Print the reasons the given view is not interactible.'
+    return 'Print the reasons the given view is not interactable.'
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView/NSView *', help='The view to check why it isn\'t interactible.') ]
+    return [ fb.FBCommandArgument(arg='aView', type='UIView/NSView *', help='The view to check why it isn\'t interactable.') ]
 
   def run(self, arguments, options):
     view = arguments[0]
