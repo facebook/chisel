@@ -96,7 +96,7 @@ RETURN_MACRO = """
     (bool)[obj isKindOfClass:[NSNumber class]]))
 #define RETURN(ret) ({\
     if (!IS_JSON_OBJ(ret)) {\
-        (void)[NSException raise:@"Invalied RETRUN argument" format:@""];\
+        (void)[NSException raise:@"Invalid RETURN argument" format:@""];\
     }\
     NSDictionary *__dict = @{@"return":ret};\
     NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\

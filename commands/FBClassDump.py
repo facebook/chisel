@@ -16,7 +16,7 @@ class FBPrintMethods(fb.FBCommand):
     return 'pmethods'
 
   def description(self):
-    return 'Print the class instance methods.'
+    return 'Print the class and instance methods of a class.'
 
   def options(self):
     return [
@@ -27,7 +27,7 @@ class FBPrintMethods(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
+    return [ fb.FBCommandArgument(arg='class or instance', type='instance or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
     cls = arguments[0]
@@ -173,7 +173,7 @@ def isClassObject(arg):
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
   methods = getMethods(cls)
   if not methods:
-    print "No instance methods were found"
+    print "No methods were found"
 
   for m in methods:
     if showaddr:
