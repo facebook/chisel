@@ -11,6 +11,7 @@ def lldbcommands():
     FBWatchInstanceVariableCommand(),
     FBFrameworkAddressBreakpointCommand(),
     FBMethodBreakpointCommand(),
+    FBMemoryWarningCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -173,3 +174,13 @@ def classItselfImplementsSelector(klass, selector):
     return False
   else:
     return True
+
+class FBMemoryWarningCommand(fb.FBCommand):
+  def name(self):
+    return 'mwarning'
+
+  def description(self):
+    return 'simulate a memory warning'
+
+  def run(self, arguments, options):
+    lldb.debugger.HandleCommand('expr (void)[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)];')
