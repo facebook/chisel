@@ -30,14 +30,7 @@ class FBPrintMethods(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='class or instance', type='instance or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
-    cls = arguments[0]
-    if options.clsname:
-      cls = "(Class)NSClassFromString(@\"{}\")".format(cls)
-    else:
-      if not isClassObject(cls):
-        cls = runtimeHelpers.object_getClass(cls)
-        if not isClassObject(cls):
-            raise Exception('Invalid argument. Please specify an instance or a Class.')
+    cls = getClassFromArgument(arguments[0], options.clsname)
 
     if options.clsmethod:
       print 'Class Methods:'
@@ -64,7 +57,6 @@ class FBPrintProperties(fb.FBCommand):
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-v', long='--value', arg='showvalue', help='Print the value of a property, not support for now', default=False, boolean=True),
       fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
     ]
 
@@ -72,14 +64,7 @@ class FBPrintProperties(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
-    cls = arguments[0]
-    if options.clsname:
-      cls = "(Class)NSClassFromString(@\"{}\")".format(cls)
-    else:
-      if not isClassObject(cls):
-        cls = runtimeHelpers.object_getClass(cls)
-        if not isClassObject(cls):
-            raise Exception('Invalid argument. Please specify an instance or a Class.')
+    cls = getClassFromArgument(arguments[0], options.clsname)
 
     printProperties(cls)
 
@@ -169,6 +154,20 @@ class FBPrintBlock(fb.FBCommand):
 # helpers 
 def isClassObject(arg):
   return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
+
+def getClassFromArgument(arg, is_classname):
+  cls = arg
+  if is_classname:
+    cls = runtimeHelpers.objc_getClass(cls)
+    if not int(cls, 16):
+      raise Exception('Class "{}" not found'.format(arg))
+  else:
+    if not isClassObject(cls):
+      cls = runtimeHelpers.object_getClass(cls)
+      if not isClassObject(cls):
+          raise Exception('Invalid argument. Please specify an instance or a Class.')
+
+  return cls
 
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
   methods = getMethods(cls)
