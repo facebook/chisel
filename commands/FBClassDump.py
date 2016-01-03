@@ -357,4 +357,4 @@ class Property:
     if self.attributes.has_key('S'):
       attrs.append("setter={}".format(self.attributes['S']))
 
-    return "@property ({}) {} {}".format(", ".join(attrs), decode(self.attributes['T']), self.name)
+    return "@property ({}) {} {};".format(", ".join(attrs), decode(self.attributes['T']), self.name)
