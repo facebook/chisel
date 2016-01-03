@@ -27,7 +27,7 @@ class FBPrintMethods(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='class or instance', type='instance or Class', help='an Objective-C Class.') ]
+    return [ fb.FBCommandArgument(arg='instance or class', type='instance or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
     cls = getClassFromArgument(arguments[0], options.clsname)
@@ -53,7 +53,7 @@ class FBPrintProperties(fb.FBCommand):
     return 'pproperties'
    
   def description(self):
-    return "Print the properties of an instance"
+    return "Print the properties of an instance or Class"
 
   def options(self):
     return [
@@ -61,7 +61,7 @@ class FBPrintProperties(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='class or instance', type='id or Class', help='an Objective-C Class.') ]
+    return [ fb.FBCommandArgument(arg='instance or class', type='instance or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
     cls = getClassFromArgument(arguments[0], options.clsname)
@@ -73,11 +73,11 @@ class FBPrintBlock(fb.FBCommand):
     return 'pblock'
 
   def description(self):
-    return 'Print the block`s information'
+    return 'Print the block`s implementation address and signature'
 
   def args(self):
     return [
-      fb.FBCommandArgument(arg='block', help='The block you want to print'),
+      fb.FBCommandArgument(arg='block', help='The block object you want to print'),
     ]
 
   def run(self, arguments, options):
