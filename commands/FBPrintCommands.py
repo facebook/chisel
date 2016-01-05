@@ -176,8 +176,14 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
 
   def run(self, arguments, options):
     startResponder = arguments[0]
-    if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[UIResponder class]]') and not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[NSResponder class]]'):
-      print 'Whoa, ' + startResponder + ' is not a UI/NSResponder. =('
+    
+    isMac = runtimeHelpers.isMacintoshArch()
+    responderClass = 'UIResponder'
+    if isMac:
+      responderClass = 'NSResponder'
+
+    if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[' + responderClass + ' class]]'):
+      print 'Whoa, ' + startResponder + ' is not a ' + responderClass + '. =('
       return
 
     _printIterative(startResponder, _responderChain)
