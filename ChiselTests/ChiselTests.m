@@ -7,7 +7,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "CHLFunctions.h"
+#import "CHLAllocations.h"
 
 @interface ChiselTests : XCTestCase
 @end

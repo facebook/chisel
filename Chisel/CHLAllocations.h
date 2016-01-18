@@ -1,5 +1,5 @@
 //
-//  CHLFunctions.h
+//  CHLAllocations.h
 //  Chisel
 //
 //  Copyright © 2016 Facebook. All rights reserved.

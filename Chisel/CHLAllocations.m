@@ -1,11 +1,11 @@
 //
-//  CHLFunctions.m
+//  CHLAllocations.m
 //  Chisel
 //
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
-#import "CHLFunctions.h"
+#import "CHLAllocations.h"
 
 // See vm_range_recorder_t
 static void enumerateRanges(task_t, void *, unsigned, vm_range_t *, unsigned);
