@@ -21,24 +21,24 @@ void CHLEnumerateAllocationsWithBlock(void (^block)(vm_range_t))
    *       for range in zone->ranges
    *         callback(range)
    *
-   * Unfortunately, the memory allocations within a zone are not exposed, so the above inner loop is not possible.
-   * Instead malloc zones provide a function that will loop over the allocations and call the given callback function.
+   * Unfortunately, the memory allocations within a zone are not exposed directly, so the inner loop is not possible.
+   * Instead, malloc zones provide a function that loops over the allocations, calling a callback function for each one.
    */
 
   /*
-   * === malloc API Notes ===
+   * === malloc.h API Notes ===
    *
    * Both `malloc_get_all_zones` and `vm_range_recorder_t` callback functions take a `task_t` and a `memory_reader_t`.
    * However it turns out both of these can be NULL. This information isn't documented in malloc.h but can be seen in
    * the libmalloc source.
    *
    * `memory_reader_t`:
-   * When NULL, the default memory reader is used which handles in process memory, and does not use the given `task_t`.
+   * When NULL, the fallback default is a memory reader which does not use the given `task_t`.
    * `task_t`:
-   * Only required if used in a custom `memory_reader_t`, or used in a `vm_range_recorder_t` callback.
+   * Only required if used by a custom `memory_reader_t` or `vm_range_recorder_t` implementation.
    */
 
-  // Get a reference to the C array of malloc zones.
+  // Get a reference to the array of zones.
   vm_address_t *zones;
   unsigned int zoneCount;
   malloc_get_all_zones(TASK_NULL, NULL, &zones, &zoneCount);

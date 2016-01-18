@@ -10,6 +10,7 @@
 #import <malloc/malloc.h>
 
 /**
- * Enumerates all live memory allocations by calling `block` for each malloc range (represented as a `vm_range_t`).
+ * Enumerates all live memory allocations by calling `block` for each allocation. Allocations are represented as a
+ * `vm_range_t`.
  */
 void CHLEnumerateAllocationsWithBlock(void (^block)(vm_range_t range));
