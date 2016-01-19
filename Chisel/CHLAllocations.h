@@ -9,6 +9,8 @@
 
 #import <malloc/malloc.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * Enumerates all live memory allocations by calling `block` for each allocation. Allocations are represented as a
  * `vm_range_t`.
@@ -18,3 +20,5 @@
  * course memory created with `malloc`.
  */
 void CHLEnumerateAllocationsWithBlock(void (^block)(vm_range_t range));
+
+NS_ASSUME_NONNULL_END
