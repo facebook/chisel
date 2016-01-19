@@ -5,6 +5,10 @@
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
+#if __has_feature(objc_arc)
+#error CHLAllocations.m expects ARC to be disabled.
+#endif
+
 #import "CHLAllocations.h"
 
 // See vm_range_recorder_t
