@@ -15,20 +15,22 @@ import fblldbviewhelpers as viewHelpers
 
 ACCESSIBILITY_ID = 0
 REPLACEMENT_TEXT = 1
+INPUT_TEXT = 0
 
 
 def lldbcommands():
   return [
-    FBInputTextCommand(),
+    FBInputTexByAccessibilityIdCommand(),
+    FBInputTexToFirstResponderCommand(),
   ]
 
 
-class FBInputTextCommand(fb.FBCommand):
+class FBInputTexByAccessibilityIdCommand(fb.FBCommand):
   def name(self):
-    return 'input'
+    return 'setxt'
 
   def description(self):
-    return 'Input text into text field or text view by accessibility id.'
+    return 'Set text on text on a view by accessibility id.'
 
   def args(self):
     return [
@@ -37,35 +39,73 @@ class FBInputTextCommand(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    rootView = fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
-    self.findView(rootView, arguments[ACCESSIBILITY_ID], arguments[REPLACEMENT_TEXT])
+    self.findView(rootView(), arguments[ACCESSIBILITY_ID], arguments[REPLACEMENT_TEXT])
 
   def findView(self, view, searchIdentifier, replacementText):
-    views = self.subviewsOfView(view)
-    for index in range(0, self.viewsCount(views)):
-        subview = self.subviewAtIndex(views, index)
+    views = subviewsOfView(view)
+    for index in range(0, viewsCount(views)):
+        subview = subviewAtIndex(views, index)
         self.findView(subview, searchIdentifier, replacementText)
     else:
-      identifier = self.accessibilityIdentifier(view)
-      if self.isEqualToString(identifier, searchIdentifier):
-        self.setTextInView(view, replacementText)
+      identifier = accessibilityIdentifier(view)
+      if isEqualToString(identifier, searchIdentifier):
+        setTextInView(view, replacementText)
+
+
+class FBInputTexToFirstResponderCommand(fb.FBCommand):
+  def name(self):
+    return 'input'
+
+  def description(self):
+    return 'Input text into text field or text view that is first responder.'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='inputText', type='string', help='The text to input.')
+    ]
+
+  def run(self, arguments, options):
+    self.findFirstResponder(rootView(), arguments[INPUT_TEXT])
+
+  def findFirstResponder(self, view, replacementText):
+    views = subviewsOfView(view)
+    for index in range(0, viewsCount(views)):
+        subview = subviewAtIndex(views, index)
+        self.findFirstResponder(subview, replacementText)
+    else:
+      if isFirstResponder(view):
+        setTextInView(view, replacementText)
+
 
 # Some helpers
-  def subviewsOfView(self, view):
+def rootView():
+  return fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
+
+def subviewsOfView(view):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(subviews)]' % view):
     return fb.evaluateObjectExpression('[%s subviews]' % view)
 
-  def subviewAtIndex(self, views, index):
+def subviewAtIndex(views, index):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(objectAtIndex:)]' % views):
     return fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (views, index))
 
-  def viewsCount(self, views):
+def viewsCount(views):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(count)]' % views):
     return int(fb.evaluateExpression('(int)[%s count]' % views))
 
-  def accessibilityIdentifier(self, view):
+def accessibilityIdentifier(view):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(accessibilityIdentifier)]' % view):
     return fb.evaluateObjectExpression('[%s accessibilityIdentifier]' % view)
 
-  def isEqualToString(self, identifier, needle):
+def isEqualToString(identifier, needle):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(isEqualToString:)]' % identifier):
     return fb.evaluateBooleanExpression('[%s isEqualToString:@"%s"]' % (identifier, needle))
 
-  def setTextInView(self, view, text):
+def setTextInView(view, text):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(setText:)]' % view):
     fb.evaluateObjectExpression('[%s setText:@"%s"]' % (view, text))
     viewHelpers.flushCoreAnimationTransaction()
+
+def isFirstResponder(view):
+  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(isFirstResponder)]' % view):
+    return fb.evaluateBooleanExpression('[%s isFirstResponder]' % view)
