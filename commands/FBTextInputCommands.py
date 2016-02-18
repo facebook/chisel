@@ -27,7 +27,7 @@ def lldbcommands():
 
 class FBInputTexByAccessibilityIdCommand(fb.FBCommand):
   def name(self):
-    return 'setxt'
+    return 'settext'
 
   def description(self):
     return 'Set text on text on a view by accessibility id.'
@@ -54,7 +54,7 @@ class FBInputTexByAccessibilityIdCommand(fb.FBCommand):
 
 class FBInputTexToFirstResponderCommand(fb.FBCommand):
   def name(self):
-    return 'input'
+    return 'setinput'
 
   def description(self):
     return 'Input text into text field or text view that is first responder.'
