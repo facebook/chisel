@@ -82,30 +82,23 @@ def rootView():
   return fb.evaluateObjectExpression('[[UIApplication sharedApplication] keyWindow]')
 
 def subviewsOfView(view):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(subviews)]' % view):
-    return fb.evaluateObjectExpression('[%s subviews]' % view)
+  return fb.evaluateObjectExpression('[%s subviews]' % view)
 
 def subviewAtIndex(views, index):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(objectAtIndex:)]' % views):
-    return fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (views, index))
+  return fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (views, index))
 
 def viewsCount(views):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(count)]' % views):
-    return int(fb.evaluateExpression('(int)[%s count]' % views))
+  return int(fb.evaluateExpression('(int)[%s count]' % views))
 
 def accessibilityIdentifier(view):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(accessibilityIdentifier)]' % view):
-    return fb.evaluateObjectExpression('[%s accessibilityIdentifier]' % view)
+  return fb.evaluateObjectExpression('[%s accessibilityIdentifier]' % view)
 
 def isEqualToString(identifier, needle):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(isEqualToString:)]' % identifier):
-    return fb.evaluateBooleanExpression('[%s isEqualToString:@"%s"]' % (identifier, needle))
+  return fb.evaluateBooleanExpression('[%s isEqualToString:@"%s"]' % (identifier, needle))
 
 def setTextInView(view, text):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(setText:)]' % view):
-    fb.evaluateObjectExpression('[%s setText:@"%s"]' % (view, text))
-    viewHelpers.flushCoreAnimationTransaction()
+  fb.evaluateObjectExpression('[%s setText:@"%s"]' % (view, text))
+  viewHelpers.flushCoreAnimationTransaction()
 
 def isFirstResponder(view):
-  if fb.evaluateBooleanExpression('[%s respondsToSelector:@selector(isFirstResponder)]' % view):
-    return fb.evaluateBooleanExpression('[%s isFirstResponder]' % view)
+  return fb.evaluateBooleanExpression('[%s isFirstResponder]' % view)
