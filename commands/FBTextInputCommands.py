@@ -69,12 +69,12 @@ class FBInputTexToFirstResponderCommand(fb.FBCommand):
 
   def findFirstResponder(self, view, replacementText):
     views = subviewsOfView(view)
-    for index in range(0, viewsCount(views)):
-        subview = subviewAtIndex(views, index)
-        self.findFirstResponder(subview, replacementText)
-    else:
-      if isFirstResponder(view):
+    if isFirstResponder(view):
         setTextInView(view, replacementText)
+    else:
+      for index in range(0, viewsCount(views)):
+          subview = subviewAtIndex(views, index)
+          self.findFirstResponder(subview, replacementText)
 
 
 # Some helpers
