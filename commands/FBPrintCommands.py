@@ -595,7 +595,7 @@ class FBPrintObjectInSwift(fb.FBCommand):
 
 class FBExpressionInObjc(fb.FBCommand):
   def name(self):
-    return 'eobjc'
+    return 'objce'
 
   def description(self):
     return 'Run expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++" )'
@@ -616,7 +616,7 @@ class FBExpressionInObjc(fb.FBCommand):
 
 class FBExpressionInSwift(fb.FBCommand):
   def name(self):
-    return 'eswift'
+    return 'swifte'
 
   def description(self):
     return 'Run expression run in a Swift context. (Shortcut for "expression -l Swift" )'

@@ -13,10 +13,10 @@ import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
-  lldb.debugger.HandleCommand('eobjc (void)[CATransaction flush]')
+  lldb.debugger.HandleCommand('objce (void)[CATransaction flush]')
 
 def setViewHidden(object, hidden):
-  lldb.debugger.HandleCommand('eobjc (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
+  lldb.debugger.HandleCommand('objce (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
   flushCoreAnimationTransaction()
 
 def maskView(viewOrLayer, color, alpha):
@@ -31,16 +31,16 @@ def maskView(viewOrLayer, color, alpha):
                                                size.GetChildMemberWithName('height').GetValue())
   mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
-  lldb.debugger.HandleCommand('eobjc (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  lldb.debugger.HandleCommand('eobjc (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  lldb.debugger.HandleCommand('eobjc (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  lldb.debugger.HandleCommand('eobjc (void)[%s addSubview:%s]' % (window, mask))
+  lldb.debugger.HandleCommand('objce (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+  lldb.debugger.HandleCommand('objce (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+  lldb.debugger.HandleCommand('objce (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+  lldb.debugger.HandleCommand('objce (void)[%s addSubview:%s]' % (window, mask))
   flushCoreAnimationTransaction()
 
 def unmaskView(viewOrLayer):
   window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
   mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  lldb.debugger.HandleCommand('eobjc (void)[%s removeFromSuperview]' % mask)
+  lldb.debugger.HandleCommand('objce (void)[%s removeFromSuperview]' % mask)
   flushCoreAnimationTransaction()
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):
@@ -113,4 +113,4 @@ def upwardsRecursiveDescription(view, maxDepth=0):
   return builder
 
 def slowAnimation(speed=1):
-  lldb.debugger.HandleCommand('eobjc (void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)
+  lldb.debugger.HandleCommand('objce (void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)
