@@ -2,38 +2,46 @@
 //  ChiselTests.m
 //  ChiselTests
 //
-//  Created by Dave Lee on 1/15/16.
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface ChiselTests : XCTestCase
+#import "CHLAllocations.h"
 
+@interface ChiselTests : XCTestCase
 @end
 
 @implementation ChiselTests
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+- (void)testAllocationsIncludesSelf
+{
+  __block BOOL seenSelf = NO;
+  CHLEnumerateAllocationsWithBlock(^(vm_range_t range) {
+    if (range.address == (vm_address_t)self) {
+      seenSelf = YES;
+    }
+  });
+
+  XCTAssertTrue(seenSelf);
 }
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
+- (void)testAllocationsIncludesFreshMalloc
+{
+  u_int32_t size = MAX(arc4random_uniform(UINT8_MAX), 1);
+  void *memory = malloc(size);
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
+  __block BOOL seenMalloc = NO;
+  CHLEnumerateAllocationsWithBlock(^(vm_range_t range) {
+    if (range.address == (vm_address_t)memory) {
+      XCTAssertGreaterThanOrEqual(range.size, size);
+      seenMalloc = YES;
+    }
+  });
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+  free(memory);
+
+  XCTAssertTrue(seenMalloc);
 }
 
 @end
