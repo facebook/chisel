@@ -2,12 +2,11 @@
 //  CHLDuplicateDetection.m
 //  Chisel
 //
-//  Created by Greg Pstrucha on 3/1/16.
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
 #if __has_feature(objc_arc)
-#error CHLDuplicateDetection.m expects ARC to be disabled.
+#error CHLObjectDuplicateDetection.m expects ARC to be disabled.
 #endif
 
 #import "CHLDuplicateDetection.h"
@@ -16,12 +15,13 @@
 
 #import <objc/runtime.h>
 
-NSArray *CHLFindDuplicates(Class aCls, BOOL (^equalFunction)(id left, id right)) {
+NSArray *CHLFindDuplicates(Class cls, BOOL (^equalFunction)(id left, id right)) {
   NSMutableArray *objects = [NSMutableArray new];
   
   CHLEnumerateObjectsWithBlock(^(id object) {
-    if (object_getClass(object) == aCls)
-    [objects addObject:object];
+    if (object_getClass(object) == cls) {
+      [objects addObject:object];
+    }
   });
  
   // Hold addresses only (so we won't call isEqual:)
@@ -37,11 +37,13 @@ NSArray *CHLFindDuplicates(Class aCls, BOOL (^equalFunction)(id left, id right))
       }
     }
   }
+  [objects release];
   
   NSMutableArray *duplicates = [NSMutableArray new];
   for (NSNumber *address in objectSet) {
     [duplicates addObject:(id)address.pointerValue];
   }
+  [objectSet release];
   
-  return [duplicates copy];
+  return [duplicates autorelease];
 }
