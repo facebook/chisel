@@ -19,7 +19,7 @@ NSArray *CHLFindDuplicates(Class cls, BOOL (^equalFunction)(id left, id right)) 
   NSMutableArray *objects = [NSMutableArray new];
   
   CHLEnumerateObjectsWithBlock(^(id object) {
-    if (object_getClass(object) == cls) {
+    if ([object isKindOfClass:cls]) {
       [objects addObject:object];
     }
   });
