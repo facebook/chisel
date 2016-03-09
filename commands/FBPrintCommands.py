@@ -9,6 +9,7 @@
 
 import os
 import re
+import subprocess
 
 import lldb
 import fblldbbase as fb
@@ -34,6 +35,7 @@ def lldbcommands():
     FBPrintTargetActions(),
     FBPrintJSON(),
     FBPrintAsCurl(),
+    FBPrintToClipboard(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -516,3 +518,20 @@ class FBPrintAsCurl(fb.FBCommand):
         
     commandString += ' "{}"'.format(URL)
     print commandString
+
+class FBPrintToClipboard(fb.FBCommand):
+  def name(self):
+    return 'pbcopy'
+
+  def description(self):
+    return 'Print object and copy output to clipboard'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='object', type='id', help='The object to print') ]
+
+  def run(self, arguments, options):
+    lldbOutput = fb.evaluateExpressionValue("[{changeset} description]".format(changeset = arguments[0])).GetObjectDescription()
+    process = subprocess.Popen(
+        'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(lldbOutput.encode('utf-8'))
+    print "Object copied to clipboard"
