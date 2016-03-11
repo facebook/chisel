@@ -9,6 +9,7 @@
 
 import os
 import re
+import subprocess
 
 import lldb
 import fblldbbase as fb
@@ -34,6 +35,7 @@ def lldbcommands():
     FBPrintTargetActions(),
     FBPrintJSON(),
     FBPrintAsCurl(),
+    FBPrintToClipboard(),
     FBPrintInObjc(),
     FBPrintInSwift(),
     FBPrintObjectInObjc(),
@@ -176,7 +178,7 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
 
   def run(self, arguments, options):
     startResponder = arguments[0]
-    
+
     isMac = runtimeHelpers.isMacintoshArch()
     responderClass = 'UIResponder'
     if isMac:
@@ -324,15 +326,15 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
 
   def description(self):
     return "Print application's 'Documents' directory path."
-  
+
   def options(self):
     return [
       fb.FBCommandArgument(short='-o', long='--open', arg='open', boolean=True, default=False, help='open in Finder'),
     ]
 
   def run(self, arguments, options):
-    # in iOS SDK NSDocumentDirectory == 9  NSUserDomainMask == 1 
-    NSDocumentDirectory = '9' 
+    # in iOS SDK NSDocumentDirectory == 9  NSUserDomainMask == 1
+    NSDocumentDirectory = '9'
     NSUserDomainMask = '1'
     path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
     pathString = '{}'.format(path).split('"')[1]
@@ -341,7 +343,7 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
     print pathString
     if options.open:
       os.system('open '+ pathString)
-      
+
 
 class FBPrintData(fb.FBCommand):
   def name(self):
@@ -440,7 +442,7 @@ class FBPrintTargetActions(fb.FBCommand):
       print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
 
 class FBPrintJSON(fb.FBCommand):
-    
+
   def name(self):
     return 'pjson'
 
@@ -460,9 +462,9 @@ class FBPrintJSON(fb.FBCommand):
     pretty = 1 if options.plain is None else 0
     jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:{} options:{} error:nil]'.format(objectToPrint, pretty))
     jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:{} encoding:4]'.format(jsonData)).GetObjectDescription()
-    
+
     print jsonString
-    
+
 class FBPrintAsCurl(fb.FBCommand):
   def name(self):
     return 'pcurl'
@@ -488,7 +490,7 @@ class FBPrintAsCurl(fb.FBCommand):
     URL = fb.evaluateExpressionValue('(id)[{} URL]'.format(request)).GetObjectDescription()
     timeout = fb.evaluateExpression('(NSTimeInterval)[{} timeoutInterval]'.format(request))
     HTTPHeaders = fb.evaluateObjectExpression('(id)[{} allHTTPHeaderFields]'.format(request))
-    HTTPHeadersCount = fb.evaluateIntegerExpression('[{} count]'.format(HTTPHeaders)) 
+    HTTPHeadersCount = fb.evaluateIntegerExpression('[{} count]'.format(HTTPHeaders))
     allHTTPKeys = fb.evaluateObjectExpression('[{} allKeys]'.format(HTTPHeaders))
     for index in range(0, HTTPHeadersCount):
         key = fb.evaluateObjectExpression('[{} objectAtIndex:{}]'.format(allHTTPKeys, index))
@@ -525,9 +527,26 @@ class FBPrintAsCurl(fb.FBCommand):
         commandString += ' ' + HTTPHeaderSring
     if dataFile is not None:
         commandString += ' --data-binary @"{}"'.format(dataFile)
-        
+
     commandString += ' "{}"'.format(URL)
     print commandString
+
+class FBPrintToClipboard(fb.FBCommand):
+  def name(self):
+    return 'pbcopy'
+
+  def description(self):
+    return 'Print object and copy output to clipboard'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='object', type='id', help='The object to print') ]
+
+  def run(self, arguments, options):
+    lldbOutput = fb.evaluateExpressionValue("[{changeset} description]".format(changeset = arguments[0])).GetObjectDescription()
+    process = subprocess.Popen(
+        'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(lldbOutput.encode('utf-8'))
+    print "Object copied to clipboard"
 
 class FBPrintInObjc(fb.FBCommand):
   def name(self):
