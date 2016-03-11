@@ -111,7 +111,7 @@ class FlickerWalker:
       if isMac:
         recursionName = '_subtreeDescription'
 
-      lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
+      lldb.debugger.HandleCommand('poobjc (NSString *)[(id)' + oldView + ' ' + recusionName + ']')
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
 
@@ -121,7 +121,7 @@ class FlickerWalker:
       if oldView:
         viewHelpers.unmaskView(oldView)
       viewHelpers.maskView(self.currentView, 'red', '0.4')
-      lldb.debugger.HandleCommand('po (id)' + view)
+      lldb.debugger.HandleCommand('poobjc (id)' + view)
 
 def superviewOfView(view):
   superview = fb.evaluateObjectExpression('[' + view + ' superview]')
