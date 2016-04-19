@@ -10,6 +10,7 @@
 import lldb
 
 import fblldbviewhelpers as viewHelpers
+import fblldbviewcontrollerhelpers as viewControllerHelpers
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
@@ -22,6 +23,8 @@ def lldbcommands():
     FBUnmaskViewCommand(),
     FBShowViewCommand(),
     FBHideViewCommand(),
+    FBPresentViewControllerCommand(),
+    FBDismissViewControllerCommand(),
     FBSlowAnimationCommand(),
     FBUnslowAnimationCommand()
   ]
@@ -202,6 +205,34 @@ class FBHideViewCommand(fb.FBCommand):
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
+
+
+class FBPresentViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'present'
+
+  def description(self):
+    return 'Present a view controller.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='viewController', type='UIViewController *', help='The view controller to present.') ]
+
+  def run(self, args, option):
+    viewControllerHelpers.presentViewController(args[0])
+
+
+class FBDismissViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'dismiss'
+
+  def description(self):
+    return 'Dismiss a presented view controller.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='viewController', type='UIViewController *', help='The view controller to dismiss.') ]
+
+  def run(self, args, option):
+    viewControllerHelpers.dismissViewController(args[0])
 
 
 class FBSlowAnimationCommand(fb.FBCommand):
