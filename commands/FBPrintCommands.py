@@ -31,6 +31,7 @@ def lldbcommands():
     FBPrintInstanceVariable(),
     FBPrintKeyPath(),
     FBPrintApplicationDocumentsPath(),
+    FBPrintApplicationBundlePath(),
     FBPrintData(),
     FBPrintTargetActions(),
     FBPrintJSON(),
@@ -337,6 +338,28 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
     NSDocumentDirectory = '9'
     NSUserDomainMask = '1'
     path = fb.evaluateExpressionValue('(NSString*)[NSSearchPathForDirectoriesInDomains(' + NSDocumentDirectory + ', ' + NSUserDomainMask + ', YES) lastObject]')
+    pathString = '{}'.format(path).split('"')[1]
+    cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
+    os.system(cmd)
+    print pathString
+    if options.open:
+      os.system('open '+ pathString)
+
+
+class FBPrintApplicationBundlePath(fb.FBCommand):
+  def name(self):
+    return 'pbundlepath'
+
+  def description(self):
+    return "Print application's bundle directory path."
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-o', long='--open', arg='open', boolean=True, default=False, help='open in Finder'),
+    ]
+
+  def run(self, arguments, options):
+    path = fb.evaluateExpressionValue('(NSString*)[[NSBundle mainBundle] bundlePath]')
     pathString = '{}'.format(path).split('"')[1]
     cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
     os.system(cmd)
