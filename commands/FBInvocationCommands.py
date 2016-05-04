@@ -114,8 +114,8 @@ def prettyPrintInvocation(frame, invocation):
     for argDescription in argDescriptions:
       s = re.sub(r'argument [0-9]+: ', '', argDescription)
 
-      lldb.debugger.HandleCommand('eobjc void *$v')
-      lldb.debugger.HandleCommand('eobjc (void)[' + invocation + ' getArgument:&$v atIndex:' + str(index) + ']')
+      lldb.debugger.HandleCommand('objce void *$v')
+      lldb.debugger.HandleCommand('objce (void)[' + invocation + ' getArgument:&$v atIndex:' + str(index) + ']')
 
       address = findArgAdressAtIndexFromStackFrame(frame, index)
 
