@@ -20,6 +20,7 @@ ACCESSIBILITY_LABEL_KEY = 2001
 def lldbcommands():
   return [
     FBPrintAccessibilityLabels(),
+    FBPrintAccessibilityIdentifiers(),
     FBFindViewByAccessibilityLabelCommand(),
   ]
 
@@ -36,6 +37,19 @@ class FBPrintAccessibilityLabels(fb.FBCommand):
   def run(self, arguments, options):
     forceStartAccessibilityServer();
     printAccessibilityHierarchy(arguments[0])
+
+class FBPrintAccessibilityIdentifiers(fb.FBCommand):
+  def name(self):
+    return 'pa11yi'
+
+  def description(self):
+    return 'Print accessibility identifiers of all views in hierarchy of <aView>'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the hierarchy of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
+
+  def run(self, arguments, option):
+    printAccessibilityIdentifiersHierarchy(arguments[0])
 
 class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
   def name(self):
@@ -89,6 +103,9 @@ def accessibilityLabel(view):
   #using Apple private API to get real value of accessibility string for element.
   return fb.evaluateExpressionValue('(id)[%s accessibilityAttributeValue:%i]' % (view, ACCESSIBILITY_LABEL_KEY), False)
 
+def accessibilityIdentifier(view):
+  return fb.evaluateExpressionValue('(id)[{} accessibilityIdentifier]'.format(view), False)
+
 def accessibilityElements(view):
   if fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(accessibilityElements)]'):
     a11yElements = fb.evaluateExpression('(id)[%s accessibilityElements]' % view, False)
@@ -116,4 +133,19 @@ def printAccessibilityHierarchy(view, indent = 0):
   else:
     print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
 
+def printAccessibilityIdentifiersHierarchy(view, indent = 0):
+  a11yIdentifier = accessibilityIdentifier(view)
+  classDesc = objHelpers.className(view)
+  indentString = '   | ' * indent
 
+  #if we don't have any accessibility identifier - we should have some children
+  if int(a11yIdentifier.GetValue(), 16) == 0:
+    print indentString + ('{} {}'.format(classDesc, view))
+    #We call private method that gives back all visible accessibility children for view
+    a11yElements = accessibilityElements(view)
+    accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % a11yElements))
+    for index in range(0, accessibilityElementsCount):
+      subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (a11yElements, index))
+      printAccessibilityIdentifiersHierarchy(subview, indent + 1)
+  else:
+    print indentString + ('({} {}) {}'.format(classDesc, view, a11yIdentifier.GetObjectDescription()))
