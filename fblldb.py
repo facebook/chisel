@@ -41,6 +41,7 @@ def loadCommandsInDirectory(commandsDirectory):
 def loadCommand(module, command, directory, filename, extension):
   func = makeRunCommand(command, os.path.join(directory, filename + extension))
   name = command.name()
+  helpText = command.description().splitlines()[0] # first line of description
 
   key = filename + '_' + name
 
@@ -49,7 +50,10 @@ def loadCommand(module, command, directory, filename, extension):
   functionName = '__' + key
 
   lldb.debugger.HandleCommand('script ' + functionName + ' = sys.modules[\'' + module.__name__ + '\']._loadedFunctions[\'' + key + '\']')
-  lldb.debugger.HandleCommand('command script add -f ' + functionName + ' ' + name)
+  lldb.debugger.HandleCommand('command script add --help "{help}" --function {function} {name}'.format(
+    help=helpText.replace('"', '\\"'), # escape quotes
+    function=functionName,
+    name=name))
 
 def makeRunCommand(command, filename):
   def runCommand(debugger, input, result, dict):
