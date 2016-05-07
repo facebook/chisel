@@ -54,6 +54,10 @@ def evaluateObjCExpression(expression, printErrors=True):
   return value
 
 def evaluateInputExpression(expression, printErrors=True):
+  # HACK
+  if expression.startswith('(id)'):
+    return evaluateObjCExpression(expression, printErrors).GetValue()
+
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   value = frame.EvaluateExpression(expression)
   error = value.GetError()
