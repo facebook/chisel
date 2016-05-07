@@ -32,10 +32,10 @@ class FBComponentsDebugCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     if options.set:
-      lldb.debugger.HandleCommand('eobjc (void)[CKComponentDebugController setDebugMode:YES]')
+      fb.evaluateObjCExpression('(void)[CKComponentDebugController setDebugMode:YES]')
       print 'Debug mode for ComponentKit has been set.'
     elif options.unset:
-      lldb.debugger.HandleCommand('eobjc (void)[CKComponentDebugController setDebugMode:NO]')
+      fb.evaluateObjCExpression('(void)[CKComponentDebugController setDebugMode:NO]')
       print 'Debug mode for ComponentKit has been unset.'
     else:
       print 'No option for ComponentKit Debug mode specified.'
