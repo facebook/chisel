@@ -99,7 +99,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('poobjc (NSString *)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
+    print fb.evaluateObjCExpression('(id)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]').GetObjectDescription()
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -117,7 +117,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        lldb.debugger.HandleCommand('poobjc (NSString *)[UIViewController _printHierarchy]')
+        print fb.evaluateObjCExpression('(id)[UIViewController _printHierarchy]').GetObjectDescription()
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
@@ -286,16 +286,16 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    commandForObject, ivarName = arguments
+    object = fb.evaluateInputExpression(arguments[0])
+    ivarName = arguments[1]
 
-    object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
     ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
-    printCommand = 'poobjc' if ('@' in ivarTypeEncodingFirstChar) else 'pobjc'
-    lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+    result = fb.evaluateObjCExpression('(({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+    return result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result.GetValue()
 
 class FBPrintKeyPath(fb.FBCommand):
   def name(self):
@@ -316,8 +316,8 @@ class FBPrintKeyPath(fb.FBCommand):
     else:
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
-      printCommand = 'poobjc (id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
-      lldb.debugger.HandleCommand(printCommand)
+      printCommand = '(id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
+      print fb.evaluateObjCExpression(printCommand).GetObjectDescription()
 
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
@@ -413,8 +413,8 @@ class FBPrintData(fb.FBCommand):
     elif encoding_text == 'utf32l':
       enc = 0x9c000100
 
-    print_command = 'poobjc (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
-    lldb.debugger.HandleCommand(print_command)
+    print_command = '(id)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
+    print fb.evaluateObjCExpression(print_command).GetObjectDescription()
 
 class FBPrintTargetActions(fb.FBCommand):
 

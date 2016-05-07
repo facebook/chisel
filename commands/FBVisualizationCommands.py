@@ -163,7 +163,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        lldb.debugger.HandleCommand('poobjc (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
+        print fb.evaluateObjCExpression('(id)[[NSString alloc] initWithData:' + target + ' encoding:4]').GetObjectDescription()
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:
