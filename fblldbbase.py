@@ -36,6 +36,32 @@ class FBCommand:
   def run(self, arguments, option):
     pass
 
+def evaluateObjCExpression(expression, printErrors=True):
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  options = lldb.SBExpressionOptions()
+  options.SetLanguage(lldb.eLanguageTypeObjC)
+  value = frame.EvaluateExpression(expression, options)
+  error = value.GetError()
+
+  if printErrors and error.Fail():
+    # When evaluating a `void` expression, the returned value has an error code named kNoResult.
+    # This is not an error that should be printed. This follows what the built in `expression` command does.
+    # See: https://git.io/vwpjl (UserExpression.h)
+    kNoResult = 0x1001
+    if error.GetError() != kNoResult:
+      print error
+
+  return value
+
+def evaluateInputExpression(expression, printErrors=True):
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  value = frame.EvaluateExpression(expression)
+  error = value.GetError()
+
+  if printErrors and error.Fail():
+    print error
+
+  return value.GetValue()
 
 def evaluateExpressionValueWithLanguage(expression, language, printErrors):
   # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
