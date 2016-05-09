@@ -94,7 +94,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    print fb.evaluateObjCExpression('(id)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]').GetObjectDescription()
+    print fb.evaluateExpressionValue('(id)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]').GetObjectDescription()
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -112,7 +112,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        print fb.evaluateObjCExpression('(id)[UIViewController _printHierarchy]').GetObjectDescription()
+        print fb.evaluateExpressionValue('(id)[UIViewController _printHierarchy]').GetObjectDescription()
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
@@ -289,7 +289,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
-    result = fb.evaluateObjCExpression('(({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+    result = fb.evaluateExpressionValue('(({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
     return result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result.GetValue()
 
 class FBPrintKeyPath(fb.FBCommand):
@@ -312,7 +312,7 @@ class FBPrintKeyPath(fb.FBCommand):
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
       printCommand = '(id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
-      print fb.evaluateObjCExpression(printCommand).GetObjectDescription()
+      print fb.evaluateExpressionValue(printCommand).GetObjectDescription()
 
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
@@ -409,7 +409,7 @@ class FBPrintData(fb.FBCommand):
       enc = 0x9c000100
 
     print_command = '(id)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
-    print fb.evaluateObjCExpression(print_command).GetObjectDescription()
+    print fb.evaluateExpressionValue(print_command).GetObjectDescription()
 
 class FBPrintTargetActions(fb.FBCommand):
 

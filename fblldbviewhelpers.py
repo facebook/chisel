@@ -13,10 +13,10 @@ import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
-  fb.evaluateObjCExpression('(void)[CATransaction flush]')
+  fb.evaluateExpressionValue('(void)[CATransaction flush]')
 
 def setViewHidden(object, hidden):
-  fb.evaluateObjCExpression('(void)[{} setHidden:{}]'.format(object, int(hidden)))
+  fb.evaluateExpressionValue('(void)[{} setHidden:{}]'.format(object, int(hidden)))
   flushCoreAnimationTransaction()
 
 def maskView(viewOrLayer, color, alpha):
@@ -31,16 +31,16 @@ def maskView(viewOrLayer, color, alpha):
                                                size.GetChildMemberWithName('height').GetValue())
   mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
-  fb.evaluateObjCExpression('(void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  fb.evaluateObjCExpression('(void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  fb.evaluateObjCExpression('(void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  fb.evaluateObjCExpression('(void)[%s addSubview:%s]' % (window, mask))
+  fb.evaluateExpressionValue('(void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+  fb.evaluateExpressionValue('(void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+  fb.evaluateExpressionValue('(void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+  fb.evaluateExpressionValue('(void)[%s addSubview:%s]' % (window, mask))
   flushCoreAnimationTransaction()
 
 def unmaskView(viewOrLayer):
   window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
   mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  fb.evaluateObjCExpression('(void)[%s removeFromSuperview]' % mask)
+  fb.evaluateExpressionValue('(void)[%s removeFromSuperview]' % mask)
   flushCoreAnimationTransaction()
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):
@@ -113,4 +113,4 @@ def upwardsRecursiveDescription(view, maxDepth=0):
   return builder
 
 def slowAnimation(speed=1):
-  fb.evaluateObjCExpression('(void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)
+  fb.evaluateExpressionValue('(void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)

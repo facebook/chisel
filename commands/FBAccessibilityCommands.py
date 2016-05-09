@@ -95,9 +95,9 @@ def forceStartAccessibilityServer():
   if not fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]'):
     #Starting accessibility server is different for simulator and device
     if isRunningInSimulator():
-      fb.evaluateObjCExpression('(void)[[UIApplication sharedApplication] accessibilityActivate]')
+      fb.evaluateExpressionValue('(void)[[UIApplication sharedApplication] accessibilityActivate]')
     else:
-      fb.evaluateObjCExpression('(void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
+      fb.evaluateExpressionValue('(void)[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]')
 
 def accessibilityLabel(view):
   #using Apple private API to get real value of accessibility string for element.

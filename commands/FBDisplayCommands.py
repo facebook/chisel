@@ -63,8 +63,8 @@ class FBDrawBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setBorder(layer, width, color, colorClass):
-      fb.evaluateObjCExpression('(void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
-      fb.evaluateObjCExpression('(void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
+      fb.evaluateExpressionValue('(void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+      fb.evaluateExpressionValue('(void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
 
     obj = fb.evaluateInputExpression(args[0])
     depth = int(options.depth)
@@ -114,7 +114,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setUnborder(layer):
-        fb.evaluateObjCExpression('(void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
+        fb.evaluateExpressionValue('(void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
     obj = args[0]
     depth = int(options.depth)

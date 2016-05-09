@@ -83,9 +83,9 @@ def _showColor(color):
         colorToUse = '[UIColor colorWithCIColor:(CIColor *){}]'.format(color)
 
     imageSize = 58
-    fb.evaluateObjCExpression('(void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
-    fb.evaluateObjCExpression('(void)[(id){} setFill]'.format(colorToUse))
-    fb.evaluateObjCExpression('(void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
+    fb.evaluateExpressionValue('(void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
+    fb.evaluateExpressionValue('(void)[(id){} setFill]'.format(colorToUse))
+    fb.evaluateExpressionValue('(void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
 
     frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
     result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -96,7 +96,7 @@ def _showColor(color):
       image = result.GetValue()
       _showImage(image)
 
-    fb.evaluateObjCExpression('(void)UIGraphicsEndImageContext()')
+    fb.evaluateExpressionValue('(void)UIGraphicsEndImageContext()')
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
@@ -108,8 +108,8 @@ def _showLayer(layer):
     print 'Nothing to see here - the size of this element is {} x {}.'.format(width, height)
     return
 
-  fb.evaluateObjCExpression('(void)UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
-  fb.evaluateObjCExpression('(void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
+  fb.evaluateExpressionValue('(void)UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
+  fb.evaluateExpressionValue('(void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -119,7 +119,7 @@ def _showLayer(layer):
     image = result.GetValue()
     _showImage(image)
 
-  fb.evaluateObjCExpression('(void)UIGraphicsEndImageContext()')
+  fb.evaluateExpressionValue('(void)UIGraphicsEndImageContext()')
 
 def _dataIsImage(data):
   data = '(' + data + ')'
@@ -163,7 +163,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        print fb.evaluateObjCExpression('(id)[[NSString alloc] initWithData:' + target + ' encoding:4]').GetObjectDescription()
+        print fb.evaluateExpressionValue('(id)[[NSString alloc] initWithData:' + target + ' encoding:4]').GetObjectDescription()
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:
