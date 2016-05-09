@@ -36,6 +36,7 @@ def lldbcommands():
     FBPrintJSON(),
     FBPrintAsCurl(),
     FBPrintToClipboard(),
+    FBPrintObjectInObjc(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -541,3 +542,19 @@ class FBPrintToClipboard(fb.FBCommand):
         'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
     process.communicate(lldbOutput.encode('utf-8'))
     print "Object copied to clipboard"
+
+class FBPrintObjectInObjc(fb.FBCommand):
+  def name(self):
+    return 'poobjc'
+
+  def description(self):
+    return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -O -l ObjC++ -- " )'
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    lldb.debugger.HandleCommand('expression -O -l ObjC++ -- ' + expression)
