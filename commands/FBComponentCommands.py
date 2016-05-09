@@ -81,4 +81,4 @@ class FBComponentsReflowCommand(fb.FBCommand):
     if options.upwards:
       upwards = 'YES'
 
-    lldb.debugger.HandleCommand('e (void)[CKComponentDebugController reflowComponentsForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ']')
+    fb.evaluateEffect('[CKComponentDebugController reflowComponentsForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ']')

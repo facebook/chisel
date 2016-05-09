@@ -19,7 +19,7 @@ def presentViewController(viewController):
     notPresented = fb.evaluateBooleanExpression('[%s presentingViewController] == nil' % vc)
     
     if notPresented:
-      lldb.debugger.HandleCommand('expr (void)[[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:%s animated:YES completion:nil]' % vc)
+      fb.evaluateEffect('[[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:%s animated:YES completion:nil]' % vc)
     else:
       raise Exception('Argument is already presented')
   else:
@@ -32,7 +32,7 @@ def dismissViewController(viewController):
     isPresented = fb.evaluateBooleanExpression('[%s presentingViewController] != nil' % vc)
     
     if isPresented:
-      lldb.debugger.HandleCommand('expr (void)[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]' % vc)
+      fb.evaluateEffect('[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]' % vc)
     else:
       raise Exception('Argument must be presented')
   else:
