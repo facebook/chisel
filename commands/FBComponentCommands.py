@@ -32,10 +32,10 @@ class FBComponentsDebugCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     if options.set:
-      fb.evaluateExpressionValue('(void)[CKComponentDebugController setDebugMode:YES]')
+      fb.evaluateEffect('[CKComponentDebugController setDebugMode:YES]')
       print 'Debug mode for ComponentKit has been set.'
     elif options.unset:
-      fb.evaluateExpressionValue('(void)[CKComponentDebugController setDebugMode:NO]')
+      fb.evaluateEffect('[CKComponentDebugController setDebugMode:NO]')
       print 'Debug mode for ComponentKit has been unset.'
     else:
       print 'No option for ComponentKit Debug mode specified.'
