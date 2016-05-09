@@ -163,7 +163,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        print fb.evaluateExpressionValue('(id)[[NSString alloc] initWithData:' + target + ' encoding:4]').GetObjectDescription()
+        print fb.describeObject('[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:

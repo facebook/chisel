@@ -111,7 +111,7 @@ class FlickerWalker:
       if isMac:
         recursionName = '_subtreeDescription'
 
-      print fb.evaluateExpressionValue('(NSString *)[(id){} {}]'.format(oldView, recursionName)).GetObjectDescription()
+      print fb.describeObject('[(id){} {}]'.format(oldView, recursionName))
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
 
@@ -121,7 +121,7 @@ class FlickerWalker:
       if oldView:
         viewHelpers.unmaskView(oldView)
       viewHelpers.maskView(self.currentView, 'red', '0.4')
-      print fb.evaluateExpressionValue('(id)' + view).GetObjectDescription()
+      print fb.describeObject(view)
 
 def superviewOfView(view):
   superview = fb.evaluateObjectExpression('[' + view + ' superview]')

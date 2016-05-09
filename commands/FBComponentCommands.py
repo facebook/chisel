@@ -61,7 +61,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
     showViews = 'YES' if options.showViews == 'YES' else 'NO'
 
     view = fb.evaluateInputExpression(arguments[0])
-    print fb.evaluateExpressionValue('(id)[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + view + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']').GetObjectDescription()
+    print fb.describeObject('[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + view + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
 
 class FBComponentsReflowCommand(fb.FBCommand):
   def name(self):

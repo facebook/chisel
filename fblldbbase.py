@@ -83,6 +83,9 @@ def evaluateBooleanExpression(expression, printErrors=True):
 def evaluateExpression(expression, printErrors=True):
   return evaluateExpressionValue(expression, printErrors).GetValue()
 
+def describeObject(expression, printErrors=True):
+  return evaluateExpressionValue('(id)(' + expression + ')', printErrors).GetObjectDescription()
+
 def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)
 

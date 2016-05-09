@@ -94,7 +94,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    print fb.evaluateExpressionValue('(id)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]').GetObjectDescription()
+    print fb.describeObject('[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -112,7 +112,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        print fb.evaluateExpressionValue('(id)[UIViewController _printHierarchy]').GetObjectDescription()
+        print fb.describeObject('[UIViewController _printHierarchy]')
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
@@ -311,8 +311,7 @@ class FBPrintKeyPath(fb.FBCommand):
     else:
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
-      printCommand = '(id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
-      print fb.evaluateExpressionValue(printCommand).GetObjectDescription()
+      print fb.describeObject('[{} valueForKeyPath:@"{}"]'.format(object, keypath))
 
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
@@ -408,8 +407,7 @@ class FBPrintData(fb.FBCommand):
     elif encoding_text == 'utf32l':
       enc = 0x9c000100
 
-    print_command = '(id)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
-    print fb.evaluateExpressionValue(print_command).GetObjectDescription()
+    print fb.describeObject('[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc))
 
 class FBPrintTargetActions(fb.FBCommand):
 
