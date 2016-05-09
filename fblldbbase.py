@@ -77,12 +77,6 @@ def evaluateExpressionValueWithLanguage(expression, language, printErrors):
     print value.GetError()
   return value
 
-def evaluateExpressionValueInFrameLanguage(expression, printErrors=True):
-  # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  language = frame.GetCompileUnit().GetLanguage()  # requires lldb r222189 (2014-11-17)
-  return evaluateExpressionValueWithLanguage(expression, language, printErrors)
-
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
 def evaluateExpressionValue(expression, printErrors=True):
