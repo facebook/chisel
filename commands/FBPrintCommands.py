@@ -37,12 +37,7 @@ def lldbcommands():
     FBPrintJSON(),
     FBPrintAsCurl(),
     FBPrintToClipboard(),
-    FBPrintInObjc(),
-    FBPrintInSwift(),
     FBPrintObjectInObjc(),
-    FBPrintObjectInSwift(),
-    FBExpressionInObjc(),
-    FBExpressionInSwift(),
   ]
 
 class FBPrintViewHierarchyCommand(fb.FBCommand):
@@ -100,7 +95,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('poobjc (NSString *)[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
+    print fb.describeObject('[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -118,7 +113,7 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        lldb.debugger.HandleCommand('poobjc (NSString *)[UIViewController _printHierarchy]')
+        print fb.describeObject('[UIViewController _printHierarchy]')
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
@@ -287,16 +282,16 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ]
 
   def run(self, arguments, options):
-    commandForObject, ivarName = arguments
+    object = fb.evaluateInputExpression(arguments[0])
+    ivarName = arguments[1]
 
-    object = fb.evaluateObjectExpression(commandForObject)
     objectClass = fb.evaluateExpressionValue('(id)[(' + object + ') class]').GetObjectDescription()
 
     ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
-    printCommand = 'poobjc' if ('@' in ivarTypeEncodingFirstChar) else 'pobjc'
-    lldb.debugger.HandleCommand('{} (({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+    result = fb.evaluateExpressionValue('(({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
+    return result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result.GetValue()
 
 class FBPrintKeyPath(fb.FBCommand):
   def name(self):
@@ -317,8 +312,7 @@ class FBPrintKeyPath(fb.FBCommand):
     else:
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
-      printCommand = 'poobjc (id)[{} valueForKeyPath:@"{}"]'.format(object, keypath)
-      lldb.debugger.HandleCommand(printCommand)
+      print fb.describeObject('[{} valueForKeyPath:@"{}"]'.format(object, keypath))
 
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
@@ -436,8 +430,7 @@ class FBPrintData(fb.FBCommand):
     elif encoding_text == 'utf32l':
       enc = 0x9c000100
 
-    print_command = 'poobjc (NSString *)[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)
-    lldb.debugger.HandleCommand(print_command)
+    print fb.describeObject('[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc))
 
 class FBPrintTargetActions(fb.FBCommand):
 
@@ -571,38 +564,6 @@ class FBPrintToClipboard(fb.FBCommand):
     process.communicate(lldbOutput.encode('utf-8'))
     print "Object copied to clipboard"
 
-class FBPrintInObjc(fb.FBCommand):
-  def name(self):
-    return 'pobjc'
-
-  def description(self):
-    return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++ -- " )'
-
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
-    ]
-
-  def run(self, arguments, options):
-    expression = arguments[0]
-    lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
-
-class FBPrintInSwift(fb.FBCommand):
-  def name(self):
-    return 'pswift'
-
-  def description(self):
-    return 'Print the expression result, with the expression run in a Swift context. (Shortcut for "expression -l Swift -- " )'
-
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
-    ]
-
-  def run(self, arguments, options):
-    expression = arguments[0]
-    lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)
-
 class FBPrintObjectInObjc(fb.FBCommand):
   def name(self):
     return 'poobjc'
@@ -618,61 +579,3 @@ class FBPrintObjectInObjc(fb.FBCommand):
   def run(self, arguments, options):
     expression = arguments[0]
     lldb.debugger.HandleCommand('expression -O -l ObjC++ -- ' + expression)
-
-class FBPrintObjectInSwift(fb.FBCommand):
-  def name(self):
-    return 'poswift'
-
-  def description(self):
-    return 'Print the expression result, with the expression run in a Swift context. (Shortcut for "expression -O -l Swift -- " )'
-
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
-    ]
-
-  def run(self, arguments, options):
-    expression = arguments[0]
-    lldb.debugger.HandleCommand('expression -O -l Swift -- ' + expression)
-
-class FBExpressionInObjc(fb.FBCommand):
-  def name(self):
-    return 'eobjc'
-
-  def description(self):
-    return 'Run expression run in an ObjC++ context. (Shortcut for "expression -l ObjC++" )'
-
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', help='ObjC expression to evaluate and print.'),
-    ]
-
-  def run(self, arguments, options):
-    values = arguments[0].split("--", 1)
-    if len(values) is 2:
-        (arguments, expression) = arguments
-        lldb.debugger.HandleCommand('expression -l ObjC++ ' + arguments + " -- " + expression)
-    else:
-        expression = arguments[0]
-        lldb.debugger.HandleCommand('expression -l ObjC++ -- ' + expression)
-
-class FBExpressionInSwift(fb.FBCommand):
-  def name(self):
-    return 'eswift'
-
-  def description(self):
-    return 'Run expression run in a Swift context. (Shortcut for "expression -l Swift" )'
-
-  def args(self):
-    return [
-      fb.FBCommandArgument(arg='expression', help='Swift expression to evaluate and print.'),
-    ]
-
-  def run(self, arguments, options):
-    values = arguments[0].split("--", 1)
-    if len(values) is 2:
-        (arguments, expression) = arguments
-        lldb.debugger.HandleCommand('expression -l Swift ' + arguments + " -- " + expression)
-    else:
-        expression = arguments[0]
-        lldb.debugger.HandleCommand('expression -l Swift -- ' + expression)

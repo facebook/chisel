@@ -13,10 +13,10 @@ import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
-  lldb.debugger.HandleCommand('eobjc (void)[CATransaction flush]')
+  fb.evaluateEffect('[CATransaction flush]')
 
 def setViewHidden(object, hidden):
-  lldb.debugger.HandleCommand('eobjc (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
+  fb.evaluateEffect('[{} setHidden:{}]'.format(object, int(hidden)))
   flushCoreAnimationTransaction()
 
 def maskView(viewOrLayer, color, alpha):
@@ -31,16 +31,16 @@ def maskView(viewOrLayer, color, alpha):
                                                size.GetChildMemberWithName('height').GetValue())
   mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
-  lldb.debugger.HandleCommand('eobjc (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  lldb.debugger.HandleCommand('eobjc (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  lldb.debugger.HandleCommand('eobjc (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  lldb.debugger.HandleCommand('eobjc (void)[%s addSubview:%s]' % (window, mask))
+  fb.evaluateEffect('[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+  fb.evaluateEffect('[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+  fb.evaluateEffect('[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+  fb.evaluateEffect('[%s addSubview:%s]' % (window, mask))
   flushCoreAnimationTransaction()
 
 def unmaskView(viewOrLayer):
   window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
   mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  lldb.debugger.HandleCommand('eobjc (void)[%s removeFromSuperview]' % mask)
+  fb.evaluateEffect('[%s removeFromSuperview]' % mask)
   flushCoreAnimationTransaction()
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):
@@ -113,4 +113,4 @@ def upwardsRecursiveDescription(view, maxDepth=0):
   return builder
 
 def slowAnimation(speed=1):
-  lldb.debugger.HandleCommand('eobjc (void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)
+  fb.evaluateEffect('[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)

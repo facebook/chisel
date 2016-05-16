@@ -83,9 +83,9 @@ def _showColor(color):
         colorToUse = '[UIColor colorWithCIColor:(CIColor *){}]'.format(color)
 
     imageSize = 58
-    lldb.debugger.HandleCommand('eobjc (void)UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
-    lldb.debugger.HandleCommand('eobjc (void)[(id){} setFill]'.format(colorToUse))
-    lldb.debugger.HandleCommand('eobjc (void)UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
+    fb.evaluateEffect('UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)'.format(imageSize=imageSize))
+    fb.evaluateEffect('[(id){} setFill]'.format(colorToUse))
+    fb.evaluateEffect('UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
 
     frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
     result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -96,7 +96,7 @@ def _showColor(color):
       image = result.GetValue()
       _showImage(image)
 
-    lldb.debugger.HandleCommand('eobjc (void)UIGraphicsEndImageContext()')
+    fb.evaluateEffect('UIGraphicsEndImageContext()')
 
 def _showLayer(layer):
   layer = '(' + layer + ')'
@@ -108,8 +108,8 @@ def _showLayer(layer):
     print 'Nothing to see here - the size of this element is {} x {}.'.format(width, height)
     return
 
-  lldb.debugger.HandleCommand('eobjc (void)UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
-  lldb.debugger.HandleCommand('eobjc (void)[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
+  fb.evaluateEffect('UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
+  fb.evaluateEffect('[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
@@ -119,7 +119,7 @@ def _showLayer(layer):
     image = result.GetValue()
     _showImage(image)
 
-  lldb.debugger.HandleCommand('eobjc (void)UIGraphicsEndImageContext()')
+  fb.evaluateEffect('UIGraphicsEndImageContext()')
 
 def _dataIsImage(data):
   data = '(' + data + ')'
@@ -163,7 +163,7 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        lldb.debugger.HandleCommand('poobjc (NSString*)[[NSString alloc] initWithData:' + target + ' encoding:4]')
+        print fb.describeObject('[[NSString alloc] initWithData:' + target + ' encoding:4]')
       else:
         print 'Data isn\'t an image and isn\'t a string.'
     else:
