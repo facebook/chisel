@@ -476,8 +476,8 @@ class FBPrintJSON(fb.FBCommand):
   def run(self, arguments, options):
     objectToPrint = arguments[0]
     pretty = 1 if options.plain is None else 0
-    jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:{} options:{} error:nil]'.format(objectToPrint, pretty))
-    jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:{} encoding:4]'.format(jsonData)).GetObjectDescription()
+    jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:(id){} options:{} error:nil]'.format(objectToPrint, pretty))
+    jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(id){} encoding:4]'.format(jsonData)).GetObjectDescription()
 
     print jsonString
 
