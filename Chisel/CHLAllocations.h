@@ -9,6 +9,10 @@
 
 #import <malloc/malloc.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -22,3 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 void CHLEnumerateAllocationsWithBlock(void (^block)(vm_range_t range));
 
 NS_ASSUME_NONNULL_END
+
+#ifdef __cplusplus
+}
+#endif
