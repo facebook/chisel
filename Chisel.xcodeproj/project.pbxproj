@@ -12,6 +12,8 @@
 		7A6257271C4A23EF0023F1CC /* ChiselTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6257261C4A23EF0023F1CC /* ChiselTests.m */; };
 		7A6257331C4A25D30023F1CC /* CHLAllocations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A6257311C4A25D30023F1CC /* CHLAllocations.h */; };
 		7A6257341C4A25D30023F1CC /* CHLAllocations.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6257321C4A25D30023F1CC /* CHLAllocations.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -Wno-incompatible-pointer-types"; }; };
+		7A88D2D51D60EE42003983CE /* CHLObjCObjectRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A88D2D31D60EE42003983CE /* CHLObjCObjectRecognizer.h */; };
+		7A88D2D61D60EE42003983CE /* CHLObjCObjectRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7A88D2D41D60EE42003983CE /* CHLObjCObjectRecognizer.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +35,8 @@
 		7A6257281C4A23EF0023F1CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A6257311C4A25D30023F1CC /* CHLAllocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLAllocations.h; sourceTree = "<group>"; };
 		7A6257321C4A25D30023F1CC /* CHLAllocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHLAllocations.m; sourceTree = "<group>"; };
+		7A88D2D31D60EE42003983CE /* CHLObjCObjectRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLObjCObjectRecognizer.h; sourceTree = "<group>"; };
+		7A88D2D41D60EE42003983CE /* CHLObjCObjectRecognizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CHLObjCObjectRecognizer.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,8 @@
 				7A62571C1C4A23EF0023F1CC /* Info.plist */,
 				7A6257311C4A25D30023F1CC /* CHLAllocations.h */,
 				7A6257321C4A25D30023F1CC /* CHLAllocations.m */,
+				7A88D2D31D60EE42003983CE /* CHLObjCObjectRecognizer.h */,
+				7A88D2D41D60EE42003983CE /* CHLObjCObjectRecognizer.mm */,
 			);
 			path = Chisel;
 			sourceTree = "<group>";
@@ -102,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A6257331C4A25D30023F1CC /* CHLAllocations.h in Headers */,
+				7A88D2D51D60EE42003983CE /* CHLObjCObjectRecognizer.h in Headers */,
 				7A62571B1C4A23EF0023F1CC /* Chisel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A6257341C4A25D30023F1CC /* CHLAllocations.m in Sources */,
+				7A88D2D61D60EE42003983CE /* CHLObjCObjectRecognizer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
