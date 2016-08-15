@@ -5,6 +5,10 @@
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
+#if __has_feature(objc_arc)
+#error CHLObjCObjectRecognizer.m expects ARC to be disabled.
+#endif
+
 #import "CHLObjCObjectRecognizer.h"
 
 #include <unordered_map>
