@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7570A9141C8624F7006A584F /* CHLDuplicateDetection.h in Headers */ = {isa = PBXBuildFile; fileRef = 7570A9131C8624F7006A584F /* CHLDuplicateDetection.h */; };
+		7570A9161C862515006A584F /* CHLDuplicateDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7570A9151C862515006A584F /* CHLDuplicateDetection.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		7570A9181C862822006A584F /* CHLObjectAllocations.m in Sources */ = {isa = PBXBuildFile; fileRef = 7570A9171C862822006A584F /* CHLObjectAllocations.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		7570A91A1C862839006A584F /* CHLObjectAllocations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7570A9191C86282C006A584F /* CHLObjectAllocations.h */; };
+		7570A91C1C862DEA006A584F /* CHLDuplicateDetectionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7570A91B1C862DEA006A584F /* CHLDuplicateDetectionTests.m */; };
 		7A62571B1C4A23EF0023F1CC /* Chisel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A62571A1C4A23EF0023F1CC /* Chisel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A6257221C4A23EF0023F1CC /* Chisel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6257171C4A23EF0023F1CC /* Chisel.framework */; };
 		7A6257271C4A23EF0023F1CC /* ChiselTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A6257261C4A23EF0023F1CC /* ChiselTests.m */; };
@@ -25,6 +30,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7570A9131C8624F7006A584F /* CHLDuplicateDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLDuplicateDetection.h; sourceTree = "<group>"; };
+		7570A9151C862515006A584F /* CHLDuplicateDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHLDuplicateDetection.m; sourceTree = "<group>"; };
+		7570A9171C862822006A584F /* CHLObjectAllocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHLObjectAllocations.m; sourceTree = "<group>"; };
+		7570A9191C86282C006A584F /* CHLObjectAllocations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHLObjectAllocations.h; sourceTree = "<group>"; };
+		7570A91B1C862DEA006A584F /* CHLDuplicateDetectionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHLDuplicateDetectionTests.m; sourceTree = "<group>"; };
 		7A6257171C4A23EF0023F1CC /* Chisel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Chisel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A62571A1C4A23EF0023F1CC /* Chisel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Chisel.h; sourceTree = "<group>"; };
 		7A62571C1C4A23EF0023F1CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,6 +91,10 @@
 				7A62571C1C4A23EF0023F1CC /* Info.plist */,
 				7A6257311C4A25D30023F1CC /* CHLAllocations.h */,
 				7A6257321C4A25D30023F1CC /* CHLAllocations.m */,
+				7570A9191C86282C006A584F /* CHLObjectAllocations.h */,
+				7570A9171C862822006A584F /* CHLObjectAllocations.m */,
+				7570A9131C8624F7006A584F /* CHLDuplicateDetection.h */,
+				7570A9151C862515006A584F /* CHLDuplicateDetection.m */,
 			);
 			path = Chisel;
 			sourceTree = "<group>";
@@ -89,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				7A6257261C4A23EF0023F1CC /* ChiselTests.m */,
+				7570A91B1C862DEA006A584F /* CHLDuplicateDetectionTests.m */,
 				7A6257281C4A23EF0023F1CC /* Info.plist */,
 			);
 			path = ChiselTests;
@@ -102,6 +117,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A6257331C4A25D30023F1CC /* CHLAllocations.h in Headers */,
+				7570A91A1C862839006A584F /* CHLObjectAllocations.h in Headers */,
+				7570A9141C8624F7006A584F /* CHLDuplicateDetection.h in Headers */,
 				7A62571B1C4A23EF0023F1CC /* Chisel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,6 +220,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A6257341C4A25D30023F1CC /* CHLAllocations.m in Sources */,
+				7570A9181C862822006A584F /* CHLObjectAllocations.m in Sources */,
+				7570A9161C862515006A584F /* CHLDuplicateDetection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A6257271C4A23EF0023F1CC /* ChiselTests.m in Sources */,
+				7570A91C1C862DEA006A584F /* CHLDuplicateDetectionTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
