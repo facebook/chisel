@@ -42,6 +42,7 @@ def evaluateExpressionValue(expression, printErrors=True):
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
   options.SetLanguage(lldb.eLanguageTypeObjC_plus_plus)
+  options.SetTrapExceptions(False)
   value = frame.EvaluateExpression(expression, options)
   error = value.GetError()
 
@@ -61,7 +62,9 @@ def evaluateInputExpression(expression, printErrors=True):
     return evaluateExpressionValue(expression, printErrors).GetValue()
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  value = frame.EvaluateExpression(expression)
+  options = lldb.SBExpressionOptions()
+  options.SetTrapExceptions(False)
+  value = frame.EvaluateExpression(expression, options)
   error = value.GetError()
 
   if printErrors and error.Fail():
