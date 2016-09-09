@@ -1,0 +1,935 @@
+BCSymbolMap Version: 1.0
+_GetBlockStrongLayout
+__FBGetBlockStrongReferences_block_invoke
+__copy_helper_block_
+__destroy_helper_block_
+___BlockClass_block_invoke
+___BlockClass_block_invoke_2
+OBJC_CLASSLIST_REFERENCES_$_
+OBJC_METH_VAR_NAME_
+OBJC_SELECTOR_REFERENCES_
+OBJC_METH_VAR_NAME_.1
+OBJC_SELECTOR_REFERENCES_.2
+.str
+__block_descriptor_tmp
+OBJC_METH_VAR_NAME_.3
+OBJC_SELECTOR_REFERENCES_.4
+OBJC_METH_VAR_NAME_.5
+OBJC_SELECTOR_REFERENCES_.6
+OBJC_METH_VAR_NAME_.7
+OBJC_SELECTOR_REFERENCES_.8
+OBJC_CLASSLIST_REFERENCES_$_.9
+OBJC_CLASSLIST_REFERENCES_$_.10
+OBJC_METH_VAR_NAME_.11
+OBJC_SELECTOR_REFERENCES_.12
+OBJC_METH_VAR_NAME_.13
+OBJC_SELECTOR_REFERENCES_.14
+OBJC_METH_VAR_NAME_.15
+OBJC_SELECTOR_REFERENCES_.16
+OBJC_METH_VAR_NAME_.17
+OBJC_SELECTOR_REFERENCES_.18
+_BlockClass.onceToken
+_BlockClass.blockClass
+.str.19
+__block_descriptor_tmp.20
+__block_literal_global
+OBJC_METH_VAR_NAME_.21
+OBJC_SELECTOR_REFERENCES_.22
+OBJC_METH_VAR_NAME_.23
+OBJC_SELECTOR_REFERENCES_.24
+OBJC_CLASSLIST_REFERENCES_$_.25
+OBJC_METH_VAR_NAME_.26
+OBJC_SELECTOR_REFERENCES_.27
+__block_descriptor_tmp.28
+__block_literal_global.29
+Apple LLVM version 7.3.0 (clang-703.0.29)
+_dispatch_once
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/usr/include/dispatch/once.h
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Blocks/FBBlockStrongLayout.m
+_BlockClass
+FBObjectIsBlock
+FBGetBlockStrongReferences
++[FBAssociationManager hook]
++[FBAssociationManager unhook]
++[FBAssociationManager associationsForObject:]
+OBJC_CLASS_NAME_
+OBJC_METH_VAR_TYPE_
+OBJC_METH_VAR_NAME_.2
+OBJC_METH_VAR_TYPE_.3
+l_OBJC_$_CLASS_METHODS_FBAssociationManager
+l_OBJC_METACLASS_RO_$_FBAssociationManager
+l_OBJC_CLASS_RO_$_FBAssociationManager
+OBJC_LABEL_CLASS_$
++[FBAssociationManager associationsForObject:]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Associations/FBAssociationManager.mm
++[FBAssociationManager unhook]
++[FBAssociationManager hook]
+-[FBBlockStrongRelationDetector release]
+-[FBBlockStrongRelationDetector retain]
++[FBBlockStrongRelationDetector alloc]
+byref_keep_nop
+byref_dispose_nop
+-[FBBlockStrongRelationDetector trueRelease]
+-[FBBlockStrongRelationDetector isStrong]
+-[FBBlockStrongRelationDetector setStrong:]
+OBJC_IVAR_$_FBBlockStrongRelationDetector._strong
+OBJC_CLASSLIST_SUP_REFS_$_
+OBJC_CLASSLIST_SUP_REFS_$_.1
+OBJC_SELECTOR_REFERENCES_.3
+l_OBJC_$_CLASS_METHODS_FBBlockStrongRelationDetector
+l_OBJC_METACLASS_RO_$_FBBlockStrongRelationDetector
+OBJC_METH_VAR_TYPE_.4
+OBJC_METH_VAR_NAME_.6
+OBJC_METH_VAR_TYPE_.8
+OBJC_METH_VAR_NAME_.9
+OBJC_METH_VAR_TYPE_.10
+l_OBJC_$_INSTANCE_METHODS_FBBlockStrongRelationDetector
+OBJC_METH_VAR_TYPE_.12
+OBJC_METH_VAR_TYPE_.14
+OBJC_METH_VAR_NAME_.16
+OBJC_METH_VAR_TYPE_.17
+OBJC_METH_VAR_NAME_.18
+OBJC_METH_VAR_NAME_.19
+OBJC_METH_VAR_TYPE_.20
+OBJC_METH_VAR_TYPE_.22
+l_OBJC_$_INSTANCE_VARIABLES_FBBlockStrongRelationDetector
+OBJC_PROP_NAME_ATTR_
+OBJC_PROP_NAME_ATTR_.23
+l_OBJC_$_PROP_LIST_FBBlockStrongRelationDetector
+l_OBJC_CLASS_RO_$_FBBlockStrongRelationDetector
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Blocks/FBBlockStrongRelationDetector.m
+-[FBBlockStrongRelationDetector setStrong:]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Blocks/FBBlockStrongRelationDetector.h
+-[FBBlockStrongRelationDetector isStrong]
+-[FBBlockStrongRelationDetector trueRelease]
++[FBBlockStrongRelationDetector alloc]
+-[FBBlockStrongRelationDetector retain]
+-[FBBlockStrongRelationDetector release]
+-[FBObjectGraphConfiguration initWithFilterBlocks:shouldInspectTimers:]
+-[FBObjectGraphConfiguration init]
+-[FBObjectGraphConfiguration filterBlocks]
+-[FBObjectGraphConfiguration shouldInspectTimers]
+-[FBObjectGraphConfiguration layoutCache]
+-[FBObjectGraphConfiguration shouldCacheLayouts]
+-[FBObjectGraphConfiguration .cxx_destruct]
+OBJC_IVAR_$_FBObjectGraphConfiguration._filterBlocks
+OBJC_IVAR_$_FBObjectGraphConfiguration._shouldInspectTimers
+OBJC_IVAR_$_FBObjectGraphConfiguration._layoutCache
+OBJC_IVAR_$_FBObjectGraphConfiguration._shouldCacheLayouts
+l_OBJC_METACLASS_RO_$_FBObjectGraphConfiguration
+OBJC_CLASS_NAME_.7
+OBJC_METH_VAR_NAME_.12
+OBJC_METH_VAR_TYPE_.13
+OBJC_METH_VAR_NAME_.14
+l_OBJC_$_INSTANCE_METHODS_FBObjectGraphConfiguration
+l_OBJC_$_INSTANCE_VARIABLES_FBObjectGraphConfiguration
+OBJC_PROP_NAME_ATTR_.24
+OBJC_PROP_NAME_ATTR_.25
+OBJC_PROP_NAME_ATTR_.26
+OBJC_PROP_NAME_ATTR_.27
+OBJC_PROP_NAME_ATTR_.28
+OBJC_PROP_NAME_ATTR_.29
+l_OBJC_$_PROP_LIST_FBObjectGraphConfiguration
+l_OBJC_CLASS_RO_$_FBObjectGraphConfiguration
+-[FBObjectGraphConfiguration .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectGraphConfiguration.m
+-[FBObjectGraphConfiguration shouldCacheLayouts]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectGraphConfiguration.h
+-[FBObjectGraphConfiguration layoutCache]
+-[FBObjectGraphConfiguration shouldInspectTimers]
+-[FBObjectGraphConfiguration filterBlocks]
+-[FBObjectGraphConfiguration init]
+-[FBObjectGraphConfiguration initWithFilterBlocks:shouldInspectTimers:]
+-[FBRetainCycleDetector initWithConfiguration:]
+-[FBRetainCycleDetector init]
+-[FBRetainCycleDetector addCandidate:]
+-[FBRetainCycleDetector findRetainCycles]
+-[FBRetainCycleDetector findRetainCyclesWithMaxCycleLength:]
+-[FBRetainCycleDetector _findRetainCyclesInObject:stackDepth:]
+-[FBRetainCycleDetector _unwrapCycle:]
+-[FBRetainCycleDetector _shiftToUnifiedCycle:]
+-[FBRetainCycleDetector _extractClassNamesFromGraphObjects:]
+-[FBRetainCycleDetector _shiftToLowestLexicographically:]
+-[FBRetainCycleDetector _compareStringArray:withArray:]
+-[FBRetainCycleDetector _shiftBufferToLowestAddress:]
+-[FBRetainCycleDetector .cxx_destruct]
+OBJC_IVAR_$_FBRetainCycleDetector._configuration
+OBJC_IVAR_$_FBRetainCycleDetector._candidates
+OBJC_CLASSLIST_REFERENCES_$_.3
+OBJC_METH_VAR_NAME_.4
+OBJC_SELECTOR_REFERENCES_.5
+OBJC_SELECTOR_REFERENCES_.7
+OBJC_METH_VAR_NAME_.8
+OBJC_SELECTOR_REFERENCES_.9
+OBJC_METH_VAR_NAME_.10
+OBJC_SELECTOR_REFERENCES_.11
+OBJC_SELECTOR_REFERENCES_.13
+OBJC_CLASSLIST_REFERENCES_$_.14
+OBJC_SELECTOR_REFERENCES_.20
+OBJC_CLASSLIST_REFERENCES_$_.23
+OBJC_METH_VAR_NAME_.24
+OBJC_SELECTOR_REFERENCES_.25
+OBJC_METH_VAR_NAME_.28
+OBJC_SELECTOR_REFERENCES_.29
+OBJC_METH_VAR_NAME_.30
+OBJC_SELECTOR_REFERENCES_.31
+OBJC_METH_VAR_NAME_.32
+OBJC_SELECTOR_REFERENCES_.33
+OBJC_METH_VAR_NAME_.34
+OBJC_SELECTOR_REFERENCES_.35
+OBJC_METH_VAR_NAME_.36
+OBJC_SELECTOR_REFERENCES_.37
+OBJC_METH_VAR_NAME_.38
+OBJC_SELECTOR_REFERENCES_.39
+OBJC_METH_VAR_NAME_.40
+OBJC_SELECTOR_REFERENCES_.41
+OBJC_METH_VAR_NAME_.42
+OBJC_SELECTOR_REFERENCES_.43
+OBJC_METH_VAR_NAME_.44
+OBJC_SELECTOR_REFERENCES_.45
+OBJC_METH_VAR_NAME_.46
+OBJC_SELECTOR_REFERENCES_.47
+OBJC_METH_VAR_NAME_.48
+OBJC_SELECTOR_REFERENCES_.49
+OBJC_METH_VAR_NAME_.50
+OBJC_SELECTOR_REFERENCES_.51
+OBJC_METH_VAR_NAME_.52
+OBJC_SELECTOR_REFERENCES_.53
+OBJC_METH_VAR_NAME_.54
+OBJC_SELECTOR_REFERENCES_.55
+OBJC_METH_VAR_NAME_.56
+OBJC_SELECTOR_REFERENCES_.57
+OBJC_METH_VAR_NAME_.58
+OBJC_SELECTOR_REFERENCES_.59
+OBJC_METH_VAR_NAME_.60
+OBJC_SELECTOR_REFERENCES_.61
+OBJC_METH_VAR_NAME_.62
+OBJC_SELECTOR_REFERENCES_.63
+OBJC_METH_VAR_NAME_.64
+OBJC_SELECTOR_REFERENCES_.65
+OBJC_METH_VAR_NAME_.66
+OBJC_SELECTOR_REFERENCES_.67
+OBJC_METH_VAR_NAME_.68
+OBJC_SELECTOR_REFERENCES_.69
+OBJC_METH_VAR_NAME_.70
+OBJC_SELECTOR_REFERENCES_.71
+l_OBJC_METACLASS_RO_$_FBRetainCycleDetector
+OBJC_CLASS_NAME_.72
+OBJC_METH_VAR_TYPE_.73
+OBJC_METH_VAR_NAME_.74
+OBJC_METH_VAR_TYPE_.75
+OBJC_METH_VAR_NAME_.76
+OBJC_METH_VAR_TYPE_.77
+OBJC_METH_VAR_TYPE_.78
+OBJC_METH_VAR_TYPE_.79
+OBJC_METH_VAR_NAME_.80
+OBJC_METH_VAR_TYPE_.81
+l_OBJC_$_INSTANCE_METHODS_FBRetainCycleDetector
+OBJC_METH_VAR_NAME_.82
+OBJC_METH_VAR_TYPE_.83
+OBJC_METH_VAR_NAME_.84
+OBJC_METH_VAR_TYPE_.85
+l_OBJC_$_INSTANCE_VARIABLES_FBRetainCycleDetector
+l_OBJC_CLASS_RO_$_FBRetainCycleDetector
+NSMakeRange
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSRange.h
+-[FBRetainCycleDetector .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Detector/FBRetainCycleDetector.mm
+-[FBRetainCycleDetector _shiftBufferToLowestAddress:]
+-[FBRetainCycleDetector _compareStringArray:withArray:]
+-[FBRetainCycleDetector _shiftToLowestLexicographically:]
+-[FBRetainCycleDetector _extractClassNamesFromGraphObjects:]
+-[FBRetainCycleDetector _shiftToUnifiedCycle:]
+-[FBRetainCycleDetector _unwrapCycle:]
+-[FBRetainCycleDetector _findRetainCyclesInObject:stackDepth:]
+-[FBRetainCycleDetector findRetainCyclesWithMaxCycleLength:]
+-[FBRetainCycleDetector findRetainCycles]
+-[FBRetainCycleDetector addCandidate:]
+-[FBRetainCycleDetector init]
+-[FBRetainCycleDetector initWithConfiguration:]
+-[FBObjectInStructReference initWithIndex:namePath:]
+-[FBObjectInStructReference description]
+-[FBObjectInStructReference objectReferenceFromObject:]
+-[FBObjectInStructReference indexInIvarLayout]
+-[FBObjectInStructReference namePath]
+-[FBObjectInStructReference .cxx_destruct]
+OBJC_IVAR_$_FBObjectInStructReference._index
+OBJC_IVAR_$_FBObjectInStructReference._namePath
+_unnamed_cfstring_
+OBJC_METH_VAR_TYPE_.5
+OBJC_METH_VAR_TYPE_.7
+OBJC_CLASS_NAME_.9
+OBJC_METH_VAR_TYPE_.11
+OBJC_METH_VAR_TYPE_.16
+OBJC_METH_VAR_TYPE_.18
+OBJC_METH_VAR_TYPE_.24
+OBJC_METH_VAR_NAME_.25
+OBJC_METH_VAR_TYPE_.27
+OBJC_METH_VAR_TYPE_.29
+OBJC_METH_VAR_NAME_.31
+OBJC_METH_VAR_TYPE_.32
+OBJC_METH_VAR_NAME_.33
+OBJC_METH_VAR_NAME_.35
+OBJC_METH_VAR_TYPE_.36
+OBJC_METH_VAR_NAME_.37
+OBJC_METH_VAR_NAME_.39
+OBJC_METH_VAR_TYPE_.40
+OBJC_METH_VAR_NAME_.41
+OBJC_CLASS_NAME_.42
+l_OBJC_$_PROTOCOL_INSTANCE_METHODS_NSObject
+l_OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_NSObject
+OBJC_PROP_NAME_ATTR_.43
+OBJC_PROP_NAME_ATTR_.44
+OBJC_PROP_NAME_ATTR_.45
+OBJC_PROP_NAME_ATTR_.46
+OBJC_PROP_NAME_ATTR_.47
+OBJC_PROP_NAME_ATTR_.48
+l_OBJC_$_PROP_LIST_NSObject
+l_OBJC_$_PROTOCOL_METHOD_TYPES_NSObject
+l_OBJC_PROTOCOL_$_NSObject
+l_OBJC_LABEL_PROTOCOL_$_NSObject
+l_OBJC_$_PROTOCOL_REFS_FBObjectReference
+l_OBJC_$_PROTOCOL_INSTANCE_METHODS_FBObjectReference
+l_OBJC_$_PROTOCOL_METHOD_TYPES_FBObjectReference
+l_OBJC_PROTOCOL_$_FBObjectReference
+l_OBJC_LABEL_PROTOCOL_$_FBObjectReference
+l_OBJC_CLASS_PROTOCOLS_$_FBObjectInStructReference
+l_OBJC_METACLASS_RO_$_FBObjectInStructReference
+OBJC_CLASS_NAME_.49
+OBJC_METH_VAR_TYPE_.51
+OBJC_METH_VAR_TYPE_.53
+l_OBJC_$_INSTANCE_METHODS_FBObjectInStructReference
+OBJC_METH_VAR_TYPE_.55
+OBJC_METH_VAR_TYPE_.57
+l_OBJC_$_INSTANCE_VARIABLES_FBObjectInStructReference
+l_OBJC_$_PROP_LIST_FBObjectInStructReference
+l_OBJC_CLASS_RO_$_FBObjectInStructReference
+-[FBObjectInStructReference .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Reference/FBObjectInStructReference.m
+-[FBObjectInStructReference namePath]
+-[FBObjectInStructReference indexInIvarLayout]
+-[FBObjectInStructReference objectReferenceFromObject:]
+-[FBObjectInStructReference description]
+-[FBObjectInStructReference initWithIndex:namePath:]
+rcd_prepend_rebindings
+rebind_symbols_for_image
+_rebind_symbols_for_image
+rcd_perform_rebinding_with_section
+_rebindings_head
+.str.1
+.str.2
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/fishhook/fishhook.c
+rcd_rebind_symbols
+rcd_rebind_symbols_image
+__FBFilterBlockWithObjectToManyIvarsRelation_block_invoke
+__FBFilterBlockWithObjectIvarObjectRelation_block_invoke
+__copy_helper_block_.7
+__destroy_helper_block_.8
+__block_descriptor_tmp.10
+FBGetStandardGraphEdgeFilters
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Filtering/FBStandardGraphEdgeFilters.mm
+FBFilterBlockWithObjectIvarObjectRelation
+FBFilterBlockWithObjectToManyIvarsRelation
+FBFilterBlockWithObjectIvarRelation
+-[FBNodeEnumerator initWithObject:]
+-[FBNodeEnumerator nextObject]
+-[FBNodeEnumerator isEqual:]
+-[FBNodeEnumerator hash]
+-[FBNodeEnumerator object]
+-[FBNodeEnumerator .cxx_destruct]
+OBJC_IVAR_$_FBNodeEnumerator._object
+OBJC_IVAR_$_FBNodeEnumerator._retainedObjectsSnapshot
+OBJC_IVAR_$_FBNodeEnumerator._enumerator
+OBJC_SELECTOR_REFERENCES_.10
+l_OBJC_METACLASS_RO_$_FBNodeEnumerator
+OBJC_CLASS_NAME_.21
+OBJC_METH_VAR_TYPE_.23
+OBJC_METH_VAR_TYPE_.26
+l_OBJC_$_INSTANCE_METHODS_FBNodeEnumerator
+OBJC_METH_VAR_NAME_.27
+OBJC_METH_VAR_TYPE_.28
+OBJC_METH_VAR_NAME_.29
+OBJC_METH_VAR_TYPE_.30
+l_OBJC_$_INSTANCE_VARIABLES_FBNodeEnumerator
+OBJC_PROP_NAME_ATTR_.33
+l_OBJC_$_PROP_LIST_FBNodeEnumerator
+l_OBJC_CLASS_RO_$_FBNodeEnumerator
+-[FBNodeEnumerator .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Detector/FBNodeEnumerator.mm
+-[FBNodeEnumerator object]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Detector/FBNodeEnumerator.h
+-[FBNodeEnumerator hash]
+-[FBNodeEnumerator isEqual:]
+-[FBNodeEnumerator nextObject]
+-[FBNodeEnumerator initWithObject:]
+_ZN2FB19RetainCycleDetector6Parser4TypeD1Ev
+_ZN2FB19RetainCycleDetector6Parser4TypeD0Ev
+_ZN2FB19RetainCycleDetector6Parser4Type12passTypePathENSt3__16vectorINS3_12basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEENS8_ISA_EEEE
+___ZL29FBGetStrongReferencesForClassP10objc_class_block_invoke
+___ZL29FBGetStrongReferencesForClassP10objc_class_block_invoke_2
+OBJC_CLASSLIST_REFERENCES_$_.1
+OBJC_SELECTOR_REFERENCES_.15
+OBJC_SELECTOR_REFERENCES_.17
+OBJC_SELECTOR_REFERENCES_.19
+OBJC_METH_VAR_NAME_.20
+OBJC_SELECTOR_REFERENCES_.21
+OBJC_METH_VAR_NAME_.22
+OBJC_SELECTOR_REFERENCES_.23
+OBJC_CLASSLIST_REFERENCES_$_.26
+OBJC_SELECTOR_REFERENCES_.28
+OBJC_CLASSLIST_REFERENCES_$_.29
+OBJC_CLASSLIST_REFERENCES_$_.32
+OBJC_SELECTOR_REFERENCES_.34
+OBJC_SELECTOR_REFERENCES_.36
+OBJC_SELECTOR_REFERENCES_.38
+OBJC_SELECTOR_REFERENCES_.40
+OBJC_SELECTOR_REFERENCES_.42
+OBJC_METH_VAR_NAME_.43
+OBJC_SELECTOR_REFERENCES_.44
+.str.45
+__block_descriptor_tmp.46
+OBJC_CLASSLIST_REFERENCES_$_.47
+length
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string
+allocator
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory
+__libcpp_compressed_pair_imp
+__compressed_pair
+basic_string
+FBGetLayoutAsIndexesForDescription
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/FBClassStrongLayout.mm
+FBGetMinimumIvarIndex
+FBGetStrongReferencesForClass
+max<unsigned long, std::__1::__less<unsigned long, unsigned long> >
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/algorithm
+max<unsigned long>
+__recommend
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector
+__annotate_new
+__allocate
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/new
+allocate
+max
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/limits
+second
+__alloc
+max_size
+__max_size
+operator()
+min<unsigned long, std::__1::__less<unsigned long, unsigned long> >
+min<unsigned long>
+first
+__end_cap
+__invalidate_all_iterators
+clear
+deallocate
+data
+__annotate_contiguous_container
+__annotate_shrink
+__destruct_at_end
+__done
+forward<std::__1::basic_string<char> &>
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/type_traits
+construct<std::__1::basic_string<char>, std::__1::basic_string<char> &>
+__construct<std::__1::basic_string<char>, std::__1::basic_string<char> &>
+__construct_range_forward<std::__1::basic_string<char> *, std::__1::basic_string<char> *>
+__RAII_IncreaseAnnotator
+__construct_at_end<std::__1::basic_string<char> *>
+__unwrap_iter<std::__1::basic_string<char> *>
+__copy<std::__1::basic_string<char> *, std::__1::basic_string<char> *>
+copy<std::__1::basic_string<char> *, std::__1::basic_string<char> *>
+__advance<std::__1::basic_string<char> *>
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator
+advance<std::__1::basic_string<char> *>
+size
+capacity
+__distance<std::__1::basic_string<char> *>
+distance<std::__1::basic_string<char> *>
+assign<std::__1::basic_string<char> *>
+__copy_assign_alloc
+operator=
+passTypePath
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Parser/Type.h
+~Type
+~BaseType
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Parser/BaseType.h
+__to_raw_pointer<std::__1::basic_string<char> >
+destroy
+__destroy<std::__1::basic_string<char> >
+destroy<std::__1::basic_string<char> >
+~__vector_base
+~vector
+~Struct
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Parser/Struct.h
+__deallocate
+__to_raw_pointer<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+~shared_ptr
+__destroy<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+destroy<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+operator++
+operator*
+base
+operator==<std::__1::basic_string<char> *, std::__1::basic_string<char> *>
+operator!=<std::__1::basic_string<char> *>
+end
+__wrap_iter
+__make_iter
+begin
+addressof<const char>
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_base
+pointer_to
+__get_short_pointer
+__get_long_pointer
+__get_pointer
+__to_raw_pointer<const char>
+c_str
+addressof<char>
+__is_long
+operator[]
+operator->
+operator==<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+operator!=<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+FBGetReferencesForObjectsInStructEncoding
+FBGetObjectStrongReferences
+FBGetClassReferences
+_ZN2FB19RetainCycleDetector6ParserL31_ParseStructEncodingWithScannerERN12_GLOBAL__N_114_StringScannerE
+_ZN12_GLOBAL__N_114_StringScanner10scanStringERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+_ZN12_GLOBAL__N_114_StringScanner14scanUpToStringERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser10UnresolvedENS_9allocatorIS4_EEED1Ev
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser10UnresolvedENS_9allocatorIS4_EEED0Ev
+_ZN2FB19RetainCycleDetector6Parser10UnresolvedD1Ev
+_ZN2FB19RetainCycleDetector6Parser10UnresolvedD0Ev
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser6StructENS_9allocatorIS4_EEED1Ev
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser6StructENS_9allocatorIS4_EEED0Ev
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser4TypeENS_9allocatorIS4_EEED1Ev
+_ZNSt3__120__shared_ptr_emplaceIN2FB19RetainCycleDetector6Parser4TypeENS_9allocatorIS4_EEED0Ev
+_ZN2FB19RetainCycleDetector6Parser4TypeC2ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEESB_
+_ZN2FB19RetainCycleDetector6Parser6StructC2ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEESB_SB_RNS3_6vectorINS3_10shared_ptrINS1_4TypeEEENS7_ISF_EEEE
+.str.3
+.str.4
+.str.5
+forward<std::__1::basic_string<char> *>
+__vector_base
+vector
+~_StringScanner
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Parser/FBStructEncodingParser.mm
+~_StructParseResult
+move<std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > &>
+move<std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+Struct
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+__construct_range_forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__construct_at_end<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+forward<std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > >
+select_on_container_copy_construction
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer
+~__split_buffer
+move<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *&>
+swap<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+move<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+move_if_noexcept<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/utility
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+shared_ptr
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> >
+__construct_backward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__annotate_delete
+__swap_out_circular_buffer
+forward<std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > &>
+__split_buffer
+__emplace_back_slow_path<const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+forward<const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+emplace_back<const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+get
+operator bool
+shared_ptr<FB::RetainCycleDetector::Parser::BaseType>
+dynamic_pointer_cast<FB::RetainCycleDetector::Parser::Type, FB::RetainCycleDetector::Parser::BaseType>
+operator==<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *>
+operator!=<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *>
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__emplace_back_slow_path<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+shared_ptr<FB::RetainCycleDetector::Parser::Type>
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+emplace_back<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> &>
+reset
+~unique_ptr
+__enable_weak_this
+release
+addressof<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Type, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> > >
+allocator<FB::RetainCycleDetector::Parser::Type>
+__on_zero_shared_weak
+__on_zero_shared
+~__shared_ptr_emplace
+~__libcpp_compressed_pair_imp
+~__compressed_pair
+Type
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple
+get<1, std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+get<0, std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+get<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &>
+__libcpp_compressed_pair_imp<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &, std::__1::basic_string<char> &, const std::__1::basic_string<char> &, 0, 0, 1>
+move<std::__1::tuple<std::__1::basic_string<char> &, const std::__1::basic_string<char> &> &>
+move<std::__1::tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &> &>
+__compressed_pair<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &, std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+__tuple_leaf<const std::__1::basic_string<char> &, void>
+__tuple_impl<0, 1, std::__1::basic_string<char> &, const std::__1::basic_string<char> &, std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+tuple
+forward_as_tuple<std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+__tuple_leaf<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &, void>
+__tuple_impl<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &>
+forward<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &>
+forward_as_tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Type> &>
+__shared_ptr_emplace<std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Type, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> > >
+forward<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Type, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> > > > >
+forward<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Type, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> > *>
+move<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Type, std::__1::allocator<FB::RetainCycleDetector::Parser::Type> > > > &>
+unique_ptr
+__allocator_destructor
+make_shared<std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+make_shared<FB::RetainCycleDetector::Parser::Type, std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+__find_first_of_ce<const char *, const char *, bool (*)(char, char)>
+__str_find_first_of<char, unsigned long, std::__1::char_traits<char>, 4294967295>
+find_first_of
+scanUpToCharacterFromSet
+__emplace_back_slow_path<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Struct> &>
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Struct> &>
+shared_ptr<FB::RetainCycleDetector::Parser::Struct>
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Struct> &>
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Struct> &>
+emplace_back<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Struct> &>
+substr
+forward<std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+forward<std::__1::basic_string<char> >
+addressof<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Struct, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> > >
+allocator<FB::RetainCycleDetector::Parser::Struct>
+get<3, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+get<2, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+get<1, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+forward<std::__1::basic_string<char> &&>
+get<0, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+get<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &>
+__libcpp_compressed_pair_imp<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &, 0, 0, 1, 2, 3>
+move<std::__1::tuple<std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &> &>
+move<std::__1::tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &> &>
+__compressed_pair<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+__tuple_leaf<std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &, void>
+__tuple_leaf<std::__1::basic_string<char>, void>
+__tuple_leaf<std::__1::basic_string<char> &, void>
+__tuple_impl<0, 1, 2, 3, std::__1::basic_string<char> &, std::__1::basic_string<char> &&, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &, std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+tuple<std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &, false>
+forward_as_tuple<std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+__tuple_leaf<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &, void>
+__tuple_impl<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &>
+forward<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &>
+forward_as_tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> &>
+__shared_ptr_emplace<std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Struct, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> > >
+forward<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Struct, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> > > > >
+forward<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Struct, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> > *>
+move<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Struct, std::__1::allocator<FB::RetainCycleDetector::Parser::Struct> > > > &>
+make_shared<std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+make_shared<FB::RetainCycleDetector::Parser::Struct, std::__1::basic_string<char> &, std::__1::basic_string<char>, const std::__1::basic_string<char> &, std::__1::vector<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type>, std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> > > &>
+pop_back
+back
+dynamic_pointer_cast<FB::RetainCycleDetector::Parser::Unresolved, FB::RetainCycleDetector::Parser::BaseType>
+currentCharacter
+shared_ptr<FB::RetainCycleDetector::Parser::Unresolved>
+forward<const std::__1::basic_string<char> &>
+addressof<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Unresolved, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> > >
+allocator<FB::RetainCycleDetector::Parser::Unresolved>
+~Unresolved
+BaseType
+Unresolved
+get<0, const std::__1::basic_string<char> &>
+get<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &>
+__libcpp_compressed_pair_imp<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &, const std::__1::basic_string<char> &, 0, 0>
+move<std::__1::tuple<const std::__1::basic_string<char> &> &>
+move<std::__1::tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &> &>
+__compressed_pair<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &, const std::__1::basic_string<char> &>
+__tuple_impl<0, const std::__1::basic_string<char> &, const std::__1::basic_string<char> &>
+forward_as_tuple<const std::__1::basic_string<char> &>
+__tuple_leaf<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &, void>
+__tuple_impl<0, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &>
+forward<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &>
+forward_as_tuple<std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> &>
+__shared_count
+__shared_weak_count
+__shared_ptr_emplace<const std::__1::basic_string<char> &>
+allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Unresolved, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> > >
+forward<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Unresolved, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> > > > >
+forward<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Unresolved, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> > *>
+move<std::__1::__allocator_destructor<std::__1::allocator<std::__1::__shared_ptr_emplace<FB::RetainCycleDetector::Parser::Unresolved, std::__1::allocator<FB::RetainCycleDetector::Parser::Unresolved> > > > &>
+make_shared<const std::__1::basic_string<char> &>
+make_shared<FB::RetainCycleDetector::Parser::Unresolved, const std::__1::basic_string<char> &>
+__destroy<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+destroy<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+move<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *&>
+swap<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *>
+move_if_noexcept<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+__construct_backward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *>
+forward<std::__1::allocator<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> > &>
+__push_back_slow_path<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+move<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> &>
+__to_raw_pointer<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+__construct<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> >
+push_back
+__zero
+move<std::__1::__compressed_pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >::__rep, std::__1::allocator<char> > &>
+eq
+__search<bool (*)(char, char), const char *, const char *>
+__str_find<char, unsigned long, std::__1::char_traits<char>, 4294967295>
+find
+scanUpToString
+__get_short_size
+__get_long_size
+compare
+scanString
+forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::BaseType> *>
+__vector_base_common
+_ParseStructEncodingWithScanner
+_StringScanner
+parseStructEncodingWithName
+parseStructEncoding
+_ZN2FB19RetainCycleDetector6Parser6StructD1Ev
+_ZN2FB19RetainCycleDetector6Parser6StructD0Ev
+__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__construct_forward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__construct_at_end<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+__unwrap_iter<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+__copy<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+copy<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__unwrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+move<std::__1::__shared_weak_count *&>
+swap<std::__1::__shared_weak_count *>
+move<FB::RetainCycleDetector::Parser::Type *&>
+swap<FB::RetainCycleDetector::Parser::Type *>
+swap
+__move_backward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+move_backward<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__move_range
+__construct_range_forward<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+operator+=
+__advance<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+advance<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+operator-<const std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+insert<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+operator-<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *, std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *>
+__distance<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+distance<std::__1::__wrap_iter<std::__1::shared_ptr<FB::RetainCycleDetector::Parser::Type> *> >
+reserve
+dynamic_pointer_cast<FB::RetainCycleDetector::Parser::Struct, FB::RetainCycleDetector::Parser::Type>
+forward<std::__1::allocator<std::__1::basic_string<char> > >
+operator==<char, std::__1::char_traits<char>, std::__1::allocator<char> >
+operator!=<char, std::__1::char_traits<char>, std::__1::allocator<char> >
+move<std::__1::basic_string<char> *&>
+swap<std::__1::basic_string<char> *>
+move<std::__1::basic_string<char> &>
+move_if_noexcept<std::__1::basic_string<char> >
+construct<std::__1::basic_string<char>, std::__1::basic_string<char> >
+__construct<std::__1::basic_string<char>, std::__1::basic_string<char> >
+__construct_backward<std::__1::basic_string<char> *>
+forward<std::__1::allocator<std::__1::basic_string<char> > &>
+__emplace_back_slow_path<const std::__1::basic_string<char> &>
+construct<std::__1::basic_string<char>, const std::__1::basic_string<char> &>
+__construct<std::__1::basic_string<char>, const std::__1::basic_string<char> &>
+emplace_back<const std::__1::basic_string<char> &>
+flattenTypes
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Parser/Struct.mm
+OBJC_CLASSLIST_REFERENCES_$_.5
+OBJC_CLASSLIST_REFERENCES_$_.12
+OBJC_CLASSLIST_REFERENCES_$_.13
+_ShouldBreakGraphEdge
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/FBRetainCycleUtils.m
+FBWrapObjectGraphElement
+FBWrapObjectGraphElementWithContext
+l_OBJC_METACLASS_RO_$_FBObjectiveCNSCFTimer
+l_OBJC_CLASS_RO_$_FBObjectiveCNSCFTimer
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/Specialization/FBObjectiveCNSCFTimer.mm
+-[FBObjectiveCObject allRetainedObjects]
+-[FBObjectiveCObject _objectRetainsEnumerableValues]
+-[FBObjectiveCObject _objectRetainsEnumerableKeys]
+l_OBJC_$_PROTOCOL_INSTANCE_METHODS_NSFastEnumeration
+l_OBJC_$_PROTOCOL_METHOD_TYPES_NSFastEnumeration
+l_OBJC_PROTOCOL_$_NSFastEnumeration
+l_OBJC_LABEL_PROTOCOL_$_NSFastEnumeration
+l_OBJC_PROTOCOL_REFERENCE_$_NSFastEnumeration
+OBJC_SELECTOR_REFERENCES_.26
+OBJC_SELECTOR_REFERENCES_.30
+OBJC_SELECTOR_REFERENCES_.32
+OBJC_CLASSLIST_REFERENCES_$_.33
+OBJC_CLASS_NAME_.48
+l_OBJC_METACLASS_RO_$_FBObjectiveCObject
+OBJC_METH_VAR_TYPE_.49
+OBJC_METH_VAR_TYPE_.50
+l_OBJC_$_INSTANCE_METHODS_FBObjectiveCObject
+l_OBJC_CLASS_RO_$_FBObjectiveCObject
+-[FBObjectiveCObject _objectRetainsEnumerableKeys]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectiveCObject.m
+-[FBObjectiveCObject _objectRetainsEnumerableValues]
+-[FBObjectiveCObject allRetainedObjects]
+FBExtractObjectByOffset
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/FBClassStrongLayoutHelpers.m
+-[FBIvarReference initWithIvar:]
+-[FBIvarReference _convertEncodingToType:]
+-[FBIvarReference description]
+-[FBIvarReference indexInIvarLayout]
+-[FBIvarReference objectReferenceFromObject:]
+-[FBIvarReference namePath]
+-[FBIvarReference name]
+-[FBIvarReference type]
+-[FBIvarReference offset]
+-[FBIvarReference index]
+-[FBIvarReference ivar]
+-[FBIvarReference .cxx_destruct]
+OBJC_IVAR_$_FBIvarReference._name
+OBJC_IVAR_$_FBIvarReference._type
+OBJC_IVAR_$_FBIvarReference._offset
+OBJC_IVAR_$_FBIvarReference._index
+OBJC_IVAR_$_FBIvarReference._ivar
+OBJC_CLASSLIST_REFERENCES_$_.8
+OBJC_METH_VAR_TYPE_.15
+OBJC_CLASS_NAME_.17
+OBJC_METH_VAR_TYPE_.19
+OBJC_METH_VAR_TYPE_.21
+OBJC_METH_VAR_TYPE_.35
+OBJC_METH_VAR_TYPE_.37
+OBJC_METH_VAR_TYPE_.44
+OBJC_METH_VAR_NAME_.45
+OBJC_METH_VAR_NAME_.47
+OBJC_METH_VAR_TYPE_.48
+OBJC_METH_VAR_NAME_.49
+OBJC_CLASS_NAME_.50
+OBJC_PROP_NAME_ATTR_.51
+OBJC_PROP_NAME_ATTR_.52
+OBJC_PROP_NAME_ATTR_.53
+OBJC_PROP_NAME_ATTR_.54
+OBJC_PROP_NAME_ATTR_.55
+OBJC_PROP_NAME_ATTR_.56
+l_OBJC_CLASS_PROTOCOLS_$_FBIvarReference
+l_OBJC_METACLASS_RO_$_FBIvarReference
+OBJC_CLASS_NAME_.57
+OBJC_METH_VAR_TYPE_.59
+OBJC_METH_VAR_TYPE_.60
+OBJC_METH_VAR_NAME_.61
+OBJC_METH_VAR_TYPE_.62
+OBJC_METH_VAR_NAME_.63
+OBJC_METH_VAR_NAME_.65
+OBJC_METH_VAR_TYPE_.66
+OBJC_METH_VAR_NAME_.67
+OBJC_METH_VAR_TYPE_.69
+l_OBJC_$_INSTANCE_METHODS_FBIvarReference
+OBJC_METH_VAR_TYPE_.71
+OBJC_METH_VAR_NAME_.72
+OBJC_METH_VAR_NAME_.77
+l_OBJC_$_INSTANCE_VARIABLES_FBIvarReference
+OBJC_PROP_NAME_ATTR_.79
+OBJC_PROP_NAME_ATTR_.80
+OBJC_PROP_NAME_ATTR_.81
+OBJC_PROP_NAME_ATTR_.82
+OBJC_PROP_NAME_ATTR_.83
+OBJC_PROP_NAME_ATTR_.84
+OBJC_PROP_NAME_ATTR_.85
+OBJC_PROP_NAME_ATTR_.86
+OBJC_PROP_NAME_ATTR_.87
+OBJC_PROP_NAME_ATTR_.88
+l_OBJC_$_PROP_LIST_FBIvarReference
+l_OBJC_CLASS_RO_$_FBIvarReference
+-[FBIvarReference .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Reference/FBIvarReference.m
+-[FBIvarReference ivar]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Layout/Classes/Reference/FBIvarReference.h
+-[FBIvarReference index]
+-[FBIvarReference offset]
+-[FBIvarReference type]
+-[FBIvarReference name]
+-[FBIvarReference namePath]
+-[FBIvarReference objectReferenceFromObject:]
+-[FBIvarReference indexInIvarLayout]
+-[FBIvarReference description]
+-[FBIvarReference _convertEncodingToType:]
+-[FBIvarReference initWithIvar:]
+-[FBObjectiveCBlock allRetainedObjects]
+l_OBJC_METACLASS_RO_$_FBObjectiveCBlock
+l_OBJC_$_INSTANCE_METHODS_FBObjectiveCBlock
+l_OBJC_CLASS_RO_$_FBObjectiveCBlock
+-[FBObjectiveCBlock allRetainedObjects]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectiveCBlock.m
+-[FBObjectiveCGraphElement initWithObject:]
+-[FBObjectiveCGraphElement initWithObject:configuration:]
+-[FBObjectiveCGraphElement initWithObject:configuration:namePath:]
+-[FBObjectiveCGraphElement allRetainedObjects]
+-[FBObjectiveCGraphElement isEqual:]
+-[FBObjectiveCGraphElement hash]
+-[FBObjectiveCGraphElement description]
+-[FBObjectiveCGraphElement objectAddress]
+-[FBObjectiveCGraphElement classNameOrNull]
+-[FBObjectiveCGraphElement objectClass]
+-[FBObjectiveCGraphElement namePath]
+-[FBObjectiveCGraphElement object]
+-[FBObjectiveCGraphElement setObject:]
+-[FBObjectiveCGraphElement configuration]
+-[FBObjectiveCGraphElement .cxx_destruct]
+OBJC_IVAR_$_FBObjectiveCGraphElement._namePath
+OBJC_IVAR_$_FBObjectiveCGraphElement._configuration
+OBJC_CLASSLIST_REFERENCES_$_.7
+OBJC_IVAR_$_FBObjectiveCGraphElement._object
+OBJC_CLASSLIST_REFERENCES_$_.18
+.str.25
+_unnamed_cfstring_.26
+.str.30
+_unnamed_cfstring_.31
+.str.34
+_unnamed_cfstring_.35
+.str.36
+_unnamed_cfstring_.37
+l_OBJC_METACLASS_RO_$_FBObjectiveCGraphElement
+OBJC_CLASS_NAME_.38
+OBJC_METH_VAR_TYPE_.41
+OBJC_METH_VAR_TYPE_.43
+OBJC_METH_VAR_TYPE_.45
+OBJC_METH_VAR_TYPE_.47
+OBJC_METH_VAR_NAME_.51
+OBJC_METH_VAR_NAME_.57
+OBJC_METH_VAR_TYPE_.58
+OBJC_METH_VAR_NAME_.59
+l_OBJC_$_INSTANCE_METHODS_FBObjectiveCGraphElement
+OBJC_METH_VAR_TYPE_.61
+OBJC_METH_VAR_TYPE_.63
+OBJC_METH_VAR_TYPE_.65
+l_OBJC_$_INSTANCE_VARIABLES_FBObjectiveCGraphElement
+OBJC_CLASS_NAME_.66
+OBJC_PROP_NAME_ATTR_.67
+OBJC_PROP_NAME_ATTR_.68
+OBJC_PROP_NAME_ATTR_.69
+OBJC_PROP_NAME_ATTR_.70
+OBJC_PROP_NAME_ATTR_.71
+l_OBJC_$_PROP_LIST_FBObjectiveCGraphElement
+l_OBJC_CLASS_RO_$_FBObjectiveCGraphElement
+-[FBObjectiveCGraphElement .cxx_destruct]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectiveCGraphElement.mm
+-[FBObjectiveCGraphElement configuration]
+/Users/jacwkang/Documents/FBRCD/chisel/graph/Carthage/Checkouts/FBRetainCycleDetector/FBRetainCycleDetector/Graph/FBObjectiveCGraphElement.h
+-[FBObjectiveCGraphElement setObject:]
+-[FBObjectiveCGraphElement object]
+-[FBObjectiveCGraphElement namePath]
+-[FBObjectiveCGraphElement objectClass]
+-[FBObjectiveCGraphElement classNameOrNull]
+-[FBObjectiveCGraphElement objectAddress]
+-[FBObjectiveCGraphElement description]
+-[FBObjectiveCGraphElement hash]
+-[FBObjectiveCGraphElement isEqual:]
+-[FBObjectiveCGraphElement allRetainedObjects]
+-[FBObjectiveCGraphElement initWithObject:configuration:namePath:]
+-[FBObjectiveCGraphElement initWithObject:configuration:]
+-[FBObjectiveCGraphElement initWithObject:]
+/Users/jacwkang/Library/Developer/Xcode/DerivedData/FBRetainCycleDetector-dkuddokadjinqxczcnmjgdnbfgsg/Build/Intermediates/FBRetainCycleDetector.build/Release-iphoneos/FBRetainCycleDetector.build/DerivedSources/FBRetainCycleDetector_vers.c
