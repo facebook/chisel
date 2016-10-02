@@ -259,12 +259,19 @@ class FBPrintInternals(fb.FBCommand):
 
   def args(self):
     return [ fb.FBCommandArgument(arg='object', type='id', help='Object expression to be evaluated.') ]
+  
+  def options(self):
+    return [
+          fb.FBCommandArgument(arg='appleWay', short='-a', long='--apple', boolean=True, default=False, help='Print ivars the apple way')
+    ]
 
   def run(self, arguments, options):
     object = fb.evaluateObjectExpression(arguments[0])
-    objectClass = fb.evaluateExpressionValue('(id)[(id)(' + object + ') class]').GetObjectDescription()
-
-    command = 'p *(({} *)((id){}))'.format(objectClass, object)
+    if options.appleWay:
+        command = 'po [{} _ivarDescription]'.format(object)
+    else:
+        objectClass = fb.evaluateExpressionValue('(id)[(id)(' + object + ') class]').GetObjectDescription()
+        command = 'p *(({} *)((id){}))'.format(objectClass, object)
     lldb.debugger.HandleCommand(command)
 
 
