@@ -183,4 +183,4 @@ class FBMemoryWarningCommand(fb.FBCommand):
     return 'simulate a memory warning'
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('expr (void)[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)];')
+    fb.evaluateEffect('[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]')

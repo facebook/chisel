@@ -10,6 +10,7 @@
 import lldb
 
 import fblldbviewhelpers as viewHelpers
+import fblldbviewcontrollerhelpers as viewControllerHelpers
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
@@ -22,6 +23,8 @@ def lldbcommands():
     FBUnmaskViewCommand(),
     FBShowViewCommand(),
     FBHideViewCommand(),
+    FBPresentViewControllerCommand(),
+    FBDismissViewControllerCommand(),
     FBSlowAnimationCommand(),
     FBUnslowAnimationCommand()
   ]
@@ -60,10 +63,10 @@ class FBDrawBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setBorder(layer, width, color, colorClass):
-      lldb.debugger.HandleCommand('eobjc (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
-      lldb.debugger.HandleCommand('eobjc (void)[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
+      fb.evaluateEffect('[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+      fb.evaluateEffect('[%s setBorderColor:(CGColorRef)[(id)[%s %sColor] CGColor]]' % (layer, colorClass, color))
 
-    obj = args[0]
+    obj = fb.evaluateInputExpression(args[0])
     depth = int(options.depth)
     isMac = runtimeHelpers.isMacintoshArch()
     color = options.color
@@ -111,7 +114,7 @@ class FBRemoveBorderCommand(fb.FBCommand):
 
   def run(self, args, options):
     def setUnborder(layer):
-        lldb.debugger.HandleCommand('eobjc (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
+        fb.evaluateEffect('[%s setBorderWidth:(CGFloat)%s]' % (layer, 0))
 
     obj = args[0]
     depth = int(options.depth)
@@ -202,6 +205,34 @@ class FBHideViewCommand(fb.FBCommand):
 
   def run(self, args, options):
     viewHelpers.setViewHidden(args[0], True)
+
+
+class FBPresentViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'present'
+
+  def description(self):
+    return 'Present a view controller.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='viewController', type='UIViewController *', help='The view controller to present.') ]
+
+  def run(self, args, option):
+    viewControllerHelpers.presentViewController(args[0])
+
+
+class FBDismissViewControllerCommand(fb.FBCommand):
+  def name(self):
+    return 'dismiss'
+
+  def description(self):
+    return 'Dismiss a presented view controller.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='viewController', type='UIViewController *', help='The view controller to dismiss.') ]
+
+  def run(self, args, option):
+    viewControllerHelpers.dismissViewController(args[0])
 
 
 class FBSlowAnimationCommand(fb.FBCommand):

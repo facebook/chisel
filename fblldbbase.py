@@ -36,27 +36,41 @@ class FBCommand:
   def run(self, arguments, option):
     pass
 
-
-def evaluateExpressionValueWithLanguage(expression, language, printErrors):
-  # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  expr_options = lldb.SBExpressionOptions()
-  expr_options.SetLanguage(language)  # requires lldb r210874 (2014-06-13) / Xcode 6
-  value = frame.EvaluateExpression(expression, expr_options)
-  if printErrors and value.GetError() is not None and str(value.GetError()) != 'success':
-    print value.GetError()
-  return value
-
-def evaluateExpressionValueInFrameLanguage(expression, printErrors=True):
-  # lldb.frame is supposed to contain the right frame, but it doesnt :/ so do the dance
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  language = frame.GetCompileUnit().GetLanguage()  # requires lldb r222189 (2014-11-17)
-  return evaluateExpressionValueWithLanguage(expression, language, printErrors)
-
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
 def evaluateExpressionValue(expression, printErrors=True):
-  return evaluateExpressionValueWithLanguage(expression, lldb.eLanguageTypeObjC_plus_plus, printErrors)
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  options = lldb.SBExpressionOptions()
+  options.SetLanguage(lldb.eLanguageTypeObjC_plus_plus)
+  options.SetTrapExceptions(False)
+  value = frame.EvaluateExpression(expression, options)
+  error = value.GetError()
+
+  if printErrors and error.Fail():
+    # When evaluating a `void` expression, the returned value has an error code named kNoResult.
+    # This is not an error that should be printed. This follows what the built in `expression` command does.
+    # See: https://git.io/vwpjl (UserExpression.h)
+    kNoResult = 0x1001
+    if error.GetError() != kNoResult:
+      print error
+
+  return value
+
+def evaluateInputExpression(expression, printErrors=True):
+  # HACK
+  if expression.startswith('(id)'):
+    return evaluateExpressionValue(expression, printErrors).GetValue()
+
+  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+  options = lldb.SBExpressionOptions()
+  options.SetTrapExceptions(False)
+  value = frame.EvaluateExpression(expression, options)
+  error = value.GetError()
+
+  if printErrors and error.Fail():
+    print error
+
+  return value.GetValue()
 
 def evaluateIntegerExpression(expression, printErrors=True):
   output = evaluateExpression('(int)(' + expression + ')', printErrors).replace('\'', '')
@@ -71,6 +85,12 @@ def evaluateBooleanExpression(expression, printErrors=True):
 
 def evaluateExpression(expression, printErrors=True):
   return evaluateExpressionValue(expression, printErrors).GetValue()
+
+def describeObject(expression, printErrors=True):
+  return evaluateExpressionValue('(id)(' + expression + ')', printErrors).GetObjectDescription()
+
+def evaluateEffect(expression, printErrors=True):
+  evaluateExpressionValue('(void)(' + expression + ')', printErrors)
 
 def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)

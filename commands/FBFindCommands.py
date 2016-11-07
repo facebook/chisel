@@ -122,6 +122,6 @@ class FBTapLoggerCommand(fb.FBCommand):
   @staticmethod
   def taplog_callback(frame, bp_loc, internal_dict):
     parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
-    lldb.debugger.HandleCommand('poobjc (UIView *)[[[%s allTouches] anyObject] view]' % (parameterExpr))
+    print fb.describeObject('[[[%s allTouches] anyObject] view]' % (parameterExpr))
     # We don't want to proceed event (click on button for example), so we just skip it
     lldb.debugger.HandleCommand('thread return')
