@@ -18,7 +18,7 @@ def objc_getClass(className):
   return value
 
 def object_getClass(object):
-  command = '(void*)object_getClass({})'.format(object)
+  command = '(void*)object_getClass((id){})'.format(object)
   value = fb.evaluateExpression(command)
   return value
 

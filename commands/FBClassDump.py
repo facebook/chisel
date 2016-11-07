@@ -8,7 +8,8 @@ def lldbcommands():
   return [
     FBPrintMethods(),
     FBPrintProperties(),
-    FBPrintBlock()
+    FBPrintBlock(),
+    FBPrintIvars()  
   ]
 
 class FBPrintMethods(fb.FBCommand):
@@ -22,7 +23,7 @@ class FBPrintMethods(fb.FBCommand):
     return [
       fb.FBCommandArgument(short='-a', long='--address', arg='showaddr', help='Print the implementation address of the method', default=False, boolean=True),
       fb.FBCommandArgument(short='-i', long='--instance', arg='insmethod', help='Print the instance methods', default=False, boolean=True),
-      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods', default=False, boolean=True), 
+      fb.FBCommandArgument(short='-c', long='--class', arg='clsmethod', help='Print the class methods', default=False, boolean=True),
       fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
     ]
 
@@ -48,10 +49,9 @@ class FBPrintMethods(fb.FBCommand):
 
 
 class FBPrintProperties(fb.FBCommand):
-
   def name(self):
     return 'pproperties'
-   
+
   def description(self):
     return "Print the properties of an instance or Class"
 
@@ -65,8 +65,27 @@ class FBPrintProperties(fb.FBCommand):
 
   def run(self, arguments, options):
     cls = getClassFromArgument(arguments[0], options.clsname)
-
     printProperties(cls)
+
+class FBPrintIvars(fb.FBCommand):
+  def name(self):
+    return 'pivars'
+
+  def description(self):
+    return 'Print the Ivars of an instance of Class'
+
+  def options(self):
+    return [
+      fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
+    ]
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='instance or class', type='instance or Class', help='an Objective-C Class.') ]
+
+  def run(self, arguments, options):
+    cls = getClassFromArgument(arguments[0], options.clsname)
+    printIvars(cls)
+
 
 class FBPrintBlock(fb.FBCommand):
   def name(self):
@@ -110,9 +129,9 @@ class FBPrintBlock(fb.FBCommand):
     };
     struct Block_literal_1 real = *((__bridge struct Block_literal_1 *)$block);
     NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
-    
+
     [dict setObject:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
-    
+
     if (real.flags & BLOCK_HAS_SIGNATURE) {
       char *signature;
       if (real.flags & BLOCK_HAS_COPY_DISPOSE) {
@@ -130,10 +149,10 @@ class FBPrintBlock(fb.FBCommand):
           char *type = (char *)[sig getArgumentTypeAtIndex:i];
           [types addObject:(id)[NSString stringWithUTF8String:type]];
       }
-      
+
       [dict setObject:types forKey:@"signature"];
     }
-    
+
     RETURN(dict);
     """
     command = string.Template(tmpString).substitute(block=block)
@@ -142,16 +161,16 @@ class FBPrintBlock(fb.FBCommand):
     signature = json['signature']
     if not signature:
       print 'Imp: ' + hex(json['invoke'])
-      return 
+      return
 
     sigStr = '{} ^('.format(decode(signature[0]))
     # the block`s implementation always take the block as it`s first argument, so we ignore it
     sigStr += ', '.join([decode(m) for m in signature[2:]])
     sigStr += ');'
-    
+
     print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr
 
-# helpers 
+# helpers
 def isClassObject(arg):
   return runtimeHelpers.class_isMetaClass(runtimeHelpers.object_getClass(arg))
 
@@ -187,6 +206,11 @@ def printProperties(cls, showvalue=False):
   props = getProperties(cls)
   for p in props:
     print p.prettyPrintString()
+
+def printIvars(cls):
+  ivars = getIvars(cls)
+  for var in ivars:
+    print var.prettyPrintString()
 
 def decode(code):
   encodeMap = {
@@ -234,16 +258,16 @@ def getMethods(klass):
     unsigned int outCount;
     Method *methods = (Method *)class_copyMethodList((Class)$cls, &outCount);
     NSMutableArray *result = (id)[NSMutableArray array];
-    
+
     for (int i = 0; i < outCount; i++) {
       NSMutableDictionary *m = (id)[NSMutableDictionary dictionary];
 
       SEL name = (SEL)method_getName(methods[i]);
       [m setObject:(id)NSStringFromSelector(name) forKey:@"name"];
-      
+
       char * encoding = (char *)method_getTypeEncoding(methods[i]);
       [m setObject:(id)[NSString stringWithUTF8String:encoding] forKey:@"type_encoding"];
-      
+
       NSMutableArray *types = (id)[NSMutableArray array];
       NSInteger args = (NSInteger)method_getNumberOfArguments(methods[i]);
       for (int idx = 0; idx < args; idx++) {
@@ -251,13 +275,13 @@ def getMethods(klass):
           [types addObject:(id)[NSString stringWithUTF8String:type]];
       }
       [m setObject:types forKey:@"parameters_type"];
-      
+
       char *ret_type = (char *)method_copyReturnType(methods[i]);
       [m setObject:(id)[NSString stringWithUTF8String:ret_type] forKey:@"return_type"];
-      
+
       long imp = (long)method_getImplementation(methods[i]);
       [m setObject:[NSNumber numberWithLongLong:imp] forKey:@"implementation"];
-      
+
       [result addObject:m];
     }
     RETURN(result);
@@ -300,23 +324,23 @@ def getProperties(klass):
       objc_property_t *props = (objc_property_t *)class_copyPropertyList((Class)$cls, &count);
       for (int i = 0; i < count; i++) {
           NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
-          
+
           char *name = (char *)property_getName(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:@"name"];
-          
+          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:(id _Nonnull)@"name"];
+
           char *attrstr = (char *)property_getAttributes(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:@"attributes_string"];
-          
+          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:(id _Nonnull)@"attributes_string"];
+
           NSMutableDictionary *attrsDict = (id)[NSMutableDictionary dictionary];
           unsigned int pcount;
           objc_property_attribute_t *attrs = (objc_property_attribute_t *)property_copyAttributeList(props[i], &pcount);
           for (int i = 0; i < pcount; i++) {
               NSString *name = (id)[NSString stringWithUTF8String:(char *)attrs[i].name];
               NSString *value = (id)[NSString stringWithUTF8String:(char *)attrs[i].value];
-              [attrsDict setObject:value forKey:name];
+              [attrsDict setObject:(id _Nonnull)value forKey:(id _Nonnull)name];
           }
-          [dict setObject:attrsDict forKey:@"attributes"];
-          
+          [dict setObject:attrsDict forKey:(id _Nonnull)@"attributes"];
+
           [result addObject:dict];
       }
       RETURN(result);
@@ -358,3 +382,39 @@ class Property:
       attrs.append("setter={}".format(self.attributes['S']))
 
     return "@property ({}) {} {};".format(", ".join(attrs), decode(self.attributes['T']), self.name)
+
+def getIvars(klass):
+  tmpString = """
+      NSMutableArray *result = (id)[NSMutableArray array];
+      unsigned int count;
+      
+      Ivar *vars = (Ivar *)class_copyIvarList((Class)$cls, &count);
+      if (vars) {
+          for (int i = 0; i < count; i++) {
+              NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
+              
+              char *name = (char *)ivar_getName(vars[i]);
+              [dict setObject:(id _Nonnull)[NSString stringWithUTF8String:name] forKey:(id _Nonnull)@"name"];
+              NSString *encoding = [NSString stringWithUTF8String:(char *)ivar_getTypeEncoding(vars[i])];
+              [dict setObject:(id _Nonnull)encoding forKey:(id _Nonnull)@"encoding"];
+              NSNumber *offset = [NSNumber numberWithLong:ivar_getOffset(vars[i])];
+              [dict setObject:(id _Nonnull)offset forKey:(id _Nonnull)@"offset"];
+
+              [result addObject:dict];
+          }
+      }
+      RETURN(result);
+  """
+  command = string.Template(tmpString).substitute(cls=klass)
+  json = fb.evaluate(command)
+  return [Ivar(m) for m in json]
+
+class Ivar:
+  def __init__(self, json):
+    self.name = json['name']
+    self.offset = json['offset']
+    self.encoding = json['encoding']
+
+  def prettyPrintString(self):
+    return "[" + hex(self.offset) + "] " + decode(self.encoding) + " " + self.name
+
