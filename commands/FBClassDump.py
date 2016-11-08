@@ -76,15 +76,35 @@ class FBPrintIvars(fb.FBCommand):
 
   def options(self):
     return [
-      fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True)
+      fb.FBCommandArgument(short='-n', long='--name', arg='clsname', help='Take the argument as class name', default=False, boolean=True),
+      fb.FBCommandArgument(short='-r', long='--recursive', arg='recursive', help='Print the ancestor`s ivars', default=False, boolean=True)
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='instance or class', type='instance or Class', help='an Objective-C Class.') ]
+    return [ fb.FBCommandArgument(arg='instance or class, if argument is a instance object then print the values', type='instance or Class', help='an Objective-C Class.') ]
 
   def run(self, arguments, options):
     cls = getClassFromArgument(arguments[0], options.clsname)
-    printIvars(cls)
+
+    ins = None
+    if not options.clsname:
+      ins = arguments[0]
+
+    if options.recursive:
+      cls = int(cls, 16)
+      classes = []
+      while cls:
+        classes.append(cls)
+        superClass = runtimeHelpers.class_getSuperclass(cls)
+        cls = int(superClass, 16)
+
+      classes.reverse()
+      for c in classes:
+        print runtimeHelpers.class_getName(c) + ":"
+        printIvars(c, ins, 4)
+        print ""
+    else:
+      printIvars(cls, ins)
 
 
 class FBPrintBlock(fb.FBCommand):
@@ -207,10 +227,10 @@ def printProperties(cls, showvalue=False):
   for p in props:
     print p.prettyPrintString()
 
-def printIvars(cls):
-  ivars = getIvars(cls)
+def printIvars(cls, instance=None, indent=0):
+  ivars = getIvars(cls, instance)
   for var in ivars:
-    print var.prettyPrintString()
+    print var.prettyPrintString(indent)
 
 def decode(code):
   encodeMap = {
@@ -383,10 +403,11 @@ class Property:
 
     return "@property ({}) {} {};".format(", ".join(attrs), decode(self.attributes['T']), self.name)
 
-def getIvars(klass):
+def getIvars(klass, instance=None):
   tmpString = """
       NSMutableArray *result = (id)[NSMutableArray array];
       unsigned int count;
+      id object = (id)$obj;
       
       Ivar *vars = (Ivar *)class_copyIvarList((Class)$cls, &count);
       if (vars) {
@@ -400,12 +421,20 @@ def getIvars(klass):
               NSNumber *offset = [NSNumber numberWithLong:ivar_getOffset(vars[i])];
               [dict setObject:(id _Nonnull)offset forKey:(id _Nonnull)@"offset"];
 
+              if (object) {
+                id value = object_getIvar((id)object, vars[i]);
+                [dict setObject:(id _Nonnull)[NSNumber numberWithLong:(long)value] forKey:(id _Nonnull)@"value"];
+              }
+
               [result addObject:dict];
           }
       }
       RETURN(result);
   """
-  command = string.Template(tmpString).substitute(cls=klass)
+  if instance is None:
+    instance = 0
+
+  command = string.Template(tmpString).substitute(obj=instance, cls=klass)
   json = fb.evaluate(command)
   return [Ivar(m) for m in json]
 
@@ -414,7 +443,11 @@ class Ivar:
     self.name = json['name']
     self.offset = json['offset']
     self.encoding = json['encoding']
+    self.value = json.get('value')
 
-  def prettyPrintString(self):
-    return "[" + hex(self.offset) + "] " + decode(self.encoding) + " " + self.name
+  def prettyPrintString(self, indent=0):
+    ret = "[" + hex(self.offset) + "] " + decode(self.encoding) + " " + self.name
+    if self.value:
+      ret = ret + " ->" + hex(self.value) 
+    return " "*indent + ret
 
