@@ -5,10 +5,6 @@ import os
 import lldb
 import fblldbbase as fb
 
-def lldbinit():
-  # Tell LLDB to print CKComponentAction as a c-string
-  lldb.debugger.HandleCommand('type summary add --summary-string "${var%c-string}" CKComponentAction')
-
 def lldbcommands():
   return [
     FBComponentsDebugCommand(),
