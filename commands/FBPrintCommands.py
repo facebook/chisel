@@ -268,7 +268,11 @@ class FBPrintInternals(fb.FBCommand):
   def run(self, arguments, options):
     object = fb.evaluateObjectExpression(arguments[0])
     if options.appleWay:
-        command = 'po [{} _ivarDescription]'.format(object)
+        if fb.evaluateBooleanExpression('[{} respondsToSelector:@selector(_ivarDescription)]'.format(object)):
+            command = 'po [{} _ivarDescription]'.format(object)
+        else:
+            print 'Sorry, but it seems Apple dumped the _ivarDescription method'
+            return
     else:
         objectClass = fb.evaluateExpressionValue('(id)[(id)(' + object + ') class]').GetObjectDescription()
         command = 'p *(({} *)((id){}))'.format(objectClass, object)
