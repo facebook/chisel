@@ -64,17 +64,7 @@ class FBComponentsReflowCommand(fb.FBCommand):
     return 'rcomponents'
 
   def description(self):
-    return 'Synchronously reflow and update root components found starting from <aView>.'
-
-  def options(self):
-    return [ fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Reflow only the root components found on the first superview that has them, carrying the search up to its window.') ]
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to from which the search for the root components begins.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
+    return 'Synchronously reflow and update all components.'
 
   def run(self, arguments, options):
-    upwards = 'NO'
-    if options.upwards:
-      upwards = 'YES'
-
-    fb.evaluateEffect('[CKComponentDebugController reflowComponentsForView:(UIView *)' + arguments[0] + ' searchUpwards:' + upwards + ']')
+    fb.evaluateEffect('[CKComponentDebugController reflowComponents]')
