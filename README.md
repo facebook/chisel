@@ -45,7 +45,7 @@ There are many commands; here's a few:
 |presponder       |Print the responder chain starting from the given object.|Yes|Yes|
 |...              |... and many more!|
 
-To see the list of **all** of the commands execute the help command in `LLDB`.
+To see the list of **all** of the commands execute the help command in `LLDB` or go to the [Wiki](https://github.com/facebook/chisel/wiki).
 
 ```Python
 (lldb) help
