@@ -4,6 +4,7 @@ import os
 
 import lldb
 import fblldbbase as fb
+import fblldbviewhelpers as viewHelpers
 
 def lldbcommands():
   return [
@@ -50,13 +51,17 @@ class FBComponentsPrintCommand(fb.FBCommand):
     ]
 
   def args(self):
-    return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to from which the search for components begins.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
+    return [ fb.FBCommandArgument(arg='aView', type='UIView* or CKComponent*', help='The view or component from which the search for components begins.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
     upwards = 'YES' if options.upwards else 'NO'
     showViews = 'YES' if options.showViews == 'YES' else 'NO'
 
     view = fb.evaluateInputExpression(arguments[0])
+    if not viewHelpers.isView(view):
+        # assume it's a CKComponent
+        view = fb.evaluateExpression('((CKComponent *)%s).viewContext.view' % view)
+
     print fb.describeObject('[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)' + view + ' searchUpwards:' + upwards + ' showViews:' + showViews + ']')
 
 class FBComponentsReflowCommand(fb.FBCommand):
