@@ -38,10 +38,10 @@ class FBCommand:
 
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
-def evaluateExpressionValue(expression, printErrors=True):
+def evaluateExpressionValue(expression, language=lldb.eLanguageTypeObjC_plus_plus, printErrors=True):
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
-  options.SetLanguage(lldb.eLanguageTypeObjC_plus_plus)
+  options.SetLanguage(language)
   options.SetTrapExceptions(False)
   value = frame.EvaluateExpression(expression, options)
   error = value.GetError()
@@ -59,7 +59,7 @@ def evaluateExpressionValue(expression, printErrors=True):
 def evaluateInputExpression(expression, printErrors=True):
   # HACK
   if expression.startswith('(id)'):
-    return evaluateExpressionValue(expression, printErrors).GetValue()
+    return evaluateExpressionValue(expression, printErrors=printErrors).GetValue()
 
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
@@ -84,13 +84,13 @@ def evaluateBooleanExpression(expression, printErrors=True):
   return (int(evaluateIntegerExpression('(BOOL)(' + expression + ')', printErrors)) != 0)
 
 def evaluateExpression(expression, printErrors=True):
-  return evaluateExpressionValue(expression, printErrors).GetValue()
+  return evaluateExpressionValue(expression, printErrors=printErrors).GetValue()
 
 def describeObject(expression, printErrors=True):
   return evaluateExpressionValue('(id)(' + expression + ')', printErrors).GetObjectDescription()
 
 def evaluateEffect(expression, printErrors=True):
-  evaluateExpressionValue('(void)(' + expression + ')', printErrors)
+  evaluateExpressionValue('(void)(' + expression + ')', printErrors=printErrors)
 
 def evaluateObjectExpression(expression, printErrors=True):
   return evaluateExpression('(id)(' + expression + ')', printErrors)
@@ -140,7 +140,7 @@ def evaluate(expr):
     raise Exception("Invalid Expression, the last expression not include a RETURN family marco")
 
   command = "({" + RETURN_MACRO + '\n' + expr + "})"
-  ret = evaluateExpressionValue(command, True)
+  ret = evaluateExpressionValue(command, printErrors=True)
   if not ret.GetError().Success():
     print ret.GetError()
     return None
@@ -154,3 +154,6 @@ def evaluate(expr):
     else:
       ret = json.loads(ret)
       return ret['return']
+
+def currentLanguage():
+  return lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame().GetCompileUnit().GetLanguage()
