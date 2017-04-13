@@ -35,7 +35,7 @@ class FBPrintAccessibilityLabels(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the hierarchy of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
-    forceStartAccessibilityServer();
+    forceStartAccessibilityServer()
     printAccessibilityHierarchy(arguments[0])
 
 class FBPrintAccessibilityIdentifiers(fb.FBCommand):
@@ -49,6 +49,7 @@ class FBPrintAccessibilityIdentifiers(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='aView', type='UIView*', help='The view to print the hierarchy of.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, option):
+    forceStartAccessibilityServer()
     printAccessibilityIdentifiersHierarchy(arguments[0])
 
 class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
