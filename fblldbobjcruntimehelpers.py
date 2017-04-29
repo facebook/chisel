@@ -49,39 +49,22 @@ def currentArch():
   return arch
 
 def functionPreambleExpressionForSelf():
-  import re
-
-  arch = currentArch()
-  expressionForSelf = None
-  if arch == 'i386':
-    expressionForSelf = '*(id*)($esp+4)'
-  elif arch == 'x86_64':
-    expressionForSelf = '(id)$rdi'
-  elif arch == 'arm64':
-    expressionForSelf = '(id)$x0'
-  elif re.match(r'^armv.*$', arch):
-    expressionForSelf = '(id)$r0'
-  return expressionForSelf
+  if currentArch() == 'i386':
+    return '*(id*)($esp+4)'
+  else:
+    return '(id)$arg1'
 
 def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
   arch = currentArch()
-  expresssion = None
   if arch == 'i386':
-    expresssion = '*(id*)($esp + ' + str(12 + parameterIndex * 4) + ')'
-  elif arch == 'x86_64':
-    if parameterIndex > 3:
-      raise Exception("Current implementation can not return object at index greater than 3 for x86_64")
-    registersList = ['rdx', 'rcx', 'r8', 'r9']
-    expresssion = '(id)$' + registersList[parameterIndex]
-  elif arch == 'arm64':
-    if parameterIndex > 5:
-      raise Exception("Current implementation can not return object at index greater than 5 for arm64")
-    expresssion = '(id)$x' + str(parameterIndex + 2)
-  elif re.match(r'^armv.*$', arch):
-    if parameterIndex > 1:
-      raise Exception("Current implementation can not return object at index greater than 1 for arm32")
-    expresssion = '(id)$r' + str(parameterIndex + 2)
-  return expresssion
+    return '*(id*)($esp+{offset})'.format(offset=12 + parameterIndex * 4)
+  elif arch == 'x86_64' and parameterIndex > 3:
+    raise Exception("Current implementation can not return object at index greater than 3 for x86_64")
+  elif arch == 'arm64' and parameterIndex > 5:
+    raise Exception("Current implementation can not return object at index greater than 5 for arm64")
+  elif re.match(r'^armv.*$', arch) and parameterIndex > 1:
+    raise Exception("Current implementation can not return object at index greater than 1 for arm32")
+  return '(id)$arg{n}'.format(n=parameterIndex + 2)
 
 def isMacintoshArch():
   arch = currentArch()
