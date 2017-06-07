@@ -301,8 +301,8 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, \"{}\", 0)))[0]'.format(object, ivarName)
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
-    result = fb.evaluateExpressionValue('(({} *)({}))->{}'.format(printCommand, objectClass, object, ivarName))
-    return result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result.GetValue()
+    result = fb.evaluateExpressionValue('(({} *)({}))->{}'.format(objectClass, object, ivarName))
+    print result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result
 
 class FBPrintKeyPath(fb.FBCommand):
   def name(self):
