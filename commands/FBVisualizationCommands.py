@@ -60,8 +60,7 @@ def _showImage(commandForImage):
 def _colorIsCGColorRef(color):
   color = '(CGColorRef)(' + color + ')'
 
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()'.format(color=color))
+  result = fb.evaluateExpressionValue('(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()'.format(color=color))
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
     print "got error: {}".format(result)
@@ -87,8 +86,7 @@ def _showColor(color):
     fb.evaluateEffect('[(id){} setFill]'.format(colorToUse))
     fb.evaluateEffect('UIRectFill((CGRect)CGRectMake(0.0, 0.0, {imageSize}, {imageSize}))'.format(imageSize=imageSize))
 
-    frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
+    result = fb.evaluateExpressionValue('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
     if result.GetError() is not None and str(result.GetError()) != 'success':
       print "got error {}".format(result)
       print result.GetError()
@@ -111,8 +109,7 @@ def _showLayer(layer):
   fb.evaluateEffect('UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
   fb.evaluateEffect('[(id)' + layer + ' renderInContext:(void *)UIGraphicsGetCurrentContext()]')
 
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
+  result = fb.evaluateExpressionValue('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
   if result.GetError() is not None and str(result.GetError()) != 'success':
     print result.GetError()
   else:
@@ -124,8 +121,7 @@ def _showLayer(layer):
 def _dataIsImage(data):
   data = '(' + data + ')'
 
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(id)[UIImage imageWithData:' + data + ']')
+  result = fb.evaluateExpressionValue('(id)[UIImage imageWithData:' + data + ']')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
     return False
@@ -136,8 +132,7 @@ def _dataIsImage(data):
 def _dataIsString(data):
   data = '(' + data + ')'
 
-  frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-  result = frame.EvaluateExpression('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]')
+  result = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:' + data + ' encoding:4]')
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
     return False
@@ -146,7 +141,7 @@ def _dataIsString(data):
     return isString
 
 def _visualize(target):
-  target = '(' + target + ')'
+  target = fb.evaluateInputExpression(target)
 
   if fb.evaluateBooleanExpression('(unsigned long)CFGetTypeID((CFTypeRef)' + target + ') == (unsigned long)CGImageGetTypeID()'):
     _showImage('(id)[UIImage imageWithCGImage:' + target + ']')

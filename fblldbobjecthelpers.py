@@ -11,7 +11,7 @@ import lldb
 import fblldbbase as fb
 
 def isKindOfClass(obj, className):
-  isKindOfClassStr = '[' + obj + 'isKindOfClass:[{} class]]'
+  isKindOfClassStr = '[(id)' + obj + ' isKindOfClass:[{} class]]'
   return fb.evaluateBooleanExpression(isKindOfClassStr.format(className))
 
 def className(obj):
