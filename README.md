@@ -11,10 +11,26 @@ For a comprehensive overview of LLDB, and how Chisel complements it, read Ari Gr
 brew update
 brew install chisel
 ```
+Then check if a  _~/.lldbinit_ file exists in your home directory by writing on the terminal the command below
 
-Then follow the instructions that Homebrew displays to add chisel to your _~/.lldbinit_.
+ ```shell
+ls ~/.lldbinit
+```
+if such file doesn't exist you can create it & open it by tapping on the terminal
 
-Alternatively, download chisel and add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
+ ```shell
+ touch .lldbinit //creates file
+ open .lldbinit //opens file
+```
+
+Then add the following line to your _~/.lldbinit_ file.
+```Python
+# ~/.lldbinit
+...
+command script import /usr/local/opt/chisel/libexec/fblldb.py
+```
+
+Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
 
 ```Python
 # ~/.lldbinit
