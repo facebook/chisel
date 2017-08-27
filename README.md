@@ -15,8 +15,8 @@ brew install chisel
 if `.lldbinit` file doesn't exist you can create it & open it by tapping on the terminal
 
  ```shell
- touch .lldbinit # creates file
- open .lldbinit # opens file
+ touch .lldbinit 
+ open .lldbinit 
 ```
 
 Then add the following line to your _~/.lldbinit_ file.
