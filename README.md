@@ -19,7 +19,8 @@ if `.lldbinit` file doesn't exist you can create it & open it by tapping on the 
  open .lldbinit 
 ```
 
-Then add the following line to your _~/.lldbinit_ file.
+Then add the following line to your `~/.lldbinit` file.
+
 ```Python
 # ~/.lldbinit
 ...
