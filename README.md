@@ -11,16 +11,12 @@ For a comprehensive overview of LLDB, and how Chisel complements it, read Ari Gr
 brew update
 brew install chisel
 ```
-Then check if a  _~/.lldbinit_ file exists in your home directory by writing on the terminal the command below
+
+if `.lldbinit` file doesn't exist you can create it & open it by tapping on the terminal
 
  ```shell
-ls ~/.lldbinit
-```
-if such file doesn't exist you can create it & open it by tapping on the terminal
-
- ```shell
- touch .lldbinit //creates file
- open .lldbinit //opens file
+ touch .lldbinit # creates file
+ open .lldbinit # opens file
 ```
 
 Then add the following line to your _~/.lldbinit_ file.
