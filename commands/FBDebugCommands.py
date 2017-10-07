@@ -188,24 +188,11 @@ class FBMemoryWarningCommand(fb.FBCommand):
 
 class FBDebuggingInformationOverlayCommand(fb.FBCommand):
   def name(self):
-    return 'dio'
+    return 'doverlay'
 
   def description(self):
-    return 'Enable the feature that shows a float debugging information overlay window. Continue program after executing this command, then tap the status bar with two fingers at the same time to show the overlay window. Only works on iOS device.'
+    return 'Toggle the float debugging information overlay window. Continue program after executing this command, you can also just tap the status bar with two fingers at the same time to show the overlay window.'
 
   def run(self, arguments, options):
-    if not objc.isIOSDevice():
-      print 'Sorry, but the ' + `self.name()` + ' command only works on iOS device.'
-      return
-
-    codeString = r'''
-    @import Foundation;
-    id DebugClass = NSClassFromString(@"UIDebuggingInformationOverlay");
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-    [DebugClass performSelector:NSSelectorFromString(@"prepareDebuggingOverlay")];
-    });
-    '''
-
-    lldb.debugger.HandleCommand("expression -lobjc -o -- " + codeString)
+    fb.evaluateEffect("[UIDebuggingInformationOverlay prepareDebuggingOverlay]")
+    fb.evaluateEffect("[[UIDebuggingInformationOverlay overlay] toggleVisibility]")
