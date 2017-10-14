@@ -1,0 +1,723 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		75069AAE1CD6AEF9001AFCEE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75069AAD1CD6AEF9001AFCEE /* UIKit.framework */; };
+		750866201CD6E387007CD157 /* BaseType.h in Headers */ = {isa = PBXBuildFile; fileRef = 7508661F1CD6E387007CD157 /* BaseType.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BDB3771C80E64100FD53A9 /* FBObjectGraphConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BDB3751C80E64100FD53A9 /* FBObjectGraphConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BDB3781C80E64100FD53A9 /* FBObjectGraphConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BDB3761C80E64100FD53A9 /* FBObjectGraphConfiguration.m */; };
+		75BF0E2C1C5ADCA200E0DAB6 /* FBRetainCycleDetector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75BF0E181C5ADBCC00E0DAB6 /* FBRetainCycleDetector.framework */; };
+		75BF0E6D1C5ADD3100E0DAB6 /* FBAssociationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E351C5ADD3100E0DAB6 /* FBAssociationManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E6E1C5ADD3100E0DAB6 /* FBAssociationManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E361C5ADD3100E0DAB6 /* FBAssociationManager.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		75BF0E6F1C5ADD3100E0DAB6 /* FBAssociationManager+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E381C5ADD3100E0DAB6 /* FBAssociationManager+Internal.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E701C5ADD3100E0DAB6 /* FBNodeEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E3A1C5ADD3100E0DAB6 /* FBNodeEnumerator.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E711C5ADD3100E0DAB6 /* FBNodeEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E3B1C5ADD3100E0DAB6 /* FBNodeEnumerator.mm */; };
+		75BF0E721C5ADD3100E0DAB6 /* FBRetainCycleDetector+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E3C1C5ADD3100E0DAB6 /* FBRetainCycleDetector+Internal.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E731C5ADD3100E0DAB6 /* FBRetainCycleDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E3D1C5ADD3100E0DAB6 /* FBRetainCycleDetector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E741C5ADD3100E0DAB6 /* FBRetainCycleDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E3E1C5ADD3100E0DAB6 /* FBRetainCycleDetector.mm */; };
+		75BF0E761C5ADD3100E0DAB6 /* FBRetainCycleUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E401C5ADD3100E0DAB6 /* FBRetainCycleUtils.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E771C5ADD3100E0DAB6 /* FBRetainCycleUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E411C5ADD3100E0DAB6 /* FBRetainCycleUtils.m */; };
+		75BF0E7A1C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E451C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E7B1C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E461C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.mm */; };
+		75BF0E7C1C5ADD3100E0DAB6 /* FBObjectiveCBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E481C5ADD3100E0DAB6 /* FBObjectiveCBlock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E7D1C5ADD3100E0DAB6 /* FBObjectiveCBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E491C5ADD3100E0DAB6 /* FBObjectiveCBlock.m */; };
+		75BF0E7E1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E4A1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E7F1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E4B1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.mm */; };
+		75BF0E801C5ADD3100E0DAB6 /* FBObjectiveCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E4C1C5ADD3100E0DAB6 /* FBObjectiveCObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E811C5ADD3100E0DAB6 /* FBObjectiveCObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E4D1C5ADD3100E0DAB6 /* FBObjectiveCObject.m */; };
+		75BF0E821C5ADD3100E0DAB6 /* FBObjectiveCGraphElement+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E4F1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement+Internal.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E831C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E511C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		75BF0E841C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E521C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.mm */; };
+		75BF0E851C5ADD3100E0DAB6 /* Circle-LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 75BF0E551C5ADD3100E0DAB6 /* Circle-LICENSE */; };
+		75BF0E861C5ADD3100E0DAB6 /* FBBlockInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E561C5ADD3100E0DAB6 /* FBBlockInterface.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E871C5ADD3100E0DAB6 /* FBBlockStrongLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E571C5ADD3100E0DAB6 /* FBBlockStrongLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E881C5ADD3100E0DAB6 /* FBBlockStrongLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E581C5ADD3100E0DAB6 /* FBBlockStrongLayout.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		75BF0E891C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E591C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E8A1C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E5A1C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		75BF0E8B1C5ADD3100E0DAB6 /* FBClassStrongLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E5C1C5ADD3100E0DAB6 /* FBClassStrongLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E8C1C5ADD3100E0DAB6 /* FBClassStrongLayout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E5D1C5ADD3100E0DAB6 /* FBClassStrongLayout.mm */; };
+		75BF0E8D1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E5E1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E8E1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E5F1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		75BF0E8F1C5ADD3100E0DAB6 /* Struct.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E611C5ADD3100E0DAB6 /* Struct.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E901C5ADD3100E0DAB6 /* Struct.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E621C5ADD3100E0DAB6 /* Struct.mm */; };
+		75BF0E911C5ADD3100E0DAB6 /* Type.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E631C5ADD3100E0DAB6 /* Type.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E931C5ADD3100E0DAB6 /* FBStructEncodingParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E651C5ADD3100E0DAB6 /* FBStructEncodingParser.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E941C5ADD3100E0DAB6 /* FBStructEncodingParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E661C5ADD3100E0DAB6 /* FBStructEncodingParser.mm */; };
+		75BF0E951C5ADD3100E0DAB6 /* FBIvarReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E681C5ADD3100E0DAB6 /* FBIvarReference.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E961C5ADD3100E0DAB6 /* FBIvarReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E691C5ADD3100E0DAB6 /* FBIvarReference.m */; };
+		75BF0E971C5ADD3100E0DAB6 /* FBObjectInStructReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E6A1C5ADD3100E0DAB6 /* FBObjectInStructReference.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E981C5ADD3100E0DAB6 /* FBObjectInStructReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E6B1C5ADD3100E0DAB6 /* FBObjectInStructReference.m */; };
+		75BF0E991C5ADD3100E0DAB6 /* FBObjectReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E6C1C5ADD3100E0DAB6 /* FBObjectReference.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0E9F1C5ADDFB00E0DAB6 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0E9B1C5ADDFB00E0DAB6 /* fishhook.c */; };
+		75BF0EA01C5ADDFB00E0DAB6 /* fishhook.h in Headers */ = {isa = PBXBuildFile; fileRef = 75BF0E9C1C5ADDFB00E0DAB6 /* fishhook.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		75BF0EAF1C5ADE1B00E0DAB6 /* FBAssociationManagerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA31C5ADE1B00E0DAB6 /* FBAssociationManagerTests.mm */; };
+		75BF0EB01C5ADE1B00E0DAB6 /* FBBlockRecognizingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA41C5ADE1B00E0DAB6 /* FBBlockRecognizingTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		75BF0EB11C5ADE1B00E0DAB6 /* FBBlockStrongLayoutTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA51C5ADE1B00E0DAB6 /* FBBlockStrongLayoutTests.mm */; };
+		75BF0EB21C5ADE1B00E0DAB6 /* FBClassStrongLayoutTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA61C5ADE1B00E0DAB6 /* FBClassStrongLayoutTests.mm */; };
+		75BF0EB31C5ADE1B00E0DAB6 /* FBGraphEdgeFilterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA71C5ADE1B00E0DAB6 /* FBGraphEdgeFilterTests.m */; };
+		75BF0EB41C5ADE1B00E0DAB6 /* FBObjectiveCBlockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA81C5ADE1B00E0DAB6 /* FBObjectiveCBlockTests.m */; };
+		75BF0EB51C5ADE1B00E0DAB6 /* FBObjectiveCNSCFTimerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EA91C5ADE1B00E0DAB6 /* FBObjectiveCNSCFTimerTests.m */; };
+		75BF0EB61C5ADE1B00E0DAB6 /* FBObjectiveCObjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EAA1C5ADE1B00E0DAB6 /* FBObjectiveCObjectTests.m */; };
+		75BF0EB71C5ADE1B00E0DAB6 /* FBRCDCollectionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EAB1C5ADE1B00E0DAB6 /* FBRCDCollectionTests.m */; };
+		75BF0EB91C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EAD1C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests.mm */; };
+		75BF0EBA1C5ADE1B00E0DAB6 /* FBStructEncodingParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75BF0EAE1C5ADE1B00E0DAB6 /* FBStructEncodingParserTests.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		75BF0E2D1C5ADCA200E0DAB6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 75BF0E0F1C5ADBCC00E0DAB6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75BF0E171C5ADBCC00E0DAB6;
+			remoteInfo = FBRetainCycleDetector;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		75069AAD1CD6AEF9001AFCEE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7508661F1CD6E387007CD157 /* BaseType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseType.h; sourceTree = "<group>"; };
+		75BDB3751C80E64100FD53A9 /* FBObjectGraphConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectGraphConfiguration.h; sourceTree = "<group>"; };
+		75BDB3761C80E64100FD53A9 /* FBObjectGraphConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectGraphConfiguration.m; sourceTree = "<group>"; };
+		75BF0E181C5ADBCC00E0DAB6 /* FBRetainCycleDetector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FBRetainCycleDetector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		75BF0E271C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FBRetainCycleDetectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		75BF0E321C5ADCDF00E0DAB6 /* FBRetainCycleDetectorTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FBRetainCycleDetectorTests-Info.plist"; sourceTree = "<group>"; };
+		75BF0E351C5ADD3100E0DAB6 /* FBAssociationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBAssociationManager.h; sourceTree = "<group>"; };
+		75BF0E361C5ADD3100E0DAB6 /* FBAssociationManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBAssociationManager.mm; sourceTree = "<group>"; };
+		75BF0E381C5ADD3100E0DAB6 /* FBAssociationManager+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBAssociationManager+Internal.h"; sourceTree = "<group>"; };
+		75BF0E3A1C5ADD3100E0DAB6 /* FBNodeEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBNodeEnumerator.h; sourceTree = "<group>"; };
+		75BF0E3B1C5ADD3100E0DAB6 /* FBNodeEnumerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBNodeEnumerator.mm; sourceTree = "<group>"; };
+		75BF0E3C1C5ADD3100E0DAB6 /* FBRetainCycleDetector+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBRetainCycleDetector+Internal.h"; sourceTree = "<group>"; };
+		75BF0E3D1C5ADD3100E0DAB6 /* FBRetainCycleDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBRetainCycleDetector.h; sourceTree = "<group>"; };
+		75BF0E3E1C5ADD3100E0DAB6 /* FBRetainCycleDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBRetainCycleDetector.mm; sourceTree = "<group>"; };
+		75BF0E3F1C5ADD3100E0DAB6 /* FBRetainCycleDetector-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FBRetainCycleDetector-Info.plist"; sourceTree = "<group>"; };
+		75BF0E401C5ADD3100E0DAB6 /* FBRetainCycleUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBRetainCycleUtils.h; sourceTree = "<group>"; };
+		75BF0E411C5ADD3100E0DAB6 /* FBRetainCycleUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBRetainCycleUtils.m; sourceTree = "<group>"; };
+		75BF0E451C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBStandardGraphEdgeFilters.h; sourceTree = "<group>"; };
+		75BF0E461C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBStandardGraphEdgeFilters.mm; sourceTree = "<group>"; };
+		75BF0E481C5ADD3100E0DAB6 /* FBObjectiveCBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectiveCBlock.h; sourceTree = "<group>"; };
+		75BF0E491C5ADD3100E0DAB6 /* FBObjectiveCBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectiveCBlock.m; sourceTree = "<group>"; };
+		75BF0E4A1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectiveCGraphElement.h; sourceTree = "<group>"; };
+		75BF0E4B1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBObjectiveCGraphElement.mm; sourceTree = "<group>"; };
+		75BF0E4C1C5ADD3100E0DAB6 /* FBObjectiveCObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectiveCObject.h; sourceTree = "<group>"; };
+		75BF0E4D1C5ADD3100E0DAB6 /* FBObjectiveCObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectiveCObject.m; sourceTree = "<group>"; };
+		75BF0E4F1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBObjectiveCGraphElement+Internal.h"; sourceTree = "<group>"; };
+		75BF0E511C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectiveCNSCFTimer.h; sourceTree = "<group>"; };
+		75BF0E521C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBObjectiveCNSCFTimer.mm; sourceTree = "<group>"; };
+		75BF0E551C5ADD3100E0DAB6 /* Circle-LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Circle-LICENSE"; sourceTree = "<group>"; };
+		75BF0E561C5ADD3100E0DAB6 /* FBBlockInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBBlockInterface.h; sourceTree = "<group>"; };
+		75BF0E571C5ADD3100E0DAB6 /* FBBlockStrongLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBBlockStrongLayout.h; sourceTree = "<group>"; };
+		75BF0E581C5ADD3100E0DAB6 /* FBBlockStrongLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBBlockStrongLayout.m; sourceTree = "<group>"; };
+		75BF0E591C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBBlockStrongRelationDetector.h; sourceTree = "<group>"; };
+		75BF0E5A1C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBBlockStrongRelationDetector.m; sourceTree = "<group>"; };
+		75BF0E5C1C5ADD3100E0DAB6 /* FBClassStrongLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBClassStrongLayout.h; sourceTree = "<group>"; };
+		75BF0E5D1C5ADD3100E0DAB6 /* FBClassStrongLayout.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBClassStrongLayout.mm; sourceTree = "<group>"; };
+		75BF0E5E1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBClassStrongLayoutHelpers.h; sourceTree = "<group>"; };
+		75BF0E5F1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBClassStrongLayoutHelpers.m; sourceTree = "<group>"; };
+		75BF0E611C5ADD3100E0DAB6 /* Struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Struct.h; sourceTree = "<group>"; };
+		75BF0E621C5ADD3100E0DAB6 /* Struct.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Struct.mm; sourceTree = "<group>"; };
+		75BF0E631C5ADD3100E0DAB6 /* Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Type.h; sourceTree = "<group>"; };
+		75BF0E651C5ADD3100E0DAB6 /* FBStructEncodingParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBStructEncodingParser.h; sourceTree = "<group>"; };
+		75BF0E661C5ADD3100E0DAB6 /* FBStructEncodingParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBStructEncodingParser.mm; sourceTree = "<group>"; };
+		75BF0E681C5ADD3100E0DAB6 /* FBIvarReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBIvarReference.h; sourceTree = "<group>"; };
+		75BF0E691C5ADD3100E0DAB6 /* FBIvarReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBIvarReference.m; sourceTree = "<group>"; };
+		75BF0E6A1C5ADD3100E0DAB6 /* FBObjectInStructReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectInStructReference.h; sourceTree = "<group>"; };
+		75BF0E6B1C5ADD3100E0DAB6 /* FBObjectInStructReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectInStructReference.m; sourceTree = "<group>"; };
+		75BF0E6C1C5ADD3100E0DAB6 /* FBObjectReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBObjectReference.h; sourceTree = "<group>"; };
+		75BF0E9B1C5ADDFB00E0DAB6 /* fishhook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fishhook.c; sourceTree = "<group>"; };
+		75BF0E9C1C5ADDFB00E0DAB6 /* fishhook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
+		75BF0EA31C5ADE1B00E0DAB6 /* FBAssociationManagerTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBAssociationManagerTests.mm; sourceTree = "<group>"; };
+		75BF0EA41C5ADE1B00E0DAB6 /* FBBlockRecognizingTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBBlockRecognizingTests.mm; sourceTree = "<group>"; };
+		75BF0EA51C5ADE1B00E0DAB6 /* FBBlockStrongLayoutTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBBlockStrongLayoutTests.mm; sourceTree = "<group>"; };
+		75BF0EA61C5ADE1B00E0DAB6 /* FBClassStrongLayoutTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBClassStrongLayoutTests.mm; sourceTree = "<group>"; };
+		75BF0EA71C5ADE1B00E0DAB6 /* FBGraphEdgeFilterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGraphEdgeFilterTests.m; sourceTree = "<group>"; };
+		75BF0EA81C5ADE1B00E0DAB6 /* FBObjectiveCBlockTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectiveCBlockTests.m; sourceTree = "<group>"; };
+		75BF0EA91C5ADE1B00E0DAB6 /* FBObjectiveCNSCFTimerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectiveCNSCFTimerTests.m; sourceTree = "<group>"; };
+		75BF0EAA1C5ADE1B00E0DAB6 /* FBObjectiveCObjectTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBObjectiveCObjectTests.m; sourceTree = "<group>"; };
+		75BF0EAB1C5ADE1B00E0DAB6 /* FBRCDCollectionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBRCDCollectionTests.m; sourceTree = "<group>"; };
+		75BF0EAC1C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FBRetainCycleDetectorTests-Info.plist"; sourceTree = "<group>"; };
+		75BF0EAD1C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBRetainCycleDetectorTests.mm; sourceTree = "<group>"; };
+		75BF0EAE1C5ADE1B00E0DAB6 /* FBStructEncodingParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FBStructEncodingParserTests.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		75BF0E141C5ADBCC00E0DAB6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75069AAE1CD6AEF9001AFCEE /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75BF0E241C5ADCA200E0DAB6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75BF0E2C1C5ADCA200E0DAB6 /* FBRetainCycleDetector.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		75BF0E0E1C5ADBCC00E0DAB6 = {
+			isa = PBXGroup;
+			children = (
+				75069AAD1CD6AEF9001AFCEE /* UIKit.framework */,
+				75BF0E1A1C5ADBCC00E0DAB6 /* FBRetainCycleDetector */,
+				75BF0E281C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests */,
+				75BF0E9A1C5ADDFB00E0DAB6 /* fishhook */,
+				75BF0E191C5ADBCC00E0DAB6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		75BF0E191C5ADBCC00E0DAB6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E181C5ADBCC00E0DAB6 /* FBRetainCycleDetector.framework */,
+				75BF0E271C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		75BF0E1A1C5ADBCC00E0DAB6 /* FBRetainCycleDetector */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E341C5ADD3100E0DAB6 /* Associations */,
+				75BF0E391C5ADD3100E0DAB6 /* Detector */,
+				75BF0E3F1C5ADD3100E0DAB6 /* FBRetainCycleDetector-Info.plist */,
+				75BF0E401C5ADD3100E0DAB6 /* FBRetainCycleUtils.h */,
+				75BF0E411C5ADD3100E0DAB6 /* FBRetainCycleUtils.m */,
+				75BF0E421C5ADD3100E0DAB6 /* Filtering */,
+				75BF0E471C5ADD3100E0DAB6 /* Graph */,
+				75BF0E531C5ADD3100E0DAB6 /* Layout */,
+			);
+			path = FBRetainCycleDetector;
+			sourceTree = "<group>";
+		};
+		75BF0E281C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0EA31C5ADE1B00E0DAB6 /* FBAssociationManagerTests.mm */,
+				75BF0EA41C5ADE1B00E0DAB6 /* FBBlockRecognizingTests.mm */,
+				75BF0EA51C5ADE1B00E0DAB6 /* FBBlockStrongLayoutTests.mm */,
+				75BF0EA61C5ADE1B00E0DAB6 /* FBClassStrongLayoutTests.mm */,
+				75BF0EA71C5ADE1B00E0DAB6 /* FBGraphEdgeFilterTests.m */,
+				75BF0EA81C5ADE1B00E0DAB6 /* FBObjectiveCBlockTests.m */,
+				75BF0EA91C5ADE1B00E0DAB6 /* FBObjectiveCNSCFTimerTests.m */,
+				75BF0EAA1C5ADE1B00E0DAB6 /* FBObjectiveCObjectTests.m */,
+				75BF0EAB1C5ADE1B00E0DAB6 /* FBRCDCollectionTests.m */,
+				75BF0EAC1C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests-Info.plist */,
+				75BF0EAD1C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests.mm */,
+				75BF0EAE1C5ADE1B00E0DAB6 /* FBStructEncodingParserTests.mm */,
+				75BF0E321C5ADCDF00E0DAB6 /* FBRetainCycleDetectorTests-Info.plist */,
+			);
+			path = FBRetainCycleDetectorTests;
+			sourceTree = "<group>";
+		};
+		75BF0E341C5ADD3100E0DAB6 /* Associations */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E351C5ADD3100E0DAB6 /* FBAssociationManager.h */,
+				75BF0E361C5ADD3100E0DAB6 /* FBAssociationManager.mm */,
+				75BF0E371C5ADD3100E0DAB6 /* Internal */,
+			);
+			path = Associations;
+			sourceTree = "<group>";
+		};
+		75BF0E371C5ADD3100E0DAB6 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E381C5ADD3100E0DAB6 /* FBAssociationManager+Internal.h */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		75BF0E391C5ADD3100E0DAB6 /* Detector */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E3A1C5ADD3100E0DAB6 /* FBNodeEnumerator.h */,
+				75BF0E3B1C5ADD3100E0DAB6 /* FBNodeEnumerator.mm */,
+				75BF0E3C1C5ADD3100E0DAB6 /* FBRetainCycleDetector+Internal.h */,
+				75BF0E3D1C5ADD3100E0DAB6 /* FBRetainCycleDetector.h */,
+				75BF0E3E1C5ADD3100E0DAB6 /* FBRetainCycleDetector.mm */,
+			);
+			path = Detector;
+			sourceTree = "<group>";
+		};
+		75BF0E421C5ADD3100E0DAB6 /* Filtering */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E451C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.h */,
+				75BF0E461C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.mm */,
+			);
+			path = Filtering;
+			sourceTree = "<group>";
+		};
+		75BF0E471C5ADD3100E0DAB6 /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E481C5ADD3100E0DAB6 /* FBObjectiveCBlock.h */,
+				75BF0E491C5ADD3100E0DAB6 /* FBObjectiveCBlock.m */,
+				75BF0E4A1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.h */,
+				75BF0E4B1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.mm */,
+				75BF0E4C1C5ADD3100E0DAB6 /* FBObjectiveCObject.h */,
+				75BF0E4D1C5ADD3100E0DAB6 /* FBObjectiveCObject.m */,
+				75BDB3751C80E64100FD53A9 /* FBObjectGraphConfiguration.h */,
+				75BDB3761C80E64100FD53A9 /* FBObjectGraphConfiguration.m */,
+				75BF0E4E1C5ADD3100E0DAB6 /* Internal */,
+				75BF0E501C5ADD3100E0DAB6 /* Specialization */,
+			);
+			path = Graph;
+			sourceTree = "<group>";
+		};
+		75BF0E4E1C5ADD3100E0DAB6 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E4F1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement+Internal.h */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		75BF0E501C5ADD3100E0DAB6 /* Specialization */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E511C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.h */,
+				75BF0E521C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.mm */,
+			);
+			path = Specialization;
+			sourceTree = "<group>";
+		};
+		75BF0E531C5ADD3100E0DAB6 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E541C5ADD3100E0DAB6 /* Blocks */,
+				75BF0E5B1C5ADD3100E0DAB6 /* Classes */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		75BF0E541C5ADD3100E0DAB6 /* Blocks */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E551C5ADD3100E0DAB6 /* Circle-LICENSE */,
+				75BF0E561C5ADD3100E0DAB6 /* FBBlockInterface.h */,
+				75BF0E571C5ADD3100E0DAB6 /* FBBlockStrongLayout.h */,
+				75BF0E581C5ADD3100E0DAB6 /* FBBlockStrongLayout.m */,
+				75BF0E591C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.h */,
+				75BF0E5A1C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.m */,
+			);
+			path = Blocks;
+			sourceTree = "<group>";
+		};
+		75BF0E5B1C5ADD3100E0DAB6 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E5C1C5ADD3100E0DAB6 /* FBClassStrongLayout.h */,
+				75BF0E5D1C5ADD3100E0DAB6 /* FBClassStrongLayout.mm */,
+				75BF0E5E1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.h */,
+				75BF0E5F1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.m */,
+				75BF0E601C5ADD3100E0DAB6 /* Parser */,
+				75BF0E671C5ADD3100E0DAB6 /* Reference */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		75BF0E601C5ADD3100E0DAB6 /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				7508661F1CD6E387007CD157 /* BaseType.h */,
+				75BF0E611C5ADD3100E0DAB6 /* Struct.h */,
+				75BF0E621C5ADD3100E0DAB6 /* Struct.mm */,
+				75BF0E631C5ADD3100E0DAB6 /* Type.h */,
+				75BF0E651C5ADD3100E0DAB6 /* FBStructEncodingParser.h */,
+				75BF0E661C5ADD3100E0DAB6 /* FBStructEncodingParser.mm */,
+			);
+			path = Parser;
+			sourceTree = "<group>";
+		};
+		75BF0E671C5ADD3100E0DAB6 /* Reference */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E681C5ADD3100E0DAB6 /* FBIvarReference.h */,
+				75BF0E691C5ADD3100E0DAB6 /* FBIvarReference.m */,
+				75BF0E6A1C5ADD3100E0DAB6 /* FBObjectInStructReference.h */,
+				75BF0E6B1C5ADD3100E0DAB6 /* FBObjectInStructReference.m */,
+				75BF0E6C1C5ADD3100E0DAB6 /* FBObjectReference.h */,
+			);
+			path = Reference;
+			sourceTree = "<group>";
+		};
+		75BF0E9A1C5ADDFB00E0DAB6 /* fishhook */ = {
+			isa = PBXGroup;
+			children = (
+				75BF0E9B1C5ADDFB00E0DAB6 /* fishhook.c */,
+				75BF0E9C1C5ADDFB00E0DAB6 /* fishhook.h */,
+			);
+			path = fishhook;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		75BF0E151C5ADBCC00E0DAB6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75BF0E731C5ADD3100E0DAB6 /* FBRetainCycleDetector.h in Headers */,
+				75BF0E7C1C5ADD3100E0DAB6 /* FBObjectiveCBlock.h in Headers */,
+				75BF0E831C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.h in Headers */,
+				75BF0E7A1C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.h in Headers */,
+				75BF0E6D1C5ADD3100E0DAB6 /* FBAssociationManager.h in Headers */,
+				75BF0E7E1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.h in Headers */,
+				75BDB3771C80E64100FD53A9 /* FBObjectGraphConfiguration.h in Headers */,
+				75BF0E801C5ADD3100E0DAB6 /* FBObjectiveCObject.h in Headers */,
+				75BF0E8F1C5ADD3100E0DAB6 /* Struct.h in Headers */,
+				75BF0E931C5ADD3100E0DAB6 /* FBStructEncodingParser.h in Headers */,
+				75BF0E911C5ADD3100E0DAB6 /* Type.h in Headers */,
+				75BF0E821C5ADD3100E0DAB6 /* FBObjectiveCGraphElement+Internal.h in Headers */,
+				75BF0E721C5ADD3100E0DAB6 /* FBRetainCycleDetector+Internal.h in Headers */,
+				75BF0E891C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.h in Headers */,
+				75BF0E971C5ADD3100E0DAB6 /* FBObjectInStructReference.h in Headers */,
+				75BF0E8D1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.h in Headers */,
+				75BF0E701C5ADD3100E0DAB6 /* FBNodeEnumerator.h in Headers */,
+				75BF0E951C5ADD3100E0DAB6 /* FBIvarReference.h in Headers */,
+				75BF0E991C5ADD3100E0DAB6 /* FBObjectReference.h in Headers */,
+				75BF0E861C5ADD3100E0DAB6 /* FBBlockInterface.h in Headers */,
+				75BF0E871C5ADD3100E0DAB6 /* FBBlockStrongLayout.h in Headers */,
+				750866201CD6E387007CD157 /* BaseType.h in Headers */,
+				75BF0E761C5ADD3100E0DAB6 /* FBRetainCycleUtils.h in Headers */,
+				75BF0EA01C5ADDFB00E0DAB6 /* fishhook.h in Headers */,
+				75BF0E8B1C5ADD3100E0DAB6 /* FBClassStrongLayout.h in Headers */,
+				75BF0E6F1C5ADD3100E0DAB6 /* FBAssociationManager+Internal.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		75BF0E171C5ADBCC00E0DAB6 /* FBRetainCycleDetector */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75BF0E201C5ADBCC00E0DAB6 /* Build configuration list for PBXNativeTarget "FBRetainCycleDetector" */;
+			buildPhases = (
+				75BF0E131C5ADBCC00E0DAB6 /* Sources */,
+				75BF0E141C5ADBCC00E0DAB6 /* Frameworks */,
+				75BF0E151C5ADBCC00E0DAB6 /* Headers */,
+				75BF0E161C5ADBCC00E0DAB6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FBRetainCycleDetector;
+			productName = FBRetainCycleDetector;
+			productReference = 75BF0E181C5ADBCC00E0DAB6 /* FBRetainCycleDetector.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		75BF0E261C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75BF0E2F1C5ADCA200E0DAB6 /* Build configuration list for PBXNativeTarget "FBRetainCycleDetectorTests" */;
+			buildPhases = (
+				75BF0E231C5ADCA200E0DAB6 /* Sources */,
+				75BF0E241C5ADCA200E0DAB6 /* Frameworks */,
+				75BF0E251C5ADCA200E0DAB6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				75BF0E2E1C5ADCA200E0DAB6 /* PBXTargetDependency */,
+			);
+			name = FBRetainCycleDetectorTests;
+			productName = FBRetainCycleDetectorTests;
+			productReference = 75BF0E271C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		75BF0E0F1C5ADBCC00E0DAB6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					75BF0E171C5ADBCC00E0DAB6 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					75BF0E261C5ADCA200E0DAB6 = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = 75BF0E121C5ADBCC00E0DAB6 /* Build configuration list for PBXProject "FBRetainCycleDetector" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 75BF0E0E1C5ADBCC00E0DAB6;
+			productRefGroup = 75BF0E191C5ADBCC00E0DAB6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				75BF0E171C5ADBCC00E0DAB6 /* FBRetainCycleDetector */,
+				75BF0E261C5ADCA200E0DAB6 /* FBRetainCycleDetectorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		75BF0E161C5ADBCC00E0DAB6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75BF0E851C5ADD3100E0DAB6 /* Circle-LICENSE in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75BF0E251C5ADCA200E0DAB6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		75BF0E131C5ADBCC00E0DAB6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75BF0E881C5ADD3100E0DAB6 /* FBBlockStrongLayout.m in Sources */,
+				75BF0E6E1C5ADD3100E0DAB6 /* FBAssociationManager.mm in Sources */,
+				75BF0E8A1C5ADD3100E0DAB6 /* FBBlockStrongRelationDetector.m in Sources */,
+				75BDB3781C80E64100FD53A9 /* FBObjectGraphConfiguration.m in Sources */,
+				75BF0E741C5ADD3100E0DAB6 /* FBRetainCycleDetector.mm in Sources */,
+				75BF0E981C5ADD3100E0DAB6 /* FBObjectInStructReference.m in Sources */,
+				75BF0E9F1C5ADDFB00E0DAB6 /* fishhook.c in Sources */,
+				75BF0E7B1C5ADD3100E0DAB6 /* FBStandardGraphEdgeFilters.mm in Sources */,
+				75BF0E711C5ADD3100E0DAB6 /* FBNodeEnumerator.mm in Sources */,
+				75BF0E8C1C5ADD3100E0DAB6 /* FBClassStrongLayout.mm in Sources */,
+				75BF0E941C5ADD3100E0DAB6 /* FBStructEncodingParser.mm in Sources */,
+				75BF0E901C5ADD3100E0DAB6 /* Struct.mm in Sources */,
+				75BF0E771C5ADD3100E0DAB6 /* FBRetainCycleUtils.m in Sources */,
+				75BF0E841C5ADD3100E0DAB6 /* FBObjectiveCNSCFTimer.mm in Sources */,
+				75BF0E811C5ADD3100E0DAB6 /* FBObjectiveCObject.m in Sources */,
+				75BF0E8E1C5ADD3100E0DAB6 /* FBClassStrongLayoutHelpers.m in Sources */,
+				75BF0E961C5ADD3100E0DAB6 /* FBIvarReference.m in Sources */,
+				75BF0E7D1C5ADD3100E0DAB6 /* FBObjectiveCBlock.m in Sources */,
+				75BF0E7F1C5ADD3100E0DAB6 /* FBObjectiveCGraphElement.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75BF0E231C5ADCA200E0DAB6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75BF0EB71C5ADE1B00E0DAB6 /* FBRCDCollectionTests.m in Sources */,
+				75BF0EBA1C5ADE1B00E0DAB6 /* FBStructEncodingParserTests.mm in Sources */,
+				75BF0EB91C5ADE1B00E0DAB6 /* FBRetainCycleDetectorTests.mm in Sources */,
+				75BF0EAF1C5ADE1B00E0DAB6 /* FBAssociationManagerTests.mm in Sources */,
+				75BF0EB01C5ADE1B00E0DAB6 /* FBBlockRecognizingTests.mm in Sources */,
+				75BF0EB51C5ADE1B00E0DAB6 /* FBObjectiveCNSCFTimerTests.m in Sources */,
+				75BF0EB31C5ADE1B00E0DAB6 /* FBGraphEdgeFilterTests.m in Sources */,
+				75BF0EB61C5ADE1B00E0DAB6 /* FBObjectiveCObjectTests.m in Sources */,
+				75BF0EB41C5ADE1B00E0DAB6 /* FBObjectiveCBlockTests.m in Sources */,
+				75BF0EB11C5ADE1B00E0DAB6 /* FBBlockStrongLayoutTests.mm in Sources */,
+				75BF0EB21C5ADE1B00E0DAB6 /* FBClassStrongLayoutTests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		75BF0E2E1C5ADCA200E0DAB6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75BF0E171C5ADBCC00E0DAB6 /* FBRetainCycleDetector */;
+			targetProxy = 75BF0E2D1C5ADCA200E0DAB6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		75BF0E1E1C5ADBCC00E0DAB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		75BF0E1F1C5ADBCC00E0DAB6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		75BF0E211C5ADBCC00E0DAB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/FBRetainCycleDetector/FBRetainCycleDetector-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.FBRetainCycleDetector;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		75BF0E221C5ADBCC00E0DAB6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/FBRetainCycleDetector/FBRetainCycleDetector-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.FBRetainCycleDetector;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		75BF0E301C5ADCA200E0DAB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "FBRetainCycleDetectorTests/FBRetainCycleDetectorTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.FBRetainCycleDetectorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		75BF0E311C5ADCA200E0DAB6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "FBRetainCycleDetectorTests/FBRetainCycleDetectorTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.FBRetainCycleDetectorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		75BF0E121C5ADBCC00E0DAB6 /* Build configuration list for PBXProject "FBRetainCycleDetector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75BF0E1E1C5ADBCC00E0DAB6 /* Debug */,
+				75BF0E1F1C5ADBCC00E0DAB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		75BF0E201C5ADBCC00E0DAB6 /* Build configuration list for PBXNativeTarget "FBRetainCycleDetector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75BF0E211C5ADBCC00E0DAB6 /* Debug */,
+				75BF0E221C5ADBCC00E0DAB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		75BF0E2F1C5ADCA200E0DAB6 /* Build configuration list for PBXNativeTarget "FBRetainCycleDetectorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75BF0E301C5ADCA200E0DAB6 /* Debug */,
+				75BF0E311C5ADCA200E0DAB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 75BF0E0F1C5ADBCC00E0DAB6 /* Project object */;
+}

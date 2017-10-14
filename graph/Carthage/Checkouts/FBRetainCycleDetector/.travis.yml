@@ -1,0 +1,5 @@
+language: objective-c
+xcode_project: FBRetainCycleDetector.xcodeproj
+xcode_scheme: FBRetainCycleDetector
+osx_image: xcode7.2
+xcode_sdk: iphonesimulator9.2
