@@ -38,7 +38,7 @@ class FBCommand:
 
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
-def evaluateExpressionValue(expression, language=lldb.eLanguageTypeObjC_plus_plus, printErrors=True):
+def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguageTypeObjC_plus_plus):
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
   options.SetLanguage(language)
