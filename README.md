@@ -12,9 +12,22 @@ brew update
 brew install chisel
 ```
 
-Then follow the instructions that Homebrew displays to add chisel to your _~/.lldbinit_.
+if `.lldbinit` file doesn't exist you can create it & open it by tapping on the terminal
 
-Alternatively, download chisel and add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
+ ```shell
+ touch .lldbinit 
+ open .lldbinit 
+```
+
+Then add the following line to your `~/.lldbinit` file.
+
+```Python
+# ~/.lldbinit
+...
+command script import /usr/local/opt/chisel/libexec/fblldb.py
+```
+
+Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
 
 ```Python
 # ~/.lldbinit
