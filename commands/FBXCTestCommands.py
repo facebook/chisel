@@ -74,7 +74,7 @@ class FBXCPrintTree(fb.FBCommand):
       element = "XCUIApplication()" if language == lldb.eLanguageTypeSwift else "(XCUIApplication *)[[XCUIApplication alloc] init]"
 
     # Evaluate object
-    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language)
+    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language=language)
     """:type: lldb.SBValue"""
 
     # Get pointer value, so it will be working in Swift and Objective-C
@@ -84,7 +84,7 @@ class FBXCPrintTree(fb.FBCommand):
     snapshot = take_snapshot(element_pointer)
 
     # Print tree for snapshot element
-    snapshot_object = XCElementSnapshot(snapshot, language)
+    snapshot_object = XCElementSnapshot(snapshot, language=language)
     print snapshot_object.tree().hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame)
 
 
@@ -105,7 +105,7 @@ class FBXCPrintObject(fb.FBCommand):
       element = "XCUIApplication()" if language == lldb.eLanguageTypeSwift else "(XCUIApplication *)[[XCUIApplication alloc] init]"
 
     # Evaluate object
-    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language)
+    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language=language)
     """:type: lldb.SBValue"""
 
     # Get pointer value, so it will be working in Swift and Objective-C
@@ -115,7 +115,7 @@ class FBXCPrintObject(fb.FBCommand):
     snapshot = take_snapshot(element_pointer)
 
     # Print details of snapshot element
-    snapshot_object = XCElementSnapshot(snapshot, language)
+    snapshot_object = XCElementSnapshot(snapshot, language=language)
     print snapshot_object.detail_summary()
 
 
@@ -144,7 +144,7 @@ class FBXCNoId(fb.FBCommand):
       element = "XCUIApplication()" if language == lldb.eLanguageTypeSwift else "(XCUIApplication *)[[XCUIApplication alloc] init]"
 
     # Evaluate object
-    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language)
+    element_sbvalue = fb.evaluateExpressionValue("{}".format(element), language=language)
     """:type: lldb.SBValue"""
 
     # Get pointer value, so it will be working in Swift and Objective-C
@@ -154,7 +154,7 @@ class FBXCNoId(fb.FBCommand):
     snapshot = take_snapshot(element_pointer)
 
     # Print tree for snapshot element
-    snapshot_object = XCElementSnapshot(snapshot, language)
+    snapshot_object = XCElementSnapshot(snapshot, language=language)
     elements = snapshot_object.find_missing_identifiers(status_bar=options.status_bar)
     if elements is not None:
       print elements.hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame)
