@@ -12,6 +12,7 @@ def lldbcommands():
     FBFrameworkAddressBreakpointCommand(),
     FBMethodBreakpointCommand(),
     FBMemoryWarningCommand(),
+    FBDebuggingInformationOverlayCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -184,3 +185,14 @@ class FBMemoryWarningCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     fb.evaluateEffect('[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]')
+
+class FBDebuggingInformationOverlayCommand(fb.FBCommand):
+  def name(self):
+    return 'doverlay'
+
+  def description(self):
+    return 'Toggle the float debugging information overlay window. Continue program after executing this command, you can also just tap the status bar with two fingers at the same time to show the overlay window.'
+
+  def run(self, arguments, options):
+    fb.evaluateEffect("[UIDebuggingInformationOverlay prepareDebuggingOverlay]")
+    fb.evaluateEffect("[[UIDebuggingInformationOverlay overlay] toggleVisibility]")
