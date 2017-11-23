@@ -85,7 +85,6 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         description += "\n"
         description = re.sub(r'%s.*\n' % (prefixToRemove), r'', description)
       print description
-      lldb.debugger.HandleCommand('"%s"' % description)
 
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
