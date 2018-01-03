@@ -231,11 +231,14 @@ class FBFindInstancesCommand(fb.FBCommand):
     if not self.loadChiselIfNecessary():
       return
 
-    commands = arguments[0].strip().split(' ', 1)
-    query = commands[0]
-    if len(commands) > 1:
-      # TODO: Escape unescaped double quotes, and escape escapes
-      predicate = commands[1].strip()
+    # Unpack the arguments by hand. The input is entirely in arguments[0].
+    args = arguments[0].strip().split(' ', 1)
+
+    query = args[0]
+    if len(args) > 1:
+      predicate = args[1].strip()
+      # Escape double quotes and backslashes.
+      predicate = re.sub('([\\"])', r'\\\1', predicate)
     else:
       predicate = ''
     call = '(void)PrintInstances("{}", "{}")'.format(query, predicate)
