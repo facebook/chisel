@@ -42,7 +42,19 @@ def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguag
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
   options.SetLanguage(language)
+
+  # Allow evaluation that contains a @throw/@catch.
+  #   By default, ObjC @throw will cause evaluation to be aborted. At the time
+  #   of a @throw, it's not known if the exception will be handled by a @catch.
+  #   An exception that's caught, should not cause evaluation to fail.
   options.SetTrapExceptions(False)
+
+  # Give evaluation more time.
+  options.SetTimeoutInMicroSeconds(5000000) # 5s
+
+  # Chisel commands are not multithreaded.
+  options.SetTryAllThreads(False)
+
   value = frame.EvaluateExpression(expression, options)
   error = value.GetError()
 
