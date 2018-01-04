@@ -258,12 +258,17 @@ class FBFindInstancesCommand(fb.FBCommand):
     if module.unsigned != 0 or target.module['Chisel']:
       return True
 
+    # `errno` is a macro that expands to a call to __error(). In development,
+    # lldb was not getting a correct value for `errno`, so `__error()` is used.
+    errno = fb.evaluateExpressionValue('*(int*)__error()').value
     error = fb.evaluateExpressionValue('(char*)dlerror()')
-    errno = fb.evaluateExpressionValue('(int)errno')
-    if error.unsigned != 0:
+    if errno == 50:
+      # KERN_CODESIGN_ERROR from <mach/kern_return.h>
+      print 'Error loading Chisel: Code signing failure; Must re-run codesign'
+    elif error.unsigned != 0:
       print 'Error loading Chisel: ' + error.summary
-    elif errno.unsigned != 0:
-      error = fb.evaluateExpressionValue('(char*)strerror((int)errno)')
+    elif errno != 0:
+      error = fb.evaluateExpressionValue('(char*)strerror({})'.format(errno))
       if error.unsigned != 0:
         print 'Error loading Chisel: ' + error.summary
       else:
