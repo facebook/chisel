@@ -231,14 +231,14 @@ class FBFindInstancesCommand(fb.FBCommand):
     if not self.loadChiselIfNecessary():
       return
 
+    if len(arguments) == 0 or not arguments[0].strip():
+      print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
+      return
+
     # Unpack the arguments by hand. The input is entirely in arguments[0].
     args = arguments[0].strip().split(' ', 1)
 
     query = args[0]
-    if not query:
-      print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
-      return
-
     if len(args) > 1:
       predicate = args[1].strip()
       # Escape double quotes and backslashes.
