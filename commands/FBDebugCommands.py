@@ -235,6 +235,10 @@ class FBFindInstancesCommand(fb.FBCommand):
     args = arguments[0].strip().split(' ', 1)
 
     query = args[0]
+    if not query:
+      print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
+      return
+
     if len(args) > 1:
       predicate = args[1].strip()
       # Escape double quotes and backslashes.
