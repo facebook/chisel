@@ -259,10 +259,18 @@ class FBFindInstancesCommand(fb.FBCommand):
       return True
 
     error = fb.evaluateExpressionValue('(char*)dlerror()')
+    errno = fb.evaluateExpressionValue('(int)errno')
     if error.unsigned != 0:
       print 'Error loading Chisel: ' + error.summary
+    elif errno.unsigned != 0:
+      error = fb.evaluateExpressionValue('(char*)strerror((int)errno)')
+      if error.unsigned != 0:
+        print 'Error loading Chisel: ' + error.summary
+      else:
+        print 'Error loading Chisel (errno {})'.format(errno)
     else:
       print 'Unknown error loading Chisel'
+
     return False
 
   def chiselLibraryPath(self):
