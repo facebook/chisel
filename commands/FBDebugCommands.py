@@ -4,6 +4,8 @@ import lldb
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as objc
 
+import sys
+import os
 import re
 
 def lldbcommands():
@@ -12,6 +14,7 @@ def lldbcommands():
     FBFrameworkAddressBreakpointCommand(),
     FBMethodBreakpointCommand(),
     FBMemoryWarningCommand(),
+    FBFindInstancesCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -184,3 +187,108 @@ class FBMemoryWarningCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     fb.evaluateEffect('[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]')
+
+
+class FBFindInstancesCommand(fb.FBCommand):
+  def name(self):
+    return 'findinstances'
+
+  def description(self):
+    return """
+    Find instances of specified ObjC classes.
+
+    This command scans memory and uses heuristics to identify instances of
+    Objective-C classes. This includes Swift classes that descend from NSObject.
+
+    Basic examples:
+
+        findinstances UIScrollView
+        findinstances *UIScrollView
+        findinstances UIScrollViewDelegate
+
+    These basic searches find instances of the given class or protocol. By
+    default, subclasses of the class or protocol are included in the results. To
+    find exact class instances, add a `*` prefix, for example: *UIScrollView.
+
+    Advanced examples:
+
+        # Find views that are either: hidden, invisible, or not in a window
+        findinstances UIView hidden == true || alpha == 0 || window == nil
+        # Find views that have either a zero width or zero height
+        findinstances UIView layer.bounds.#size.width == 0 || layer.bounds.#size.height == 0
+        # Find leaf views that have no subviews
+        findinstances UIView subviews.@count == 0
+        # Find dictionaries that have keys that might be passwords or passphrases
+        findinstances NSDictionary any @allKeys beginswith 'pass'
+
+    These examples make use of a filter. The filter is implemented with
+    NSPredicate, see its documentaiton for more details. Basic NSPredicate
+    expressions have relatively predicatable syntax. There are some exceptions
+    as seen above, see https://github.com/facebook/chisel/wiki/findinstances.
+    """
+
+  def run(self, arguments, options):
+    if not self.loadChiselIfNecessary():
+      return
+
+    if len(arguments) == 0 or not arguments[0].strip():
+      print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
+      return
+
+    # Unpack the arguments by hand. The input is entirely in arguments[0].
+    args = arguments[0].strip().split(' ', 1)
+
+    query = args[0]
+    if len(args) > 1:
+      predicate = args[1].strip()
+      # Escape double quotes and backslashes.
+      predicate = re.sub('([\\"])', r'\\\1', predicate)
+    else:
+      predicate = ''
+    call = '(void)PrintInstances("{}", "{}")'.format(query, predicate)
+    fb.evaluateExpressionValue(call)
+
+  def loadChiselIfNecessary(self):
+    target = lldb.debugger.GetSelectedTarget()
+    if target.module['Chisel']:
+      return True
+
+    path = self.chiselLibraryPath()
+    if not os.path.exists(path):
+      print 'Chisel library missing: ' + path
+      return False
+
+    module = fb.evaluateExpressionValue('(void*)dlopen("{}", 2)'.format(path))
+    if module.unsigned != 0 or target.module['Chisel']:
+      return True
+
+    # `errno` is a macro that expands to a call to __error(). In development,
+    # lldb was not getting a correct value for `errno`, so `__error()` is used.
+    errno = fb.evaluateExpressionValue('*(int*)__error()').value
+    error = fb.evaluateExpressionValue('(char*)dlerror()')
+    if errno == 50:
+      # KERN_CODESIGN_ERROR from <mach/kern_return.h>
+      print 'Error loading Chisel: Code signing failure; Must re-run codesign'
+    elif error.unsigned != 0:
+      print 'Error loading Chisel: ' + error.summary
+    elif errno != 0:
+      error = fb.evaluateExpressionValue('(char*)strerror({})'.format(errno))
+      if error.unsigned != 0:
+        print 'Error loading Chisel: ' + error.summary
+      else:
+        print 'Error loading Chisel (errno {})'.format(errno)
+    else:
+      print 'Unknown error loading Chisel'
+
+    return False
+
+  def chiselLibraryPath(self):
+    # script os.environ['CHISEL_LIBRARY_PATH'] = '/path/to/custom/Chisel'
+    path = os.getenv('CHISEL_LIBRARY_PATH')
+    if path and os.path.exists(path):
+      return path
+
+    source_path = sys.modules[__name__].__file__
+    source_dir = os.path.dirname(source_path)
+    # ugh: ../.. is to back out of commands/, then back out of libexec/
+    return os.path.join(source_dir, '..', '..', 'lib', 'Chisel.framework', 'Chisel')
