@@ -75,6 +75,7 @@
 				7ABD17981DF7F998006118F8 /* ChiselTests */,
 				7ABD178C1DF7F998006118F8 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
 		};
 		7ABD178C1DF7F998006118F8 /* Products */ = {
