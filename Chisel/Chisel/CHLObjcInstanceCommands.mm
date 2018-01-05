@@ -173,7 +173,7 @@ void PrintInstances(const char *type, const char *pred)
   if (baseClass != Nil) {
     addMatch(baseClass);
   } else {
-    // The given class name hasn't been found, this could be a Swift class which case has
+    // The given class name hasn't been found, this could be a Swift class which has
     // a module name prefix. Loop over all classes to look for matching class names.
     for (auto cls : objcClasses) {
       // SwiftModule.ClassName
