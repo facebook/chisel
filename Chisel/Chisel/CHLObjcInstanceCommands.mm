@@ -103,9 +103,9 @@ static bool objectIsMatch(NSPredicate *predicate, id obj, const std::unordered_s
 
 // Function reimplementation of +[NSObject isSubclassOf:] to avoid the objc runtime side
 // effects that can happen when calling methods, like realizing classes, +initialize, etc.
-static bool isSubclassOf(Class base, Class target)
+static bool isSubclassOfClass(Class self, Class target)
 {
-  for (auto cls = base; cls != Nil; cls = class_getSuperclass(cls)) {
+  for (auto cls = self; cls != Nil; cls = class_getSuperclass(cls)) {
     if (cls == target) {
       return true;
     }
@@ -115,9 +115,9 @@ static bool isSubclassOf(Class base, Class target)
 
 // Function reimplementation of +[NSObject conformsToProtocol:] to avoid the objc runtime side
 // effects that can happen when calling methods, like realizing classes, +initialize, etc.
-static bool conformsToProtocol(Class base, Protocol *protocol)
+static bool conformsToProtocol(Class self, Protocol *protocol)
 {
-  for (auto cls = base; cls != Nil; cls = class_getSuperclass(cls)) {
+  for (auto cls = self; cls != Nil; cls = class_getSuperclass(cls)) {
     if (class_conformsToProtocol(cls, protocol)) {
       return true;
     }
@@ -155,30 +155,32 @@ void PrintInstances(const char *type, const char *pred)
     ++type;
   }
 
-  auto addMatch = [&](Class cls) {
+  // Helper lambda that only exists so that it can be called more than once, as in the
+  // rare case where `type` corresponds to more than one Swift class.
+  auto addMatch = [&](Class baseClass) {
     if (exactClass) {
-      matchClasses.insert(cls);
+      matchClasses.insert(baseClass);
     } else {
-      for (auto c : objcClasses) {
-        if (isSubclassOf(c, cls)) {
-          matchClasses.insert(c);
+      for (auto cls : objcClasses) {
+        if (isSubclassOfClass(cls, baseClass)) {
+          matchClasses.insert(cls);
         }
       }
     }
   };
 
-  Class cls = objc_getClass(type);
-  if (cls != Nil) {
-    addMatch(cls);
+  Class baseClass = objc_getClass(type);
+  if (baseClass != Nil) {
+    addMatch(baseClass);
   } else {
     // The given class name hasn't been found, this could be a Swift class which case has
     // a module name prefix. Loop over all classes to look for matching class names.
-    for (auto c : objcClasses) {
+    for (auto cls : objcClasses) {
       // SwiftModule.ClassName
       //             ^- dot + 1
-      auto dot = strchr(class_getName(c), '.');
+      auto dot = strchr(class_getName(cls), '.');
       if (dot && strcmp(type, dot + 1) == 0) {
-        addMatch(c);
+        addMatch(cls);
       }
     }
   }
