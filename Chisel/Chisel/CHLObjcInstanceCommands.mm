@@ -103,9 +103,9 @@ static bool objectIsMatch(NSPredicate *predicate, id obj, const std::unordered_s
 
 // Function reimplementation of +[NSObject isSubclassOf:] to avoid the objc runtime side
 // effects that can happen when calling methods, like realizing classes, +initialize, etc.
-static bool isSubclassOf(Class base, Class target)
+static bool isSubclassOfClass(Class self, Class target)
 {
-  for (auto cls = base; cls != Nil; cls = class_getSuperclass(cls)) {
+  for (auto cls = self; cls != Nil; cls = class_getSuperclass(cls)) {
     if (cls == target) {
       return true;
     }
@@ -115,9 +115,9 @@ static bool isSubclassOf(Class base, Class target)
 
 // Function reimplementation of +[NSObject conformsToProtocol:] to avoid the objc runtime side
 // effects that can happen when calling methods, like realizing classes, +initialize, etc.
-static bool conformsToProtocol(Class base, Protocol *protocol)
+static bool conformsToProtocol(Class self, Protocol *protocol)
 {
-  for (auto cls = base; cls != Nil; cls = class_getSuperclass(cls)) {
+  for (auto cls = self; cls != Nil; cls = class_getSuperclass(cls)) {
     if (class_conformsToProtocol(cls, protocol)) {
       return true;
     }
@@ -129,7 +129,12 @@ void PrintInstances(const char *type, const char *pred)
 {
   NSPredicate *predicate = nil;
   if (pred != nullptr && *pred != '\0') {
-    predicate = [NSPredicate predicateWithFormat:@(pred)];
+    @try {
+      predicate = [NSPredicate predicateWithFormat:@(pred)];
+    } @catch (NSException *e) {
+      printf("Error: Invalid predicate; %s\n", [e reason].UTF8String);
+      return;
+    }
   }
 
   const std::unordered_set<Class> objcClasses = CHLObjcClassSet();
@@ -144,17 +149,38 @@ void PrintInstances(const char *type, const char *pred)
     }
   }
 
+  bool exactClass = false;
   if (type[0] == '*') {
+    exactClass = true;
     ++type;
-    Class cls = objc_getClass(type);
-    if (cls != nullptr) {
-      matchClasses.insert(cls);
+  }
+
+  // Helper lambda that only exists so that it can be called more than once, as in the
+  // rare case where `type` corresponds to more than one Swift class.
+  auto addMatch = [&](Class baseClass) {
+    if (exactClass) {
+      matchClasses.insert(baseClass);
+    } else {
+      for (auto cls : objcClasses) {
+        if (isSubclassOfClass(cls, baseClass)) {
+          matchClasses.insert(cls);
+        }
+      }
     }
-  } else if (Class kind = objc_getClass(type)) {
-    // This could be optimized for type == "NSObject", but it won't be a typical search.
+  };
+
+  Class baseClass = objc_getClass(type);
+  if (baseClass != Nil) {
+    addMatch(baseClass);
+  } else {
+    // The given class name hasn't been found, this could be a Swift class which has
+    // a module name prefix. Loop over all classes to look for matching class names.
     for (auto cls : objcClasses) {
-      if (isSubclassOf(cls, kind)) {
-        matchClasses.insert(cls);
+      // SwiftModule.ClassName
+      //             ^- dot + 1
+      auto dot = strchr(class_getName(cls), '.');
+      if (dot && strcmp(type, dot + 1) == 0) {
+        addMatch(cls);
       }
     }
   }
@@ -167,7 +193,7 @@ void PrintInstances(const char *type, const char *pred)
 
   NSSet *keyPaths = CHLVariableKeyPaths(predicate);
 
-  std::vector<id, zone_allocator<id>> instances = CHLScanObjcInstances(matchClasses);
+  auto instances = CHLScanObjcInstances(matchClasses);
   unsigned int matches = 0;
 
   for (id obj : instances) {

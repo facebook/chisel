@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local/lib
 
-export INSTALL_NAME = ""
-ifneq ($(LD_DYLIB_INSTALL_NAME), "")
+export INSTALL_NAME =
+ifneq ($(LD_DYLIB_INSTALL_NAME),)
 	INSTALL_NAME = "LD_DYLIB_INSTALL_NAME=$(LD_DYLIB_INSTALL_NAME)"
 endif
 
