@@ -129,7 +129,12 @@ void PrintInstances(const char *type, const char *pred)
 {
   NSPredicate *predicate = nil;
   if (pred != nullptr && *pred != '\0') {
-    predicate = [NSPredicate predicateWithFormat:@(pred)];
+    @try {
+      predicate = [NSPredicate predicateWithFormat:@(pred)];
+    } @catch (NSException *e) {
+      printf("Error: Invalid predicate; %s\n", [e reason].UTF8String);
+      return;
+    }
   }
 
   const std::unordered_set<Class> objcClasses = CHLObjcClassSet();
