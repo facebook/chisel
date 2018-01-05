@@ -149,17 +149,36 @@ void PrintInstances(const char *type, const char *pred)
     }
   }
 
+  bool exactClass = false;
   if (type[0] == '*') {
+    exactClass = true;
     ++type;
-    Class cls = objc_getClass(type);
-    if (cls != nullptr) {
+  }
+
+  auto addMatch = [&](Class cls) {
+    if (exactClass) {
       matchClasses.insert(cls);
+    } else {
+      for (auto c : objcClasses) {
+        if (isSubclassOf(c, cls)) {
+          matchClasses.insert(c);
+        }
+      }
     }
-  } else if (Class kind = objc_getClass(type)) {
-    // This could be optimized for type == "NSObject", but it won't be a typical search.
-    for (auto cls : objcClasses) {
-      if (isSubclassOf(cls, kind)) {
-        matchClasses.insert(cls);
+  };
+
+  Class cls = objc_getClass(type);
+  if (cls != Nil) {
+    addMatch(cls);
+  } else {
+    // The given class name hasn't been found, this could be a Swift class which case has
+    // a module name prefix. Loop over all classes to look for matching class names.
+    for (auto c : objcClasses) {
+      // SwiftModule.ClassName
+      //             ^- dot + 1
+      auto dot = strchr(class_getName(c), '.');
+      if (dot && strcmp(type, dot + 1) == 0) {
+        addMatch(c);
       }
     }
   }
@@ -172,7 +191,7 @@ void PrintInstances(const char *type, const char *pred)
 
   NSSet *keyPaths = CHLVariableKeyPaths(predicate);
 
-  std::vector<id, zone_allocator<id>> instances = CHLScanObjcInstances(matchClasses);
+  auto instances = CHLScanObjcInstances(matchClasses);
   unsigned int matches = 0;
 
   for (id obj : instances) {
