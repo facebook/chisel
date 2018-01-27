@@ -227,6 +227,11 @@ class FBFindInstancesCommand(fb.FBCommand):
     as seen above, see https://github.com/facebook/chisel/wiki/findinstances.
     """
 
+  def lex(self, commandLine):
+    # Can't use default shlex splitting because it strip quotes which breaks
+    # NSPredicate syntax. Split the input into type and rest (the query).
+    return commandLine.split(' ', 1)
+
   def run(self, arguments, options):
     if not self.loadChiselIfNecessary():
       return
