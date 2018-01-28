@@ -153,8 +153,6 @@ def helpForCommand(command, filename):
 
   help += '\n\nThis command is implemented as %s in %s.' % (command.__class__.__name__, filename)
 
-  help += '\n\n(LLDB adds the next line, sorry...)'
-
   return help
 
 def usageForCommand(command):
