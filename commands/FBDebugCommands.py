@@ -228,8 +228,8 @@ class FBFindInstancesCommand(fb.FBCommand):
     """
 
   def lex(self, commandLine):
-    # Can't use default shlex splitting because it strip quotes which breaks
-    # NSPredicate syntax. Split the input into type and rest (the query).
+    # Can't use default shlex splitting because it strips quotes, which results
+    # in invalid NSPredicate syntax. Split the input into type and rest (query).
     return commandLine.split(' ', 1)
 
   def run(self, arguments, options):
