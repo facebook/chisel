@@ -40,7 +40,7 @@ def loadCommandsInDirectory(commandsDirectory):
 def loadCommand(module, command, directory, filename, extension):
   func = makeRunCommand(command, os.path.join(directory, filename + extension))
   name = command.name()
-  helpText = command.description().splitlines()[0] # first line of description
+  helpText = command.description().lstrip().splitlines()[0] # first line of description
 
   key = filename + '_' + name
 
