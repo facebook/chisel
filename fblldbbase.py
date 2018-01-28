@@ -9,6 +9,7 @@
 
 import lldb
 import json
+import shlex
 
 class FBCommandArgument:
   def __init__(self, short='', long='', arg='', type='', help='', default='', boolean=False):
@@ -32,6 +33,9 @@ class FBCommand:
 
   def description(self):
     return ''
+
+  def lex(self, commandLine):
+    return shlex.split(commandLine)
 
   def run(self, arguments, option):
     pass

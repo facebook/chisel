@@ -193,6 +193,13 @@ class FBFindInstancesCommand(fb.FBCommand):
   def name(self):
     return 'findinstances'
 
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='type', help='Class or protocol name'),
+      fb.FBCommandArgument(arg='query', default=' ', # space is a hack to mark optional
+                           help='Query expression, uses NSPredicate syntax')
+    ]
+
   def description(self):
     return """
     Find instances of specified ObjC classes.
@@ -227,6 +234,11 @@ class FBFindInstancesCommand(fb.FBCommand):
     as seen above, see https://github.com/facebook/chisel/wiki/findinstances.
     """
 
+  def lex(self, commandLine):
+    # Can't use default shlex splitting because it strips quotes, which results
+    # in invalid NSPredicate syntax. Split the input into type and rest (query).
+    return commandLine.split(' ', 1)
+
   def run(self, arguments, options):
     if not self.loadChiselIfNecessary():
       return
@@ -235,16 +247,10 @@ class FBFindInstancesCommand(fb.FBCommand):
       print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
       return
 
-    # Unpack the arguments by hand. The input is entirely in arguments[0].
-    args = arguments[0].strip().split(' ', 1)
-
-    query = args[0]
-    if len(args) > 1:
-      predicate = args[1].strip()
-      # Escape double quotes and backslashes.
-      predicate = re.sub('([\\"])', r'\\\1', predicate)
-    else:
-      predicate = ''
+    query = arguments[0]
+    predicate = arguments[1].strip()
+    # Escape double quotes and backslashes.
+    predicate = re.sub('([\\"])', r'\\\1', predicate)
     call = '(void)PrintInstances("{}", "{}")'.format(query, predicate)
     fb.evaluateExpressionValue(call)
 

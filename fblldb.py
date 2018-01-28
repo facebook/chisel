@@ -11,7 +11,6 @@ import lldb
 
 import imp
 import os
-import shlex
 
 from optparse import OptionParser
 
@@ -57,7 +56,7 @@ def loadCommand(module, command, directory, filename, extension):
 
 def makeRunCommand(command, filename):
   def runCommand(debugger, input, result, dict):
-    splitInput = shlex.split(input)
+    splitInput = command.lex(input)
 
     # OptionParser will throw in the case where you want just one big long argument and no
     # options and you enter something that starts with '-' in the argument. e.g.:
