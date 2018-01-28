@@ -123,7 +123,10 @@ def helpForCommand(command, filename):
   if command.args():
     help += '\n\nArguments:'
     for arg in command.args():
-      help += '\n  <' + arg.argName + '>; Type: ' + arg.argType + '; ' + arg.help
+      help += '\n  <' + arg.argName + '>; '
+      if arg.argType:
+        help += 'Type: ' + arg.argType + '; '
+      help += arg.help
       argSyntax += ' <' + arg.argName + '>'
 
   if command.options():
