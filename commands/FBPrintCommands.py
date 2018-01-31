@@ -173,7 +173,7 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='startResponder', type='UIResponder *', help='The responder to use to start walking the chain.') ]
 
   def run(self, arguments, options):
-    startResponder = arguments[0]
+    startResponder = fb.evaluateInputExpression(arguments[0])
 
     isMac = runtimeHelpers.isMacintoshArch()
     responderClass = 'UIResponder'
@@ -455,7 +455,7 @@ class FBPrintTargetActions(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='control', type='UIControl *', help='The control to inspect the actions of.') ]
 
   def run(self, arguments, options):
-    control = arguments[0]
+    control = fb.evaluateInputExpression(arguments[0])
     targets = fb.evaluateObjectExpression('[[{control} allTargets] allObjects]'.format(control=control))
     targetCount = fb.evaluateIntegerExpression('[{targets} count]'.format(targets=targets))
 
@@ -485,7 +485,7 @@ class FBPrintJSON(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='object', type='id', help='The NSDictionary or NSArray object to print') ]
 
   def run(self, arguments, options):
-    objectToPrint = arguments[0]
+    objectToPrint = fb.evaluateInputExpression(arguments[0])
     pretty = 1 if options.plain is None else 0
     jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:(id){} options:{} error:nil]'.format(objectToPrint, pretty))
     jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(id){} encoding:4]'.format(jsonData)).GetObjectDescription()
@@ -511,7 +511,7 @@ class FBPrintAsCurl(fb.FBCommand):
     return '/tmp/curl_data_{}'.format(fb.evaluateExpression('(NSTimeInterval)[NSDate timeIntervalSinceReferenceDate]'))
 
   def run(self, arguments, options):
-    request = arguments[0]
+    request = fb.evaluateInputExpression(arguments[0])
     HTTPHeaderSring = ''
     HTTPMethod = fb.evaluateExpressionValue('(id)[{} HTTPMethod]'.format(request)).GetObjectDescription()
     URL = fb.evaluateExpressionValue('(id)[{} URL]'.format(request)).GetObjectDescription()
