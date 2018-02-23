@@ -15,6 +15,8 @@ def lldbcommands():
     FBMethodBreakpointCommand(),
     FBMemoryWarningCommand(),
     FBFindInstancesCommand(),
+    FBMethodBreakpointEnableCommand(),
+    FBMethodBreakpointDisableCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -188,6 +190,58 @@ class FBMemoryWarningCommand(fb.FBCommand):
   def run(self, arguments, options):
     fb.evaluateEffect('[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]')
 
+
+def switchBreakpointState(expression,on):
+  ci = lldb.debugger.GetCommandInterpreter()
+  res = lldb.SBCommandReturnObject()
+
+  ci.HandleCommand('br list',res)
+  listStr = res.GetOutput()
+
+  br_list = listStr.splitlines()
+  expression_pattern = re.compile(r'{}'.format(expression),re.I)
+  id_pattern = re.compile(r'^\s*([1-9]\d*)(\.\d+)?',re.I)
+  for br in br_list:
+    if expression_pattern.search(br) and id_pattern.search(br):
+        id = id_pattern.search(br).group()
+        if id:
+          print br
+          if on:
+            lldb.debugger.HandleCommand('br enable {}'.format(id))
+          else:
+            lldb.debugger.HandleCommand('br disable {}'.format(id))
+
+class FBMethodBreakpointEnableCommand(fb.FBCommand):
+  def name(self):
+    return 'benable'
+
+  def description(self):
+    return "Enable a set of breakpoints for a relative expression"
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', type='string', help='Expression to enable breakpoint'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    switchBreakpointState(expression,True)
+
+class FBMethodBreakpointDisableCommand(fb.FBCommand):
+  def name(self):
+    return 'bdisable'
+
+  def description(self):
+    return "Disable a set of breakpoints for a relative expression"
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', type='string', help='Expression to disable breakpoint'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    switchBreakpointState(expression,False)
 
 class FBFindInstancesCommand(fb.FBCommand):
   def name(self):
