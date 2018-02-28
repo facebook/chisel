@@ -201,6 +201,7 @@ def switchBreakpointState(expression,on):
   for breakpoint in target.breakpoint_iter():
     for location in breakpoint:
       if expression_pattern.search('{}'.format(location)):
+        print location
         location.SetEnabled(on)
 
 class FBMethodBreakpointEnableCommand(fb.FBCommand):
