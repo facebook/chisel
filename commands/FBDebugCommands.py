@@ -195,28 +195,38 @@ def switchBreakpointState(expression,on):
   ci = lldb.debugger.GetCommandInterpreter()
   res = lldb.SBCommandReturnObject()
 
-  ci.HandleCommand('br list',res)
-  listStr = res.GetOutput()
-
-  br_list = listStr.splitlines()
   expression_pattern = re.compile(r'{}'.format(expression),re.I)
-  id_pattern = re.compile(r'^\s*([1-9]\d*)(\.\d+)?',re.I)
-  for br in br_list:
-    if expression_pattern.search(br) and id_pattern.search(br):
-        id = id_pattern.search(br).group()
-        if id:
-          print br
-          if on:
-            lldb.debugger.HandleCommand('br enable {}'.format(id))
-          else:
-            lldb.debugger.HandleCommand('br disable {}'.format(id))
+
+  target = lldb.debugger.GetSelectedTarget()
+  for breakpoint in target.breakpoint_iter():
+    for location in breakpoint:
+      if expression_pattern.search('{}'.format(location)):
+        location.SetEnabled(on)
 
 class FBMethodBreakpointEnableCommand(fb.FBCommand):
   def name(self):
-    return 'benable'
+    return 'rbenable'
 
   def description(self):
-    return "Enable a set of breakpoints for a relative expression"
+    return """
+    Enable a set of breakpoints for a regular expression
+
+    Examples:
+
+          #use `rbenable disabled` to switch all breakpoints to `enable`
+          benable disabled
+
+          * rbenable ***address***
+          benable 0x0000000104514dfc
+
+          #use `rbenable *filename*` to switch all breakpoints in this file to `enable`
+          benable SUNNetService.m 
+
+          #use `rbenable ***module(AppName)***` to switch all breakpoints in this module to `enable`
+          benable UIKit
+          benable Foundation 
+
+    """
 
   def args(self):
     return [
@@ -229,11 +239,28 @@ class FBMethodBreakpointEnableCommand(fb.FBCommand):
 
 class FBMethodBreakpointDisableCommand(fb.FBCommand):
   def name(self):
-    return 'bdisable'
+    return 'rbdisable'
 
   def description(self):
-    return "Disable a set of breakpoints for a relative expression"
+    return """
+    Disable a set of breakpoints for a regular expression
 
+    Examples:
+
+          #use `rbdisable disabled` to switch all breakpoints to `disable`
+          rbdisable disabled
+
+          * rbdisable ***address***
+          rbdisable 0x0000000104514dfc
+
+          #use `rbdisable *filename*` to switch all breakpoints in this file to `disable`
+          rbdisable SUNNetService.m 
+
+          #use `rbdisable ***module(AppName)***` to switch all breakpoints in this module to `disable`
+          rbdisable UIKit
+          rbdisable Foundation 
+
+    """
   def args(self):
     return [
       fb.FBCommandArgument(arg='expression', type='string', help='Expression to disable breakpoint'),
