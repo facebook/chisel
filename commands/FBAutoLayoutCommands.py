@@ -31,7 +31,9 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
 
   def run(self, arguments, options):
     view = fb.evaluateInputExpression(arguments[0])
-    print fb.describeObject('[{} _autolayoutTrace]'.format(view))
+    opt = fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_autolayoutTraceRecursively:)]')
+    traceCall = '_autolayoutTraceRecursively:1' if opt else '_autolayoutTrace'
+    print fb.describeObject('[{} {}]'.format(view, traceCall))
 
 
 def setBorderOnAmbiguousViewRecursive(view, width, color):
