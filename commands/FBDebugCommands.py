@@ -215,9 +215,6 @@ class FBMethodBreakpointEnableCommand(fb.FBCommand):
 
     Examples:
 
-          #use `benable disabled` to switch all breakpoints to `enable`
-          benable disabled
-
           * benable ***address***
           benable 0x0000000104514dfc
           benable 0x183e23564
@@ -250,11 +247,9 @@ class FBMethodBreakpointDisableCommand(fb.FBCommand):
 
     Examples:
 
-          #use `bdisable disabled` to switch all breakpoints to `disable`
-          bdisable disabled
-
           * bdisable ***address***
           bdisable 0x0000000104514dfc
+          bdisable 0x183e23564
 
           #use `bdisable *filename*` to switch all breakpoints in this file to `disable`
           bdisable SUNNetService.m 
