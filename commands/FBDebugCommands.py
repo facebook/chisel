@@ -207,7 +207,7 @@ def switchBreakpointState(expression,on):
 
 class FBMethodBreakpointEnableCommand(fb.FBCommand):
   def name(self):
-    return 'rbenable'
+    return 'benable'
 
   def description(self):
     return """
@@ -215,19 +215,19 @@ class FBMethodBreakpointEnableCommand(fb.FBCommand):
 
     Examples:
 
-          #use `rbenable disabled` to switch all breakpoints to `enable`
-          rbenable disabled
+          #use `benable disabled` to switch all breakpoints to `enable`
+          benable disabled
 
-          * rbenable ***address***
-          rbenable 0x0000000104514dfc
-          rbenable 0x183e23564
+          * benable ***address***
+          benable 0x0000000104514dfc
+          benable 0x183e23564
 
-          #use `rbenable *filename*` to switch all breakpoints in this file to `enable`
-          rbenable SUNNetService.m 
+          #use `benable *filename*` to switch all breakpoints in this file to `enable`
+          benable SUNNetService.m 
 
-          #use `rbenable ***module(AppName)***` to switch all breakpoints in this module to `enable`
-          rbenable UIKit
-          rbenable Foundation 
+          #use `benable ***module(AppName)***` to switch all breakpoints in this module to `enable`
+          benable UIKit
+          benable Foundation 
 
     """
 
@@ -242,7 +242,7 @@ class FBMethodBreakpointEnableCommand(fb.FBCommand):
 
 class FBMethodBreakpointDisableCommand(fb.FBCommand):
   def name(self):
-    return 'rbdisable'
+    return 'bdisable'
 
   def description(self):
     return """
@@ -250,18 +250,18 @@ class FBMethodBreakpointDisableCommand(fb.FBCommand):
 
     Examples:
 
-          #use `rbdisable disabled` to switch all breakpoints to `disable`
-          rbdisable disabled
+          #use `bdisable disabled` to switch all breakpoints to `disable`
+          bdisable disabled
 
-          * rbdisable ***address***
-          rbdisable 0x0000000104514dfc
+          * bdisable ***address***
+          bdisable 0x0000000104514dfc
 
-          #use `rbdisable *filename*` to switch all breakpoints in this file to `disable`
-          rbdisable SUNNetService.m 
+          #use `bdisable *filename*` to switch all breakpoints in this file to `disable`
+          bdisable SUNNetService.m 
 
-          #use `rbdisable ***module(AppName)***` to switch all breakpoints in this module to `disable`
-          rbdisable UIKit
-          rbdisable Foundation 
+          #use `bdisable ***module(AppName)***` to switch all breakpoints in this module to `disable`
+          bdisable UIKit
+          bdisable Foundation 
 
     """
   def args(self):
