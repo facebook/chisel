@@ -197,9 +197,12 @@ def switchBreakpointState(expression,on):
 
   target = lldb.debugger.GetSelectedTarget()
   for breakpoint in target.breakpoint_iter():
+    if breakpoint.IsEnabled() != on and (expression_pattern.search(str(breakpoint))):
+      print str(breakpoint)
+      breakpoint.SetEnabled(on)      
     for location in breakpoint:
-      if expression_pattern.search('{}'.format(location)):
-        print location
+      if location.IsEnabled() != on and (expression_pattern.search(str(location)) or expression == hex(location.GetAddress()) ):
+        print str(location)
         location.SetEnabled(on)
 
 class FBMethodBreakpointEnableCommand(fb.FBCommand):
@@ -213,17 +216,18 @@ class FBMethodBreakpointEnableCommand(fb.FBCommand):
     Examples:
 
           #use `rbenable disabled` to switch all breakpoints to `enable`
-          benable disabled
+          rbenable disabled
 
           * rbenable ***address***
-          benable 0x0000000104514dfc
+          rbenable 0x0000000104514dfc
+          rbenable 0x183e23564
 
           #use `rbenable *filename*` to switch all breakpoints in this file to `enable`
-          benable SUNNetService.m 
+          rbenable SUNNetService.m 
 
           #use `rbenable ***module(AppName)***` to switch all breakpoints in this module to `enable`
-          benable UIKit
-          benable Foundation 
+          rbenable UIKit
+          rbenable Foundation 
 
     """
 
