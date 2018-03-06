@@ -40,6 +40,20 @@ class FBCommand:
   def run(self, arguments, option):
     pass
 
+def isSuccess(error):
+  # When evaluating a `void` expression, the returned value will indicate an
+  # error. This error is named: kNoResult. This error value does *not* mean
+  # there was a problem. This logic follows what the builtin `expression`
+  # command does. See: https://git.io/vwpjl (UserExpression.h)
+  kNoResult = 0x1001
+  return error.success or error.value == kNoResult
+
+def importModule(frame, module):
+  options = lldb.SBExpressionOptions()
+  options.SetLanguage(lldb.eLanguageTypeObjC)
+  value = frame.EvaluateExpression('@import ' + module, options)
+  return isSuccess(value.error)
+
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
 def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguageTypeObjC_plus_plus):
@@ -62,13 +76,15 @@ def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguag
   value = frame.EvaluateExpression(expression, options)
   error = value.GetError()
 
-  if printErrors and error.Fail():
-    # When evaluating a `void` expression, the returned value has an error code named kNoResult.
-    # This is not an error that should be printed. This follows what the built in `expression` command does.
-    # See: https://git.io/vwpjl (UserExpression.h)
-    kNoResult = 0x1001
-    if error.GetError() != kNoResult:
-      print error
+  # Retry if the error could be resolved by first importing UIKit.
+  if (error.type == lldb.eErrorTypeExpression and
+      error.value == lldb.eExpressionParseError and
+      importModule(frame, 'UIKit')):
+    value = frame.EvaluateExpression(expression, options)
+    error = value.GetError()
+
+  if printErrors and not isSuccess(error):
+    print error
 
   return value
 
