@@ -15,6 +15,8 @@ def lldbcommands():
     FBMethodBreakpointCommand(),
     FBMemoryWarningCommand(),
     FBFindInstancesCommand(),
+    FBMethodBreakpointEnableCommand(),
+    FBMethodBreakpointDisableCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -188,6 +190,83 @@ class FBMemoryWarningCommand(fb.FBCommand):
   def run(self, arguments, options):
     fb.evaluateEffect('[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]')
 
+
+def switchBreakpointState(expression,on):
+
+  expression_pattern = re.compile(r'{}'.format(expression),re.I)
+
+  target = lldb.debugger.GetSelectedTarget()
+  for breakpoint in target.breakpoint_iter():
+    if breakpoint.IsEnabled() != on and (expression_pattern.search(str(breakpoint))):
+      print str(breakpoint)
+      breakpoint.SetEnabled(on)      
+    for location in breakpoint:
+      if location.IsEnabled() != on and (expression_pattern.search(str(location)) or expression == hex(location.GetAddress()) ):
+        print str(location)
+        location.SetEnabled(on)
+
+class FBMethodBreakpointEnableCommand(fb.FBCommand):
+  def name(self):
+    return 'benable'
+
+  def description(self):
+    return """
+    Enable a set of breakpoints for a regular expression
+
+    Examples:
+
+          * benable ***address***
+          benable 0x0000000104514dfc
+          benable 0x183e23564
+
+          #use `benable *filename*` to switch all breakpoints in this file to `enable`
+          benable SUNNetService.m 
+
+          #use `benable ***module(AppName)***` to switch all breakpoints in this module to `enable`
+          benable UIKit
+          benable Foundation 
+
+    """
+
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', type='string', help='Expression to enable breakpoint'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    switchBreakpointState(expression,True)
+
+class FBMethodBreakpointDisableCommand(fb.FBCommand):
+  def name(self):
+    return 'bdisable'
+
+  def description(self):
+    return """
+    Disable a set of breakpoints for a regular expression
+
+    Examples:
+
+          * bdisable ***address***
+          bdisable 0x0000000104514dfc
+          bdisable 0x183e23564
+
+          #use `bdisable *filename*` to switch all breakpoints in this file to `disable`
+          bdisable SUNNetService.m 
+
+          #use `bdisable ***module(AppName)***` to switch all breakpoints in this module to `disable`
+          bdisable UIKit
+          bdisable Foundation 
+
+    """
+  def args(self):
+    return [
+      fb.FBCommandArgument(arg='expression', type='string', help='Expression to disable breakpoint'),
+    ]
+
+  def run(self, arguments, options):
+    expression = arguments[0]
+    switchBreakpointState(expression,False)
 
 class FBFindInstancesCommand(fb.FBCommand):
   def name(self):
