@@ -15,6 +15,7 @@ def lldbcommands():
     FBMethodBreakpointCommand(),
     FBMemoryWarningCommand(),
     FBFindInstancesCommand(),
+    FBSequenceCommand(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -298,3 +299,23 @@ class FBFindInstancesCommand(fb.FBCommand):
     source_dir = os.path.dirname(source_path)
     # ugh: ../.. is to back out of commands/, then back out of libexec/
     return os.path.join(source_dir, '..', '..', 'lib', 'Chisel.framework', 'Chisel')
+
+
+class FBSequenceCommand(fb.FBCommand):
+  def name(self):
+    return 'sequence'
+
+  def description(self):
+    return 'Run commands in sequence, stopping on any error.'
+
+  def lex(self, commandLine):
+    return commandLine.split(';')
+
+  def run(self, arguments, options):
+    interpreter = lldb.debugger.GetCommandInterpreter()
+    # The full unsplit command is in position 0.
+    sequence = arguments[1:]
+    for command in sequence:
+      interpreter.HandleCommand(command.strip(), self.context, self.result)
+      if not self.result.Succeeded():
+        break
