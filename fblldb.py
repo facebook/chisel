@@ -55,7 +55,9 @@ def loadCommand(module, command, directory, filename, extension):
     name=name))
 
 def makeRunCommand(command, filename):
-  def runCommand(debugger, input, result, dict):
+  def runCommand(debugger, input, exe_ctx, result, _):
+    command.result = result
+    command.context = exe_ctx
     splitInput = command.lex(input)
 
     # OptionParser will throw in the case where you want just one big long argument and no
