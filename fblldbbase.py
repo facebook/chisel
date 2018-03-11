@@ -110,7 +110,7 @@ def evaluateIntegerExpression(expression, printErrors=True):
     output = output[2:]
   elif output.startswith('\\'): # Or as \0 (Dec)
     output = output[1:]
-  return int(output, 16)
+  return int(output, 0)
 
 def evaluateBooleanExpression(expression, printErrors=True):
   return (int(evaluateIntegerExpression('(BOOL)(' + expression + ')', printErrors)) != 0)
