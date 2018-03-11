@@ -391,6 +391,10 @@ class FBHeapFromCommand(fb.FBCommand):
   def run(self, arguments, options):
     # This command is like `expression --synthetic-type false`, except only showing nested heap references.
     var = self.context.frame.var(arguments[0])
+    if not var or not var.IsValid():
+      self.result.SetError('No variable named "{}"'.format(arguments[0]))
+      return
+
     # Use the actual underlying structure of the variable, not the human friendly (synthetic) one.
     root = var.GetNonSyntheticValue()
 
