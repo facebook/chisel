@@ -17,6 +17,7 @@ def lldbcommands():
     FBFindInstancesCommand(),
     FBMethodBreakpointEnableCommand(),
     FBMethodBreakpointDisableCommand(),
+    FBHeapFromCommand(),
     FBSequenceCommand(),
   ]
 
