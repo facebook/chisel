@@ -422,7 +422,7 @@ class FBHeapFromCommand(fb.FBCommand):
 
     allocations = (addr for addr in pointers if isHeap(addr))
     for addr in allocations:
-        print >>self.result, '0x{addr:x}: {path}'.format(addr=addr, path=pointers[addr])
+        print >>self.result, '0x{addr:x} {path}'.format(addr=addr, path=pointers[addr])
     if not allocations:
         print >>self.result, "No heap addresses found"
 
