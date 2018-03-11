@@ -395,6 +395,13 @@ class FBSequenceCommand(fb.FBCommand):
     # The full unsplit command is in position 0.
     sequence = arguments[1:]
     for command in sequence:
-      interpreter.HandleCommand(command.strip(), self.context, self.result)
-      if not self.result.Succeeded():
-        break
+      object = lldb.SBCommandReturnObject()
+      interpreter.HandleCommand(command.strip(), self.context, object)
+      if object.GetOutput():
+        print >>self.result, object.GetOutput().strip()
+
+      if not object.Succeeded():
+        if object.GetError():
+          self.result.SetError(object.GetError())
+        self.result.SetStatus(object.GetStatus())
+        return
