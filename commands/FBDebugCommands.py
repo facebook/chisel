@@ -17,6 +17,7 @@ def lldbcommands():
     FBFindInstancesCommand(),
     FBMethodBreakpointEnableCommand(),
     FBMethodBreakpointDisableCommand(),
+    FBHeapFromCommand(),
     FBSequenceCommand(),
   ]
 
@@ -378,6 +379,52 @@ class FBFindInstancesCommand(fb.FBCommand):
     source_dir = os.path.dirname(source_path)
     # ugh: ../.. is to back out of commands/, then back out of libexec/
     return os.path.join(source_dir, '..', '..', 'lib', 'Chisel.framework', 'Chisel')
+
+
+class FBHeapFromCommand(fb.FBCommand):
+  def name(self):
+    return 'heapfrom'
+
+  def description(self):
+    return 'Show all nested heap pointers contained within a given variable.'
+
+  def run(self, arguments, options):
+    # This command is like `expression --synthetic-type false`, except only showing nested heap references.
+    var = self.context.frame.var(arguments[0])
+    if not var or not var.IsValid():
+      self.result.SetError('No variable named "{}"'.format(arguments[0]))
+      return
+
+    # Use the actual underlying structure of the variable, not the human friendly (synthetic) one.
+    root = var.GetNonSyntheticValue()
+
+    # Traversal of SBValue tree to get leaf nodes, which is where heap pointers will be.
+    leafs = []
+    queue = [root]
+    while queue:
+        node = queue.pop(0)
+        if node.num_children == 0:
+            leafs.append(node)
+        else:
+            queue += [node.GetChildAtIndex(i) for i in range(node.num_children)]
+
+    pointers = {}
+    for node in leafs:
+        # Assumption: an addr that has no value means a pointer.
+        if node.addr and not node.value:
+            pointers[node.load_addr] = node.path
+
+    options = lldb.SBExpressionOptions()
+    options.SetLanguage(lldb.eLanguageTypeC)
+    def isHeap(addr):
+        lookup = '(int)malloc_size({})'.format(addr)
+        return self.context.frame.EvaluateExpression(lookup, options).unsigned != 0
+
+    allocations = (addr for addr in pointers if isHeap(addr))
+    for addr in allocations:
+        print >>self.result, '0x{addr:x} {path}'.format(addr=addr, path=pointers[addr])
+    if not allocations:
+        print >>self.result, "No heap addresses found"
 
 
 class FBSequenceCommand(fb.FBCommand):
