@@ -35,6 +35,7 @@ def lldbcommands():
     FBPrintData(),
     FBPrintTargetActions(),
     FBPrintJSON(),
+    FBPrintSwiftJSON(),
     FBPrintAsCurl(),
     FBPrintToClipboard(),
     FBPrintObjectInObjc(),
@@ -491,6 +492,29 @@ class FBPrintJSON(fb.FBCommand):
     jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(id){} encoding:4]'.format(jsonData)).GetObjectDescription()
 
     print jsonString
+
+class FBPrintSwiftJSON(fb.FBCommand):
+    
+  def name(self):
+      return 'psjson'
+      
+  def description(self):
+      return 'Print JSON representation of Swift Dictionary or Swift Array object'
+          
+  def options(self):
+      return [ fb.FBCommandArgument(arg='plain', short='-p', long='--plain', boolean=True, default=False, help='Plain JSON') ]
+          
+  def args(self):
+      return [ fb.FBCommandArgument(arg='object', type='NSObject *', help='The NSDictionary or NSArray object to print') ]
+          
+  def run(self, arguments, options):
+      #Convert to NSObject first to allow for objc runtime to process it
+      objectToPrint = fb.evaluateInputExpression('{obj} as NSObject'.format(obj=arguments[0]))
+      pretty = 1 if options.plain is None else 0
+      jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:(NSObject*){} options:{} error:nil]'.format(objectToPrint, pretty))
+      jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(NSObject*){} encoding:4]'.format(jsonData)).GetObjectDescription()
+
+      print jsonString
 
 class FBPrintAsCurl(fb.FBCommand):
   def name(self):
