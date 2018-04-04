@@ -52,6 +52,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
     return [
       fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.'),
       fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default="0", help='Print only to a given depth. 0 indicates infinite depth.'),
+      fb.FBCommandArgument(short='-w', long='--window', arg='window', type='int', default="0", help='Specify the window to print a description of. Check which windows exist with "po (id)[[UIApplication sharedApplication] windows]".'),
     ]
 
   def args(self):
@@ -59,13 +60,19 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
 
   def run(self, arguments, options):
     maxDepth = int(options.depth)
+    window = int(options.window)
     isMac = runtimeHelpers.isMacintoshArch()
 
-    if arguments[0] == '__keyWindow_dynamic__':
-      arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
-
+    if window > 0:
+      if isMac:
+        arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:' + str(window) + '] contentView]'
+      else:
+        arguments[0] = '(id)[[[UIApplication sharedApplication] windows] objectAtIndex:' + str(window) + ']'
+    elif arguments[0] == '__keyWindow_dynamic__':
       if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]'
+      else:
+        arguments[0] = '(id)[[UIApplication sharedApplication] keyWindow]'
 
     if options.upwards:
       view = arguments[0]
