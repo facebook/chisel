@@ -436,23 +436,53 @@ class FBSequenceCommand(fb.FBCommand):
     return 'Run commands in sequence, stopping on any error.'
 
   def lex(self, commandLine):
-    return commandLine.split(';')
+    return [command.strip() for command in commandLine.split(';')]
 
   def run(self, arguments, options):
-    interpreter = lldb.debugger.GetCommandInterpreter()
-    # The full unsplit command is in position 0.
-    sequence = arguments[1:]
-    for command in sequence:
-      command = command.strip()
-      if not command:
-        continue
-      object = lldb.SBCommandReturnObject()
-      interpreter.HandleCommand(command, self.context, object)
-      if object.GetOutput():
-        print >>self.result, object.GetOutput().strip()
+    # arguments contains the raw command first, followed by the split commands.
+    if len(arguments) == 1:
+      return
+    commands = filter(None, arguments[1:])
 
-      if not object.Succeeded():
-        if object.GetError():
-          self.result.SetError(object.GetError())
-        self.result.SetStatus(object.GetStatus())
+    interpreter = lldb.debugger.GetCommandInterpreter()
+
+    # Complete one command before running the next one in the sequence. Disable
+    # async to do this. Also, save the current async value to restore it later.
+    async = lldb.debugger.GetAsync()
+    lldb.debugger.SetAsync(False)
+
+    for command in commands[:-1]:
+      success = self.run_command(interpreter, command)
+      if not success:
+        lldb.debugger.SetAsync(async)
         return
+
+    # Restore original async value.
+    lldb.debugger.SetAsync(async)
+
+    # If the last command is `continue`, call Continue() on the process
+    # instead. This is done because HandleCommand('continue') has strange
+    # behavior, while calling Continue() works as expected.
+    last = commands[-1]
+    if self.is_continue(interpreter, last)
+      self.context.process.Continue()
+    else:
+      self.run_command(interpreter, last)
+
+  def run_command(self, interpreter, command):
+    ret = lldb.SBCommandReturnObject()
+    interpreter.HandleCommand(command, ret)
+    if ret.GetOutput():
+      print >>self.result, ret.GetOutput().strip()
+
+    if ret.Succeeded():
+      return True
+
+    self.result.SetError(ret.GetError())
+    self.result.SetStatus(ret.GetStatus())
+    return False
+
+  def is_continue(interpreter, command):
+    ret = lldb.SBCommandReturnObject()
+    interpreter.ResolveCommand(command, ret)
+    return ret.GetOutput() == 'process continue'
