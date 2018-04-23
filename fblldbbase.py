@@ -150,7 +150,8 @@ RETURN_MACRO = """
     if (!IS_JSON_OBJ(ret)) {\
         (void)[NSException raise:@"Invalid RETURN argument" format:@""];\
     }\
-    NSDictionary *__dict = @{@"return":ret};\
+    NSMutableDictionary *__dict = (id)[NSMutableDictionary dictionary];\
+    [__dict setValue:(id)ret forKey:@"return"];\
     NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\
     NSString *__str = (id)[[NSString alloc] initWithData:__data encoding:4];\
     (char *)[__str UTF8String];})
