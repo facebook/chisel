@@ -144,8 +144,8 @@ def evaluateCStringExpression(expression, printErrors=True):
 RETURN_MACRO = """
 #define IS_JSON_OBJ(obj)\
     (obj != nil && ((bool)[NSJSONSerialization isValidJSONObject:obj] ||\
-    (bool)[obj isKindOfClass:[NSString class]] ||\
-    (bool)[obj isKindOfClass:[NSNumber class]]))
+    (bool)[obj isKindOfClass:(Class)[NSString class]] ||\
+    (bool)[obj isKindOfClass:(Class)[NSNumber class]]))
 #define RETURN(ret) ({\
     if (!IS_JSON_OBJ(ret)) {\
         (void)[NSException raise:@"Invalid RETURN argument" format:@""];\

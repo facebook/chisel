@@ -198,9 +198,9 @@ class FBPrintBlock(fb.FBCommand):
     NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
 
     // Get the list of classes and look for testPointerClass
-    NSInteger numClasses = objc_getClassList(NULL, 0);
+    NSInteger numClasses = (NSInteger)objc_getClassList(NULL, 0);
     Class *classesList = (Class*)malloc(sizeof(Class) * numClasses);
-    numClasses = objc_getClassList(classesList, numClasses);
+    numClasses = (NSInteger)objc_getClassList(classesList, numClasses);
 
     Class **blockVariables = real.variables;
     for (int i = 0; i < BLOCK_VARIABLES_COUNT; i++) {
@@ -219,9 +219,12 @@ class FBPrintBlock(fb.FBCommand):
                 break;
             }
         }
+        // __Block_byref_xxx may break this
+        /*
         if (!isClass) {
-            break;
+          break;
         }
+        */
 
         NSString *key = [NSString stringWithFormat:@"variables[%d]", i];
         NSString *value = [NSString stringWithFormat:@"%@", obj];
