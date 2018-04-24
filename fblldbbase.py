@@ -168,21 +168,23 @@ def check_expr(expr):
 # Example:
 #       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETURN(@{@"key": str});')
 #       {u'key': u'hello world'}
-def evaluate(expr):
+def evaluate(expr, printErrors=True):
   if not check_expr(expr):
     raise Exception("Invalid Expression, the last expression not include a RETURN family marco")
 
   command = "({" + RETURN_MACRO + '\n' + expr + "})"
-  ret = evaluateExpressionValue(command, printErrors=True)
+  ret = evaluateExpressionValue(command, printErrors=printErrors)
   if not ret.GetError().Success():
-    print ret.GetError()
+    if printErrors:
+      print ret.GetError()
     return None
   else:
     process = lldb.debugger.GetSelectedTarget().GetProcess()
     error = lldb.SBError()
     ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
     if not error.Success():
-      print error
+      if printErrors:
+        print error
       return None
     else:
       ret = json.loads(ret)
