@@ -139,12 +139,14 @@ class FBPrintBlock(fb.FBCommand):
     command = string.Template(tmpString).substitute(block=block)
     json = fb.evaluate(command)
 
-    variables_json = self.getBlockVariables(block)
+    # We assume that the maximum number of variables captured by the block is 10
+    max_var_count = 10
+    variables_json = self.getBlockVariables(block, max_var_count)
     if variables_json is not None:
       json.update(variables_json)
 
     variablesStrs = []
-    for i in range(10):
+    for i in range(max_var_count):
       varKey = 'variables['+str(i)+']'
       if varKey in json:
         variablesStrs.append(json[varKey])
@@ -162,9 +164,12 @@ class FBPrintBlock(fb.FBCommand):
     
     print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr + '   Variables : {\n'+variablesStr+'\n};'
 
-  def getBlockVariables(self, block, min_var_count=1, max_var_count=20):
+  def getBlockVariables(self, block, max_var_count):
     '''
     no __Block_byref_xxx
+    We must check the block's captured variables one by one here.
+    no reason, but it works.
+    We assume that the maximum number of variables captured by the block is max_var_count
     '''
 
     # http://clang.llvm.org/docs/Block-ABI-Apple.html
@@ -236,7 +241,7 @@ class FBPrintBlock(fb.FBCommand):
     RETURN(dict);
     """
     last_json = None
-    for i in range(min_var_count, max_var_count):
+    for i in range(1, max_var_count):
       command = string.Template(tmpString).substitute(block=block, variables_count=i)
       json = fb.evaluate(command, printErrors=False)
       if json is not None:
