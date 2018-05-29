@@ -20,7 +20,6 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 def lldbcommands():
   return [
     FBPrintViewHierarchyCommand(),
-    FBPrintWindow(),
     FBPrintCoreAnimationTree(),
     FBPrintViewControllerHierarchyCommand(),
     FBPrintIsExecutingInAnimationBlockCommand(),
@@ -93,19 +92,6 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         description += "\n"
         description = re.sub(r'%s.*\n' % (prefixToRemove), r'', description)
       print description
-
-class FBPrintWindow(fb.FBCommand):
-  def name(self):
-    return 'pwindow'
-
-  def description(self):
-    return 'Print the recursion description of a Window, specified by <windowIndex>. Check which windows exist with "po (id)[[UIApplication sharedApplication] windows]".'
-
-  def args(self):
-    return [ fb.FBCommandArgument(arg='windowIndex', type='int', help='The index of the Window to print a description of.', default=0) ]
-
-  def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po (id)[[[[UIApplication sharedApplication] windows] objectAtIndex:' + arguments[0] + '] recursiveDescription]')
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
   def name(self):
