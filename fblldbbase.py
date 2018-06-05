@@ -56,7 +56,7 @@ def importModule(frame, module):
 
 # evaluates expression in Objective-C++ context, so it will work even for
 # Swift projects
-def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguageTypeObjC_plus_plus):
+def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguageTypeObjC_plus_plus, tryAllThreads=False):
   frame = lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
   options = lldb.SBExpressionOptions()
   options.SetLanguage(language)
@@ -70,8 +70,8 @@ def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguag
   # Give evaluation more time.
   options.SetTimeoutInMicroSeconds(5000000) # 5s
 
-  # Chisel commands are not multithreaded.
-  options.SetTryAllThreads(False)
+  # Most Chisel commands are not multithreaded.
+  options.SetTryAllThreads(tryAllThreads)
 
   value = frame.EvaluateExpression(expression, options)
   error = value.GetError()

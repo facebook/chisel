@@ -34,7 +34,8 @@ def _showImage(commandForImage):
     else:
       raise
 
-  imageDataAddress = fb.evaluateObjectExpression('UIImagePNGRepresentation((id)' + commandForImage + ')')
+  toPNG = '(id)UIImagePNGRepresentation((id){})'.format(commandForImage)
+  imageDataAddress = fb.evaluateExpressionValue(toPNG, tryAllThreads=True).GetValue()
   imageBytesStartAddress = fb.evaluateExpression('(void *)[(id)' + imageDataAddress + ' bytes]')
   imageBytesLength = fb.evaluateExpression('(NSUInteger)[(id)' + imageDataAddress + ' length]')
 
