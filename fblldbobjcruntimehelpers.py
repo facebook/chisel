@@ -18,7 +18,7 @@ def objc_getClass(className):
   return value
 
 def object_getClass(object):
-  command = '(void*)object_getClass({})'.format(object)
+  command = '(void*)object_getClass((id){})'.format(object)
   value = fb.evaluateExpression(command)
   return value
 
@@ -31,6 +31,10 @@ def class_getSuperclass(klass):
   command = '(void*)class_getSuperclass((Class){})'.format(klass)
   value = fb.evaluateExpression(command)
   return value
+
+def class_isMetaClass(klass):
+    command = 'class_isMetaClass((Class){})'.format(klass)
+    return fb.evaluateBooleanExpression(command)
 
 def class_getInstanceMethod(klass, selector):
   command = '(void*)class_getInstanceMethod((Class){}, @selector({}))'.format(klass, selector)

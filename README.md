@@ -12,9 +12,22 @@ brew update
 brew install chisel
 ```
 
-Then follow the instructions that Homebrew displays to add chisel to your _~/.lldbinit_.
+if `.lldbinit` file doesn't exist you can create it & open it by tapping on the terminal
 
-Alternatively, download chisel and add the following line to your _~/.lldbinit_ file. If it doesn't exist, create it.
+ ```shell
+ touch .lldbinit 
+ open .lldbinit 
+```
+
+Then add the following line to your `~/.lldbinit` file.
+
+```Python
+# ~/.lldbinit
+...
+command script import /usr/local/opt/chisel/libexec/fblldb.py
+```
+
+Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
 
 ```Python
 # ~/.lldbinit
@@ -39,13 +52,13 @@ There are many commands; here's a few:
 |show/hide        |Show or hide the given view or layer. You don't even have to continue the process to see the changes!|Yes|Yes|
 |mask/unmask      |Overlay a view or layer with a transparent rectangle to visualize where it is.|Yes|No|
 |border/unborder  |Add a border to a view or layer to visualize where it is.|Yes|Yes|
-|caflush          |Flush the render server (equivalent to a "repaint" if no animations are in-flight).)|Yes|Yes|
+|caflush          |Flush the render server (equivalent to a "repaint" if no animations are in-flight).|Yes|Yes|
 |bmessage         |Set a symbolic breakpoint on the method of a class or the method of an instance without worrying which class in the hierarchy actually implements the method.|Yes|Yes|
 |wivar            |Set a watchpoint on an instance variable of an object.|Yes|Yes|
 |presponder       |Print the responder chain starting from the given object.|Yes|Yes|
 |...              |... and many more!|
 
-To see the list of **all** of the commands execute the help command in `LLDB`.
+To see the list of **all** of the commands execute the help command in `LLDB` or go to the [Wiki](https://github.com/facebook/chisel/wiki).
 
 ```Python
 (lldb) help

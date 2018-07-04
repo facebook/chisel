@@ -11,7 +11,6 @@ import lldb
 
 import imp
 import os
-import shlex
 
 from optparse import OptionParser
 
@@ -41,6 +40,7 @@ def loadCommandsInDirectory(commandsDirectory):
 def loadCommand(module, command, directory, filename, extension):
   func = makeRunCommand(command, os.path.join(directory, filename + extension))
   name = command.name()
+  helpText = command.description().strip().splitlines()[0] # first line of description
 
   key = filename + '_' + name
 
@@ -49,11 +49,16 @@ def loadCommand(module, command, directory, filename, extension):
   functionName = '__' + key
 
   lldb.debugger.HandleCommand('script ' + functionName + ' = sys.modules[\'' + module.__name__ + '\']._loadedFunctions[\'' + key + '\']')
-  lldb.debugger.HandleCommand('command script add -f ' + functionName + ' ' + name)
+  lldb.debugger.HandleCommand('command script add --help "{help}" --function {function} {name}'.format(
+    help=helpText.replace('"', '\\"'), # escape quotes
+    function=functionName,
+    name=name))
 
 def makeRunCommand(command, filename):
-  def runCommand(debugger, input, result, dict):
-    splitInput = shlex.split(input)
+  def runCommand(debugger, input, exe_ctx, result, _):
+    command.result = result
+    command.context = exe_ctx
+    splitInput = command.lex(input)
 
     # OptionParser will throw in the case where you want just one big long argument and no
     # options and you enter something that starts with '-' in the argument. e.g.:
@@ -120,7 +125,10 @@ def helpForCommand(command, filename):
   if command.args():
     help += '\n\nArguments:'
     for arg in command.args():
-      help += '\n  <' + arg.argName + '>; Type: ' + arg.argType + '; ' + arg.help
+      help += '\n  <' + arg.argName + '>; '
+      if arg.argType:
+        help += 'Type: ' + arg.argType + '; '
+      help += arg.help
       argSyntax += ' <' + arg.argName + '>'
 
   if command.options():
@@ -149,8 +157,6 @@ def helpForCommand(command, filename):
   help += '\n\nSyntax: ' + command.name() + optionSyntax + argSyntax
 
   help += '\n\nThis command is implemented as %s in %s.' % (command.__class__.__name__, filename)
-
-  help += '\n\n(LLDB adds the next line, sorry...)'
 
   return help
 

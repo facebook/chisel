@@ -55,7 +55,7 @@ class FBViewSearchCommand(fb.FBCommand):
   def run(self, arguments, options):
     print '\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n'
 
-    object = fb.evaluateObjectExpression(arguments[0])
+    object = fb.evaluateInputExpression(arguments[0])
     walker = FlickerWalker(object)
     walker.run()
 
@@ -105,13 +105,13 @@ class FlickerWalker:
         print '\nThere are no sibling views to this view.\n'
       self.setCurrentView(v, oldView)
     elif input == 'p':
-      recusionName = 'recursiveDescription'
+      recursionName = 'recursiveDescription'
       isMac = runtimeHelpers.isMacintoshArch()
 
       if isMac:
         recursionName = '_subtreeDescription'
 
-      lldb.debugger.HandleCommand('po [(id)' + oldView + ' ' + recusionName + ']')
+      print fb.describeObject('[(id){} {}]'.format(oldView, recursionName))
     else:
       print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
 
@@ -121,7 +121,7 @@ class FlickerWalker:
       if oldView:
         viewHelpers.unmaskView(oldView)
       viewHelpers.maskView(self.currentView, 'red', '0.4')
-      lldb.debugger.HandleCommand('po (id)' + view)
+      print fb.describeObject(view)
 
 def superviewOfView(view):
   superview = fb.evaluateObjectExpression('[' + view + ' superview]')

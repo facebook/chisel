@@ -10,12 +10,13 @@
 import lldb
 
 import fblldbbase as fb
+import fblldbobjcruntimehelpers as runtimeHelpers
 
 def flushCoreAnimationTransaction():
-  lldb.debugger.HandleCommand('expr (void)[CATransaction flush]')
+  fb.evaluateEffect('[CATransaction flush]')
 
 def setViewHidden(object, hidden):
-  lldb.debugger.HandleCommand('expr (void)[' + object + ' setHidden:' + str(int(hidden)) + ']')
+  fb.evaluateEffect('[{} setHidden:{}]'.format(object, int(hidden)))
   flushCoreAnimationTransaction()
 
 def maskView(viewOrLayer, color, alpha):
@@ -30,16 +31,16 @@ def maskView(viewOrLayer, color, alpha):
                                                size.GetChildMemberWithName('height').GetValue())
   mask = fb.evaluateExpression('(id)[[UIView alloc] initWithFrame:%s]' % rectExpr)
 
-  lldb.debugger.HandleCommand('expr (void)[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
-  lldb.debugger.HandleCommand('expr (void)[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
-  lldb.debugger.HandleCommand('expr (void)[%s addSubview:%s]' % (window, mask))
+  fb.evaluateEffect('[%s setTag:(NSInteger)%s]' % (mask, viewOrLayer))
+  fb.evaluateEffect('[%s setBackgroundColor:[UIColor %sColor]]' % (mask, color))
+  fb.evaluateEffect('[%s setAlpha:(CGFloat)%s]' % (mask, alpha))
+  fb.evaluateEffect('[%s addSubview:%s]' % (window, mask))
   flushCoreAnimationTransaction()
 
 def unmaskView(viewOrLayer):
   window = fb.evaluateExpression('(UIWindow *)[[UIApplication sharedApplication] keyWindow]')
   mask = fb.evaluateExpression('(UIView *)[%s viewWithTag:(NSInteger)%s]' % (window, viewOrLayer))
-  lldb.debugger.HandleCommand('expr (void)[%s removeFromSuperview]' % mask)
+  fb.evaluateEffect('[%s removeFromSuperview]' % mask)
   flushCoreAnimationTransaction()
 
 def convertPoint(x, y, fromViewOrLayer, toViewOrLayer):
@@ -54,6 +55,29 @@ def convertToLayer(viewOrLayer):
     return fb.evaluateExpression('(CALayer *)[%s layer]' % viewOrLayer)
   else:
     raise Exception('Argument must be a CALayer, UIView, or NSView.')
+
+def isUIView(obj):
+    return not runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % obj)
+
+def isNSView(obj):
+    return runtimeHelpers.isMacintoshArch() and fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % obj)
+
+def isView(obj):
+    return isUIView(obj) or isNSView(obj)
+
+# Generates a BFS of the views tree starting at the given view as root.
+# Yields a tuple of the current view in the tree and its level (view, level)
+def subviewsOfView(view):
+  views = [(view, 0)]
+  yield views[0]
+  while views:
+    (view, level) = views.pop(0)
+    subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
+    subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
+    for i in xrange(subviewsCount):
+      subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
+      views.append((subview, level+1))
+      yield (subview, level+1)
 
 def upwardsRecursiveDescription(view, maxDepth=0):
   if not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[UIView class]]' % view) and not fb.evaluateBooleanExpression('[(id)%s isKindOfClass:(Class)[NSView class]]' % view):
@@ -89,4 +113,4 @@ def upwardsRecursiveDescription(view, maxDepth=0):
   return builder
 
 def slowAnimation(speed=1):
-  lldb.debugger.HandleCommand('expr (void)[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)
+  fb.evaluateEffect('[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]' % speed)

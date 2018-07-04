@@ -1,0 +1,440 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7A04088C1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A04088A1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h */; };
+		7A04088D1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */; };
+		7A20C4B31DFDB8D200C89959 /* CHLPredicateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A20C4B11DFDB8D200C89959 /* CHLPredicateTools.h */; };
+		7A20C4B41DFDB8D200C89959 /* CHLPredicateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A20C4B21DFDB8D200C89959 /* CHLPredicateTools.m */; };
+		7ABD17951DF7F998006118F8 /* Chisel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ABD178B1DF7F998006118F8 /* Chisel.framework */; };
+		7ABD179A1DF7F998006118F8 /* ChiselTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ABD17991DF7F998006118F8 /* ChiselTests.m */; };
+		7ABD179C1DF7F998006118F8 /* Chisel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ABD178E1DF7F998006118F8 /* Chisel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7ABD17A71DF7F9FD006118F8 /* CHLAllocations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ABD17A51DF7F9FD006118F8 /* CHLAllocations.h */; };
+		7ABD17A81DF7F9FD006118F8 /* CHLAllocations.c in Sources */ = {isa = PBXBuildFile; fileRef = 7ABD17A61DF7F9FD006118F8 /* CHLAllocations.c */; };
+		7ABD17AB1DF7FCF9006118F8 /* CHLObjcInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ABD17A91DF7FCF9006118F8 /* CHLObjcInstances.h */; };
+		7ABD17AC1DF7FCF9006118F8 /* CHLObjcInstances.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ABD17AA1DF7FCF9006118F8 /* CHLObjcInstances.mm */; };
+		7ABD17AF1DF88520006118F8 /* zone_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ABD17AD1DF88520006118F8 /* zone_allocator.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7ABD17961DF7F998006118F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7ABD17821DF7F998006118F8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7ABD178A1DF7F998006118F8;
+			remoteInfo = Chisel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7A04088A1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLObjcInstanceCommands.h; sourceTree = "<group>"; };
+		7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CHLObjcInstanceCommands.mm; sourceTree = "<group>"; };
+		7A20C4B11DFDB8D200C89959 /* CHLPredicateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLPredicateTools.h; sourceTree = "<group>"; };
+		7A20C4B21DFDB8D200C89959 /* CHLPredicateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHLPredicateTools.m; sourceTree = "<group>"; };
+		7ABD178B1DF7F998006118F8 /* Chisel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Chisel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7ABD178E1DF7F998006118F8 /* Chisel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Chisel.h; sourceTree = "<group>"; };
+		7ABD178F1DF7F998006118F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7ABD17941DF7F998006118F8 /* ChiselTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChiselTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7ABD17991DF7F998006118F8 /* ChiselTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChiselTests.m; sourceTree = "<group>"; };
+		7ABD179B1DF7F998006118F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7ABD17A51DF7F9FD006118F8 /* CHLAllocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLAllocations.h; sourceTree = "<group>"; };
+		7ABD17A61DF7F9FD006118F8 /* CHLAllocations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CHLAllocations.c; sourceTree = "<group>"; };
+		7ABD17A91DF7FCF9006118F8 /* CHLObjcInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLObjcInstances.h; sourceTree = "<group>"; };
+		7ABD17AA1DF7FCF9006118F8 /* CHLObjcInstances.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CHLObjcInstances.mm; sourceTree = "<group>"; };
+		7ABD17AD1DF88520006118F8 /* zone_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zone_allocator.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7ABD17871DF7F998006118F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7ABD17911DF7F998006118F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ABD17951DF7F998006118F8 /* Chisel.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7ABD17811DF7F998006118F8 = {
+			isa = PBXGroup;
+			children = (
+				7ABD178D1DF7F998006118F8 /* Chisel */,
+				7ABD17981DF7F998006118F8 /* ChiselTests */,
+				7ABD178C1DF7F998006118F8 /* Products */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+		};
+		7ABD178C1DF7F998006118F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7ABD178B1DF7F998006118F8 /* Chisel.framework */,
+				7ABD17941DF7F998006118F8 /* ChiselTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7ABD178D1DF7F998006118F8 /* Chisel */ = {
+			isa = PBXGroup;
+			children = (
+				7ABD178E1DF7F998006118F8 /* Chisel.h */,
+				7ABD178F1DF7F998006118F8 /* Info.plist */,
+				7ABD17AD1DF88520006118F8 /* zone_allocator.h */,
+				7ABD17A51DF7F9FD006118F8 /* CHLAllocations.h */,
+				7ABD17A61DF7F9FD006118F8 /* CHLAllocations.c */,
+				7ABD17A91DF7FCF9006118F8 /* CHLObjcInstances.h */,
+				7ABD17AA1DF7FCF9006118F8 /* CHLObjcInstances.mm */,
+				7A04088A1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h */,
+				7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */,
+				7A20C4B11DFDB8D200C89959 /* CHLPredicateTools.h */,
+				7A20C4B21DFDB8D200C89959 /* CHLPredicateTools.m */,
+			);
+			path = Chisel;
+			sourceTree = "<group>";
+		};
+		7ABD17981DF7F998006118F8 /* ChiselTests */ = {
+			isa = PBXGroup;
+			children = (
+				7ABD17991DF7F998006118F8 /* ChiselTests.m */,
+				7ABD179B1DF7F998006118F8 /* Info.plist */,
+			);
+			path = ChiselTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7ABD17881DF7F998006118F8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ABD17A71DF7F9FD006118F8 /* CHLAllocations.h in Headers */,
+				7ABD179C1DF7F998006118F8 /* Chisel.h in Headers */,
+				7A20C4B31DFDB8D200C89959 /* CHLPredicateTools.h in Headers */,
+				7A04088C1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h in Headers */,
+				7ABD17AF1DF88520006118F8 /* zone_allocator.h in Headers */,
+				7ABD17AB1DF7FCF9006118F8 /* CHLObjcInstances.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		7ABD178A1DF7F998006118F8 /* Chisel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7ABD179F1DF7F998006118F8 /* Build configuration list for PBXNativeTarget "Chisel" */;
+			buildPhases = (
+				7ABD17861DF7F998006118F8 /* Sources */,
+				7ABD17871DF7F998006118F8 /* Frameworks */,
+				7ABD17881DF7F998006118F8 /* Headers */,
+				7ABD17891DF7F998006118F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Chisel;
+			productName = Chisel;
+			productReference = 7ABD178B1DF7F998006118F8 /* Chisel.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		7ABD17931DF7F998006118F8 /* ChiselTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7ABD17A21DF7F998006118F8 /* Build configuration list for PBXNativeTarget "ChiselTests" */;
+			buildPhases = (
+				7ABD17901DF7F998006118F8 /* Sources */,
+				7ABD17911DF7F998006118F8 /* Frameworks */,
+				7ABD17921DF7F998006118F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7ABD17971DF7F998006118F8 /* PBXTargetDependency */,
+			);
+			name = ChiselTests;
+			productName = ChiselTests;
+			productReference = 7ABD17941DF7F998006118F8 /* ChiselTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7ABD17821DF7F998006118F8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					7ABD178A1DF7F998006118F8 = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+					};
+					7ABD17931DF7F998006118F8 = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 7ABD17851DF7F998006118F8 /* Build configuration list for PBXProject "Chisel" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7ABD17811DF7F998006118F8;
+			productRefGroup = 7ABD178C1DF7F998006118F8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7ABD178A1DF7F998006118F8 /* Chisel */,
+				7ABD17931DF7F998006118F8 /* ChiselTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7ABD17891DF7F998006118F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7ABD17921DF7F998006118F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7ABD17861DF7F998006118F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ABD17A81DF7F9FD006118F8 /* CHLAllocations.c in Sources */,
+				7ABD17AC1DF7FCF9006118F8 /* CHLObjcInstances.mm in Sources */,
+				7A04088D1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm in Sources */,
+				7A20C4B41DFDB8D200C89959 /* CHLPredicateTools.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7ABD17901DF7F998006118F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7ABD179A1DF7F998006118F8 /* ChiselTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7ABD17971DF7F998006118F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7ABD178A1DF7F998006118F8 /* Chisel */;
+			targetProxy = 7ABD17961DF7F998006118F8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		7ABD179D1DF7F998006118F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		7ABD179E1DF7F998006118F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		7ABD17A01DF7F998006118F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Chisel/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.Chisel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+			};
+			name = Debug;
+		};
+		7ABD17A11DF7F998006118F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Chisel/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.Chisel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+			};
+			name = Release;
+		};
+		7ABD17A31DF7F998006118F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ChiselTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.ChiselTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		7ABD17A41DF7F998006118F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ChiselTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.ChiselTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7ABD17851DF7F998006118F8 /* Build configuration list for PBXProject "Chisel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7ABD179D1DF7F998006118F8 /* Debug */,
+				7ABD179E1DF7F998006118F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7ABD179F1DF7F998006118F8 /* Build configuration list for PBXNativeTarget "Chisel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7ABD17A01DF7F998006118F8 /* Debug */,
+				7ABD17A11DF7F998006118F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7ABD17A21DF7F998006118F8 /* Build configuration list for PBXNativeTarget "ChiselTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7ABD17A31DF7F998006118F8 /* Debug */,
+				7ABD17A41DF7F998006118F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7ABD17821DF7F998006118F8 /* Project object */;
+}

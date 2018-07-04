@@ -30,7 +30,10 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='view', type='UIView *', help='The view to print the Auto Layout trace for.', default='(id)[[UIApplication sharedApplication] keyWindow]') ]
 
   def run(self, arguments, options):
-    lldb.debugger.HandleCommand('po (id)[{} _autolayoutTrace]'.format(arguments[0]))
+    view = fb.evaluateInputExpression(arguments[0])
+    opt = fb.evaluateBooleanExpression('[UIView instancesRespondToSelector:@selector(_autolayoutTraceRecursively:)]')
+    traceCall = '_autolayoutTraceRecursively:1' if opt else '_autolayoutTrace'
+    print fb.describeObject('[{} {}]'.format(view, traceCall))
 
 
 def setBorderOnAmbiguousViewRecursive(view, width, color):
@@ -40,8 +43,8 @@ def setBorderOnAmbiguousViewRecursive(view, width, color):
   isAmbiguous = fb.evaluateBooleanExpression('(BOOL)[%s hasAmbiguousLayout]' % view)
   if isAmbiguous:
     layer = viewHelpers.convertToLayer(view)
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
-    lldb.debugger.HandleCommand('expr (void)[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
+    fb.evaluateEffect('[%s setBorderWidth:(CGFloat)%s]' % (layer, width))
+    fb.evaluateEffect('[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
 
   subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
   subviewsCount = fb.evaluateIntegerExpression('(int)[(id)%s count]' % subviews)

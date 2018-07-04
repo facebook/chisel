@@ -12,6 +12,32 @@ import lldb
 import fblldbbase as fb
 import fblldbobjcruntimehelpers as runtimeHelpers
 
+def presentViewController(viewController):
+  vc = '(%s)' % (viewController)
+  
+  if fb.evaluateBooleanExpression('%s != nil && ((BOOL)[(id)%s isKindOfClass:(Class)[UIViewController class]])' % (vc, vc)):
+    notPresented = fb.evaluateBooleanExpression('[%s presentingViewController] == nil' % vc)
+    
+    if notPresented:
+      fb.evaluateEffect('[[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:%s animated:YES completion:nil]' % vc)
+    else:
+      raise Exception('Argument is already presented')
+  else:
+    raise Exception('Argument must be a UIViewController')
+
+def dismissViewController(viewController):
+  vc = '(%s)' % (viewController)
+  
+  if fb.evaluateBooleanExpression('%s != nil && ((BOOL)[(id)%s isKindOfClass:(Class)[UIViewController class]])' % (vc, vc)):
+    isPresented = fb.evaluateBooleanExpression('[%s presentingViewController] != nil' % vc)
+    
+    if isPresented:
+      fb.evaluateEffect('[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]' % vc)
+    else:
+      raise Exception('Argument must be presented')
+  else:
+    raise Exception('Argument must be a UIViewController')
+
 def viewControllerRecursiveDescription(vc):
   return _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(fb.evaluateObjectExpression(vc), '', '', '')
 
