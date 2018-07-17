@@ -337,7 +337,8 @@ class FBFindInstancesCommand(fb.FBCommand):
 
   def loadChiselIfNecessary(self):
     target = lldb.debugger.GetSelectedTarget()
-    if target.module['Chisel']:
+    symbol_contexts = target.FindSymbols('PrintInstances', lldb.eSymbolTypeCode)
+    if any(ctx.symbol.IsValid() for ctx in symbol_contexts):
       return True
 
     path = self.chiselLibraryPath()
