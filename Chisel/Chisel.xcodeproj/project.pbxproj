@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		70D1EACB20FD9D4A004CDB3D /* Chisel_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D1EAC920FD9D4A004CDB3D /* Chisel_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		70D1EACF20FD9D82004CDB3D /* CHLPredicateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A20C4B21DFDB8D200C89959 /* CHLPredicateTools.m */; };
+		70D1EAD020FD9D85004CDB3D /* CHLObjcInstanceCommands.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */; };
+		70D1EAD120FD9D88004CDB3D /* CHLObjcInstances.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ABD17AA1DF7FCF9006118F8 /* CHLObjcInstances.mm */; };
+		70D1EAD220FD9D8C004CDB3D /* CHLAllocations.c in Sources */ = {isa = PBXBuildFile; fileRef = 7ABD17A61DF7F9FD006118F8 /* CHLAllocations.c */; };
 		7A04088C1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A04088A1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h */; };
 		7A04088D1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */; };
 		7A20C4B31DFDB8D200C89959 /* CHLPredicateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A20C4B11DFDB8D200C89959 /* CHLPredicateTools.h */; };
@@ -32,6 +37,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		70D1EAC720FD9D4A004CDB3D /* Chisel_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Chisel_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70D1EAC920FD9D4A004CDB3D /* Chisel_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Chisel_macOS.h; sourceTree = "<group>"; };
+		70D1EACA20FD9D4A004CDB3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A04088A1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLObjcInstanceCommands.h; sourceTree = "<group>"; };
 		7A04088B1DF9A2C7009C5BFA /* CHLObjcInstanceCommands.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CHLObjcInstanceCommands.mm; sourceTree = "<group>"; };
 		7A20C4B11DFDB8D200C89959 /* CHLPredicateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHLPredicateTools.h; sourceTree = "<group>"; };
@@ -50,6 +58,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		70D1EAC320FD9D4A004CDB3D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7ABD17871DF7F998006118F8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -68,11 +83,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		70D1EAC820FD9D4A004CDB3D /* Chisel-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				70D1EAC920FD9D4A004CDB3D /* Chisel_macOS.h */,
+				70D1EACA20FD9D4A004CDB3D /* Info.plist */,
+			);
+			path = "Chisel-macOS";
+			sourceTree = "<group>";
+		};
 		7ABD17811DF7F998006118F8 = {
 			isa = PBXGroup;
 			children = (
 				7ABD178D1DF7F998006118F8 /* Chisel */,
 				7ABD17981DF7F998006118F8 /* ChiselTests */,
+				70D1EAC820FD9D4A004CDB3D /* Chisel-macOS */,
 				7ABD178C1DF7F998006118F8 /* Products */,
 			);
 			indentWidth = 2;
@@ -83,6 +108,7 @@
 			children = (
 				7ABD178B1DF7F998006118F8 /* Chisel.framework */,
 				7ABD17941DF7F998006118F8 /* ChiselTests.xctest */,
+				70D1EAC720FD9D4A004CDB3D /* Chisel_macOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +143,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		70D1EAC420FD9D4A004CDB3D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70D1EACB20FD9D4A004CDB3D /* Chisel_macOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7ABD17881DF7F998006118F8 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -133,6 +167,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		70D1EAC620FD9D4A004CDB3D /* Chisel-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 70D1EACE20FD9D4A004CDB3D /* Build configuration list for PBXNativeTarget "Chisel-macOS" */;
+			buildPhases = (
+				70D1EAC220FD9D4A004CDB3D /* Sources */,
+				70D1EAC320FD9D4A004CDB3D /* Frameworks */,
+				70D1EAC420FD9D4A004CDB3D /* Headers */,
+				70D1EAC520FD9D4A004CDB3D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Chisel-macOS";
+			productName = "Chisel-macOS";
+			productReference = 70D1EAC720FD9D4A004CDB3D /* Chisel_macOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		7ABD178A1DF7F998006118F8 /* Chisel */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7ABD179F1DF7F998006118F8 /* Build configuration list for PBXNativeTarget "Chisel" */;
@@ -178,6 +230,10 @@
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
+					70D1EAC620FD9D4A004CDB3D = {
+						CreatedOnToolsVersion = 9.4.1;
+						ProvisioningStyle = Automatic;
+					};
 					7ABD178A1DF7F998006118F8 = {
 						CreatedOnToolsVersion = 8.1;
 						ProvisioningStyle = Automatic;
@@ -202,11 +258,19 @@
 			targets = (
 				7ABD178A1DF7F998006118F8 /* Chisel */,
 				7ABD17931DF7F998006118F8 /* ChiselTests */,
+				70D1EAC620FD9D4A004CDB3D /* Chisel-macOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		70D1EAC520FD9D4A004CDB3D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7ABD17891DF7F998006118F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -224,6 +288,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		70D1EAC220FD9D4A004CDB3D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70D1EAD120FD9D88004CDB3D /* CHLObjcInstances.mm in Sources */,
+				70D1EAD220FD9D8C004CDB3D /* CHLAllocations.c in Sources */,
+				70D1EAD020FD9D85004CDB3D /* CHLObjcInstanceCommands.mm in Sources */,
+				70D1EACF20FD9D82004CDB3D /* CHLPredicateTools.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7ABD17861DF7F998006118F8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -254,6 +329,83 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		70D1EACC20FD9D4A004CDB3D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Chisel-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.Chisel-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		70D1EACD20FD9D4A004CDB3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Chisel-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.Chisel-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 		7ABD179D1DF7F998006118F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -407,6 +559,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		70D1EACE20FD9D4A004CDB3D /* Build configuration list for PBXNativeTarget "Chisel-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				70D1EACC20FD9D4A004CDB3D /* Debug */,
+				70D1EACD20FD9D4A004CDB3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7ABD17851DF7F998006118F8 /* Build configuration list for PBXProject "Chisel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
