@@ -47,7 +47,7 @@ def setBorderOnAmbiguousViewRecursive(view, width, color):
     fb.evaluateEffect('[%s setBorderColor:(CGColorRef)[(id)[UIColor %sColor] CGColor]]' % (layer, color))
 
   subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
-  subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
+  subviewsCount = fb.evaluateIntegerExpression('(int)[(id)%s count]' % subviews)
   if subviewsCount > 0:
     for i in range(0, subviewsCount):
       subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
