@@ -146,17 +146,17 @@ RETURN_MACRO = """
     (obj != nil && ((bool)[NSJSONSerialization isValidJSONObject:obj] ||\
     (bool)[obj isKindOfClass:[NSString class]] ||\
     (bool)[obj isKindOfClass:[NSNumber class]]))
-#define RETURN(ret) ({\
+
+#define RETURN_JSON(ret) ({\
     if (!IS_JSON_OBJ(ret)) {\
         (void)[NSException raise:@"Invalid RETURN argument" format:@""];\
     }\
-    NSDictionary *__dict = @{@"return":ret};\
+    NSDictionary *__dict = @{(id)@"return":ret};\
     NSData *__data = (id)[NSJSONSerialization dataWithJSONObject:__dict options:0 error:NULL];\
     NSString *__str = (id)[[NSString alloc] initWithData:__data encoding:4];\
     (char *)[__str UTF8String];})
-#define RETURNCString(ret)\
-    ({NSString *___cstring_ret = [NSString stringWithUTF8String:ret];\
-    RETURN(___cstring_ret);})
+
+#define RETURN(ret) ret
 """
 
 def check_expr(expr):
@@ -176,16 +176,20 @@ def evaluate(expr):
   if not ret.GetError().Success():
     print ret.GetError()
     return None
+
+  isJson = expr.strip().split(';')[-2].find('RETURN_JSON') != -1
+  if not isJson:
+    return ret.GetValue()
+
+  process = lldb.debugger.GetSelectedTarget().GetProcess()
+  error = lldb.SBError()
+  ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
+  if not error.Success():
+    print error
+    return None
   else:
-    process = lldb.debugger.GetSelectedTarget().GetProcess()
-    error = lldb.SBError()
-    ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
-    if not error.Success():
-      print error
-      return None
-    else:
-      ret = json.loads(ret)
-      return ret['return']
+    ret = json.loads(ret)
+    return ret['return']
 
 def currentLanguage():
   return lldb.debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame().GetCompileUnit().GetLanguage()

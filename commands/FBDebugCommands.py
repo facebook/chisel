@@ -7,6 +7,7 @@ import fblldbobjcruntimehelpers as objc
 import sys
 import os
 import re
+import string
 
 def lldbcommands():
   return [
@@ -19,6 +20,7 @@ def lldbcommands():
     FBMethodBreakpointDisableCommand(),
     FBHeapFromCommand(),
     FBSequenceCommand(),
+    FBEvaluateFile(),
   ]
 
 class FBWatchInstanceVariableCommand(fb.FBCommand):
@@ -456,3 +458,42 @@ class FBSequenceCommand(fb.FBCommand):
           self.result.SetError(object.GetError())
         self.result.SetStatus(object.GetStatus())
         return
+
+class FBEvaluateFile(fb.FBCommand):
+  def name(self):
+    return 'evalfile'
+
+  def description(self):
+    return 'Run expression from a file.'
+
+  def args(self):
+    return [ fb.FBCommandArgument(arg='file path', type='string', help='file of source code') ]
+
+  def getValue(self, arguments, index):
+    if index >= len(arguments):
+      return None
+    return arguments[index]
+
+  def run(self, arguments, options):
+    file_path = arguments[0].split()[0]
+    if not file_path:
+      print "Error: Missing file"
+      return
+
+    file = open(file_path, 'r')
+    source = file.read()
+    source = string.Template(source).substitute(
+      arg0=self.getValue(arguments, 1),
+      arg1=self.getValue(arguments, 2),
+      arg2=self.getValue(arguments, 3),
+      arg3=self.getValue(arguments, 4)
+    )
+
+    ret = fb.evaluate(source)
+    # if ret is not an address then print it directly
+    if ret[0:2] != '0x':
+      print ret
+    else:
+      command = 'po {}'.format(ret)
+      lldb.debugger.HandleCommand(command)
+
