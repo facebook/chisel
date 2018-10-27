@@ -53,6 +53,8 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
       fb.FBCommandArgument(short='-u', long='--up', arg='upwards', boolean=True, default=False, help='Print only the hierarchy directly above the view, up to its window.'),
       fb.FBCommandArgument(short='-d', long='--depth', arg='depth', type='int', default="0", help='Print only to a given depth. 0 indicates infinite depth.'),
       fb.FBCommandArgument(short='-w', long='--window', arg='window', type='int', default="0", help='Specify the window to print a description of. Check which windows exist with "po (id)[[UIApplication sharedApplication] windows]".'),
+      fb.FBCommandArgument(short='-s', long='--short', arg='short', boolean=True, default=False, help='Print a short description of the view'),
+      fb.FBCommandArgument(short='-m', long='--medium', arg='medium', boolean=True, default=False, help='Print a medium description of the view')
     ]
 
   def args(self):
@@ -92,6 +94,14 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         prefixToRemove = separator * maxDepth + " "
         description += "\n"
         description = re.sub(r'%s.*\n' % (prefixToRemove), r'', description)
+
+      if options.short:
+        toRemove = ":.*(?:\n|$)"
+        description = re.sub(toRemove, r'>\n', description)
+      elif options.medium:
+        toRemove = ";.*(?:\n|$)"
+        description = re.sub(toRemove, r'>\n', description)
+
       print description
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
