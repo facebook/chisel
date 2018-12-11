@@ -48,7 +48,7 @@ def loadCommand(module, command, directory, filename, extension):
 
   functionName = '__' + key
 
-  lldb.debugger.HandleCommand('script ' + functionName + ' = sys.modules[\'' + module.__name__ + '\']._loadedFunctions[\'' + key + '\']')
+  lldb.debugger.HandleCommand('script import sys; ' + functionName + ' = sys.modules[\'' + module.__name__ + '\']._loadedFunctions[\'' + key + '\']')
   lldb.debugger.HandleCommand('command script add --help "{help}" --function {function} {name}'.format(
     help=helpText.replace('"', '\\"'), # escape quotes
     function=functionName,
