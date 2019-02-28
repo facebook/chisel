@@ -11,6 +11,7 @@ import lldb
 
 import imp
 import os
+import sys
 
 from optparse import OptionParser
 
