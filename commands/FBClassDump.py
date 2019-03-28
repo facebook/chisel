@@ -134,7 +134,7 @@ class FBPrintBlock(fb.FBCommand):
       [dict setObject:types forKey:@"signature"];
     }
     
-    RETURN(dict);
+    RETURN_JSON(dict);
     """
     command = string.Template(tmpString).substitute(block=block)
     json = fb.evaluate(command)
@@ -260,7 +260,7 @@ def getMethods(klass):
       
       [result addObject:m];
     }
-    RETURN(result);
+    RETURN_JSON(result);
   """
   command = string.Template(tmpString).substitute(cls=klass)
   methods = fb.evaluate(command)
@@ -302,10 +302,10 @@ def getProperties(klass):
           NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
           
           char *name = (char *)property_getName(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:@"name"];
+          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:(id)@"name"];
           
           char *attrstr = (char *)property_getAttributes(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:@"attributes_string"];
+          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:(id)@"attributes_string"];
           
           NSMutableDictionary *attrsDict = (id)[NSMutableDictionary dictionary];
           unsigned int pcount;
@@ -313,13 +313,13 @@ def getProperties(klass):
           for (int i = 0; i < pcount; i++) {
               NSString *name = (id)[NSString stringWithUTF8String:(char *)attrs[i].name];
               NSString *value = (id)[NSString stringWithUTF8String:(char *)attrs[i].value];
-              [attrsDict setObject:value forKey:name];
+              [attrsDict setObject:value forKey:(id)name];
           }
-          [dict setObject:attrsDict forKey:@"attributes"];
+          [dict setObject:attrsDict forKey:(id)@"attributes"];
           
           [result addObject:dict];
       }
-      RETURN(result);
+      RETURN_JSON(result);
     """
   command = string.Template(tmpString).substitute(cls=klass)
   propsJson = fb.evaluate(command)
