@@ -13,7 +13,7 @@ import fblldbbase as fb
 def lldbcommands():
   return [ 
     ImportUIKitModule()
-    ]
+  ]
   
 class ImportUIKitModule(fb.FBCommand):
   def name(self):
