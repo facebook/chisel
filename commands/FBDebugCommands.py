@@ -464,7 +464,7 @@ class FBSequenceCommand(fb.FBCommand):
     # instead. This is done because HandleCommand('continue') has strange
     # behavior, while calling Continue() works as expected.
     last = commands[-1]
-    if self.is_continue(interpreter, last)
+    if self.is_continue(interpreter, last):
       self.context.process.Continue()
     else:
       self.run_command(interpreter, last)
