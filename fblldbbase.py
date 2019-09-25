@@ -84,7 +84,7 @@ def evaluateExpressionValue(expression, printErrors=True, language=lldb.eLanguag
     error = value.GetError()
 
   if printErrors and not isSuccess(error):
-    print error
+    print(error)
 
   return value
 
@@ -100,7 +100,7 @@ def evaluateInputExpression(expression, printErrors=True):
   error = value.GetError()
 
   if printErrors and error.Fail():
-    print error
+    print(error)
 
   return value.GetValue()
 
@@ -137,7 +137,7 @@ def evaluateCStringExpression(expression, printErrors=True):
     return ret
   else:
     if printErrors:
-      print error
+      print(error)
     return None
 
 
@@ -174,14 +174,14 @@ def evaluate(expr):
   command = "({" + RETURN_MACRO + '\n' + expr + "})"
   ret = evaluateExpressionValue(command, printErrors=True)
   if not ret.GetError().Success():
-    print ret.GetError()
+    print(ret.GetError())
     return None
   else:
     process = lldb.debugger.GetSelectedTarget().GetProcess()
     error = lldb.SBError()
     ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
     if not error.Success():
-      print error
+      print(error)
       return None
     else:
       ret = json.loads(ret)

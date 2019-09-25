@@ -43,7 +43,7 @@ def _showImage(commandForImage):
   length = int(imageBytesLength)
 
   if not (address or length):
-    print 'Could not get image data.'
+    print ('Could not get image data.')
     return
 
   process = lldb.debugger.GetSelectedTarget().GetProcess()
@@ -51,7 +51,7 @@ def _showImage(commandForImage):
   mem = process.ReadMemory(address, length, error)
 
   if error is not None and str(error) != 'success':
-    print error
+    print (error)
   else:
     imgFile = open(imagePath, 'wb')
     imgFile.write(mem)
@@ -64,7 +64,7 @@ def _colorIsCGColorRef(color):
   result = fb.evaluateExpressionValue('(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()'.format(color=color))
 
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    print "got error: {}".format(result)
+    print ("got error: {}".format(result))
     return False
   else:
     isCFColor = result.GetValueAsUnsigned() != 0
@@ -89,8 +89,8 @@ def _showColor(color):
 
     result = fb.evaluateExpressionValue('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
     if result.GetError() is not None and str(result.GetError()) != 'success':
-      print "got error {}".format(result)
-      print result.GetError()
+      print ("got error {}".format(result))
+      print (result.GetError())
     else:
       image = result.GetValue()
       _showImage(image)
@@ -104,7 +104,7 @@ def _showLayer(layer):
   width = float(fb.evaluateExpression('(CGFloat)(' + size + '.width)'))
   height = float(fb.evaluateExpression('(CGFloat)(' + size + '.height)'))
   if width == 0.0 or height == 0.0:
-    print 'Nothing to see here - the size of this element is {} x {}.'.format(width, height)
+    print ('Nothing to see here - the size of this element is {} x {}.'.format(width, height))
     return
 
   fb.evaluateEffect('UIGraphicsBeginImageContextWithOptions(' + size + ', NO, 0.0)')
@@ -112,7 +112,7 @@ def _showLayer(layer):
 
   result = fb.evaluateExpressionValue('(UIImage *)UIGraphicsGetImageFromCurrentImageContext()')
   if result.GetError() is not None and str(result.GetError()) != 'success':
-    print result.GetError()
+    print (result.GetError())
   else:
     image = result.GetValue()
     _showImage(image)
@@ -159,11 +159,11 @@ def _visualize(target):
       if _dataIsImage(target):
         _showImage('(id)[UIImage imageWithData:' + target + ']')
       elif _dataIsString(target):
-        print fb.describeObject('[[NSString alloc] initWithData:' + target + ' encoding:4]')
+        print (fb.describeObject('[[NSString alloc] initWithData:' + target + ' encoding:4]'))
       else:
-        print 'Data isn\'t an image and isn\'t a string.'
+        print ('Data isn\'t an image and isn\'t a string.')
     else:
-      print '{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.'.format(objectHelpers.className(target))
+      print ('{} isn\'t supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.'.format(objectHelpers.className(target)))
 
 class FBVisualizeCommand(fb.FBCommand):
   def name(self):
