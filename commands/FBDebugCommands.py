@@ -7,6 +7,8 @@ import fblldbobjcruntimehelpers as objc
 import sys
 import os
 import re
+# Can be removed when Python 2 support is removed.
+from __future__ import print_function
 
 def lldbcommands():
   return [
