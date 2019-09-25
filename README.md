@@ -142,4 +142,4 @@ Developing commands, whether for local use or contributing to `Chisel` directly,
 Please contribute any generic commands that you make. If it helps you then it will likely help many others! :D See `CONTRIBUTING.md` to learn how to contribute.
 
 ## License
-`Chisel` is BSD-licensed. See `LICENSE`.
+`Chisel` is MIT-licensed. See `LICENSE`.
