@@ -41,13 +41,13 @@ class FBXCPrintDebugDescription(fb.FBCommand):
       element = 'XCUIApplication()' if language == lldb.eLanguageTypeSwift else '(XCUIApplication *)[[XCUIApplication alloc] init]'
 
     if language == lldb.eLanguageTypeSwift:
-      print fb.evaluateExpressionValue("{}.debugDescription".format(element), language=language) \
+      print (fb.evaluateExpressionValue("{}.debugDescription".format(element), language=language) \
         .GetObjectDescription() \
         .replace("\\n", "\n") \
         .replace("\\'", "'") \
-        .strip(' "\n\t')
+        .strip(' "\n\t'))
     else:
-      print fb.evaluateExpressionValue("[{} debugDescription]".format(element)).GetObjectDescription()
+      print (fb.evaluateExpressionValue("[{} debugDescription]".format(element)).GetObjectDescription())
 
 
 class FBXCPrintTree(fb.FBCommand):
@@ -85,7 +85,7 @@ class FBXCPrintTree(fb.FBCommand):
 
     # Print tree for snapshot element
     snapshot_object = XCElementSnapshot(snapshot, language=language)
-    print snapshot_object.tree().hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame)
+    print (snapshot_object.tree().hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame))
 
 
 class FBXCPrintObject(fb.FBCommand):
@@ -116,7 +116,7 @@ class FBXCPrintObject(fb.FBCommand):
 
     # Print details of snapshot element
     snapshot_object = XCElementSnapshot(snapshot, language=language)
-    print snapshot_object.detail_summary()
+    print (snapshot_object.detail_summary())
 
 
 class FBXCNoId(fb.FBCommand):
@@ -157,9 +157,9 @@ class FBXCNoId(fb.FBCommand):
     snapshot_object = XCElementSnapshot(snapshot, language=language)
     elements = snapshot_object.find_missing_identifiers(status_bar=options.status_bar)
     if elements is not None:
-      print elements.hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame)
+      print (elements.hierarchy_text(pointer=options.pointer, trait=options.trait, frame=options.frame))
     else:
-      print "Couldn't found elements without identifier"
+      print ("Couldn't found elements without identifier")
 
 
 def take_snapshot(element):
