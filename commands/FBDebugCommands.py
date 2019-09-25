@@ -423,9 +423,9 @@ class FBHeapFromCommand(fb.FBCommand):
 
     allocations = (addr for addr in pointers if isHeap(addr))
     for addr in allocations:
-        print('0x{addr:x} {path}'.format(addr=addr, path=pointers[addr]))
+        print('0x{addr:x} {path}'.format(addr=addr, path=pointers[addr]), file=self.result)
     if not allocations:
-        print("No heap addresses found")
+        print("No heap addresses found", file=self.result)
 
 
 class FBSequenceCommand(fb.FBCommand):
@@ -473,7 +473,7 @@ class FBSequenceCommand(fb.FBCommand):
     ret = lldb.SBCommandReturnObject()
     interpreter.HandleCommand(command, ret)
     if ret.GetOutput():
-      print(ret.GetOutput().strip())
+      print(ret.GetOutput().strip(), file=self.result)
 
     if ret.Succeeded():
       return True
