@@ -33,7 +33,7 @@ class FBPrintInvocation(fb.FBCommand):
     target = lldb.debugger.GetSelectedTarget()
 
     if not re.match(r'.*i386.*', target.GetTriple()):
-      print 'Only x86 is currently supported (32-bit iOS Simulator or Mac OS X).'
+      print('Only x86 is currently supported (32-bit iOS Simulator or Mac OS X).')
       return
 
     thread = target.GetProcess().GetSelectedThread()
@@ -41,13 +41,13 @@ class FBPrintInvocation(fb.FBCommand):
     if options.all:
       for frame in thread:
         printInvocationForFrame(frame)
-        print '---------------------------------'
+        print('---------------------------------')
     else:
       frame = thread.GetSelectedFrame()
       printInvocationForFrame(frame)
 
 def printInvocationForFrame(frame):
-  print frame
+  print(frame)
 
   symbolName = frame.GetSymbol().GetName()
   if not re.match(r'[-+]\s*\[.*\]', symbolName):
@@ -60,7 +60,7 @@ def printInvocationForFrame(frame):
   signatureValue = fb.evaluateExpressionValue('(id)' + commandForSignature)
 
   if signatureValue.GetError() is not None and str(signatureValue.GetError()) != 'success':
-    print "My sincerest apologies. I couldn't find a method signature for the selector."
+    print("My sincerest apologies. I couldn't find a method signature for the selector.")
     return
 
   signature = signatureValue.GetValue()
@@ -72,7 +72,7 @@ def printInvocationForFrame(frame):
   if invocation:
     prettyPrintInvocation(frame, invocation)
   else:
-    print frame
+    print(frame)
 
 def stackStartAddressInSelectedFrame(frame):
   # Determine if the %ebp register has already had the stack register pushed into it (always the first instruction)
@@ -104,11 +104,11 @@ def prettyPrintInvocation(frame, invocation):
   description = fb.evaluateExpressionValue('(id)' + invocation).GetObjectDescription()
   argDescriptions = description.splitlines(True)[4:]
 
-  print 'NSInvocation: ' + invocation
-  print 'self: ' + fb.evaluateExpression('(id)' + object)
+  print('NSInvocation: ' + invocation)
+  print('self: ' + fb.evaluateExpression('(id)' + object))
 
   if len(argDescriptions) > 0:
-    print '\n' + str(len(argDescriptions)) + ' Arguments:' if len(argDescriptions) > 1 else '\nArgument:'
+    print('\n' + str(len(argDescriptions)) + ' Arguments:' if len(argDescriptions) > 1 else '\nArgument:')
 
     index = 2
     for argDescription in argDescriptions:
@@ -122,11 +122,11 @@ def prettyPrintInvocation(frame, invocation):
       readableString = argumentAsString(frame, address, encoding)
 
       if readableString:
-        print readableString
+        print(readableString)
       else:
         if encoding[0] == '{':
           encoding = encoding[1:]
-        print (hex(address) + ', address of ' + encoding + ' ' + description).strip()
+        print((hex(address) + ', address of ' + encoding + ' ' + description).strip())
 
       index += 1
 

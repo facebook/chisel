@@ -53,7 +53,7 @@ class FBViewSearchCommand(fb.FBCommand):
     return [ fb.FBCommandArgument(arg='view', type='UIView*', help='The view to border.') ]
 
   def run(self, arguments, options):
-    print '\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n'
+    print('\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n')
 
     object = fb.evaluateInputExpression(arguments[0])
     walker = FlickerWalker(object)
@@ -80,29 +80,29 @@ class FlickerWalker:
       cmd = 'echo %s | tr -d "\n" | pbcopy' % oldView
       os.system(cmd)
 
-      print '\nI hope ' + oldView + ' was what you were looking for. I put it on your clipboard.'
+      print('\nI hope ' + oldView + ' was what you were looking for. I put it on your clipboard.')
       viewHelpers.unmaskView(oldView)
       self.keepRunning = False
 
     elif input == 'w':
       v = superviewOfView(self.currentView)
       if not v:
-        print 'There is no superview. Where are you trying to go?!'
+        print('There is no superview. Where are you trying to go?!')
       self.setCurrentView(v, oldView)
     elif input == 's':
       v = firstSubviewOfView(self.currentView)
       if not v:
-        print '\nThe view has no subviews.\n'
+        print('\nThe view has no subviews.\n')
       self.setCurrentView(v, oldView)
     elif input == 'd':
       v = nthSiblingOfView(self.currentView, -1)
       if v == oldView:
-        print '\nThere are no sibling views to this view.\n'
+        print('\nThere are no sibling views to this view.\n')
       self.setCurrentView(v, oldView)
     elif input == 'a':
       v = nthSiblingOfView(self.currentView, 1)
       if v == oldView:
-        print '\nThere are no sibling views to this view.\n'
+        print('\nThere are no sibling views to this view.\n')
       self.setCurrentView(v, oldView)
     elif input == 'p':
       recursionName = 'recursiveDescription'
@@ -111,9 +111,9 @@ class FlickerWalker:
       if isMac:
         recursionName = '_subtreeDescription'
 
-      print fb.describeObject('[(id){} {}]'.format(oldView, recursionName))
+      print(fb.describeObject('[(id){} {}]'.format(oldView, recursionName)))
     else:
-      print '\nI really have no idea what you meant by \'' + input + '\'... =\\\n'
+      print('\nI really have no idea what you meant by \'' + input + '\'... =\\\n')
 
   def setCurrentView(self, view, oldView=None):
     if view:
@@ -121,7 +121,7 @@ class FlickerWalker:
       if oldView:
         viewHelpers.unmaskView(oldView)
       viewHelpers.maskView(self.currentView, 'red', '0.4')
-      print fb.describeObject(view)
+      print(fb.describeObject(view))
 
 def superviewOfView(view):
   superview = fb.evaluateObjectExpression('[' + view + ' superview]')

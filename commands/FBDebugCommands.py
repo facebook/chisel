@@ -53,9 +53,9 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
     watchpoint = lldb.debugger.GetSelectedTarget().WatchAddress(objectAddress + ivarOffset, ivarSize, False, True, error)
 
     if error.Success():
-      print 'Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID())
+      print('Remember to delete the watchpoint using: watchpoint delete {}'.format(watchpoint.GetID()))
     else:
-      print 'Could not create the watchpoint: {}'.format(error.GetCString())
+      print('Could not create the watchpoint: {}'.format(error.GetCString()))
 
 class FBFrameworkAddressBreakpointCommand(fb.FBCommand):
   def name(self):
@@ -103,12 +103,12 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     match = methodPattern.match(expression)
 
     if not match:
-      print 'Failed to parse expression. Do you even Objective-C?!'
+      print('Failed to parse expression. Do you even Objective-C?!')
       return
 
     expressionForSelf = objc.functionPreambleExpressionForSelf()
     if not expressionForSelf:
-      print 'Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch)
+      print('Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch))
       return
 
     methodTypeCharacter = match.group('scope')
@@ -134,7 +134,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     targetClass = fb.evaluateObjectExpression('[{} class]'.format(targetObject), False)
 
     if not targetClass or int(targetClass, 0) == 0:
-      print 'Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression)
+      print('Couldn\'t find a class from the expression "{}". Did you typo?'.format(classNameOrExpression))
       return
 
     if methodIsClassMethod:
@@ -150,7 +150,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
         nextClass = objc.class_getSuperclass(nextClass)
 
     if not found:
-      print 'There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector)
+      print('There doesn\'t seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?'.format(selector))
       return
 
     breakpointClassName = objc.class_getName(nextClass)
@@ -162,7 +162,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
     else:
       breakpointCondition = '(void*){} == {}'.format(expressionForSelf, targetObject)
 
-    print 'Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition)
+    print('Setting a breakpoint at {} with condition {}'.format(breakpointFullName, breakpointCondition))
 
     if category:
       lldb.debugger.HandleCommand('breakpoint set --skip-prologue false --fullname "{}" --condition "{}"'.format(breakpointFullName, breakpointCondition))
@@ -200,11 +200,11 @@ def switchBreakpointState(expression,on):
   target = lldb.debugger.GetSelectedTarget()
   for breakpoint in target.breakpoint_iter():
     if breakpoint.IsEnabled() != on and (expression_pattern.search(str(breakpoint))):
-      print str(breakpoint)
+      print(str(breakpoint))
       breakpoint.SetEnabled(on)      
     for location in breakpoint:
       if location.IsEnabled() != on and (expression_pattern.search(str(location)) or expression == hex(location.GetAddress()) ):
-        print str(location)
+        print(str(location))
         location.SetEnabled(on)
 
 class FBMethodBreakpointEnableCommand(fb.FBCommand):
@@ -325,7 +325,7 @@ class FBFindInstancesCommand(fb.FBCommand):
       return
 
     if len(arguments) == 0 or not arguments[0].strip():
-      print 'Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`'
+      print('Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`')
       return
 
     query = arguments[0]
@@ -343,7 +343,7 @@ class FBFindInstancesCommand(fb.FBCommand):
 
     path = self.chiselLibraryPath()
     if not os.path.exists(path):
-      print 'Chisel library missing: ' + path
+      print('Chisel library missing: ' + path)
       return False
 
     module = fb.evaluateExpressionValue('(void*)dlopen("{}", 2)'.format(path))
@@ -356,17 +356,17 @@ class FBFindInstancesCommand(fb.FBCommand):
     error = fb.evaluateExpressionValue('(char*)dlerror()')
     if errno == 50:
       # KERN_CODESIGN_ERROR from <mach/kern_return.h>
-      print 'Error loading Chisel: Code signing failure; Must re-run codesign'
+      print('Error loading Chisel: Code signing failure; Must re-run codesign')
     elif error.unsigned != 0:
-      print 'Error loading Chisel: ' + error.summary
+      print('Error loading Chisel: ' + error.summary)
     elif errno != 0:
       error = fb.evaluateExpressionValue('(char*)strerror({})'.format(errno))
       if error.unsigned != 0:
-        print 'Error loading Chisel: ' + error.summary
+        print('Error loading Chisel: ' + error.summary)
       else:
-        print 'Error loading Chisel (errno {})'.format(errno)
+        print('Error loading Chisel (errno {})'.format(errno))
     else:
-      print 'Unknown error loading Chisel'
+      print('Unknown error loading Chisel')
 
     return False
 
@@ -423,9 +423,9 @@ class FBHeapFromCommand(fb.FBCommand):
 
     allocations = (addr for addr in pointers if isHeap(addr))
     for addr in allocations:
-        print >>self.result, '0x{addr:x} {path}'.format(addr=addr, path=pointers[addr])
+        print('0x{addr:x} {path}'.format(addr=addr, path=pointers[addr]))
     if not allocations:
-        print >>self.result, "No heap addresses found"
+        print("No heap addresses found")
 
 
 class FBSequenceCommand(fb.FBCommand):
@@ -448,17 +448,17 @@ class FBSequenceCommand(fb.FBCommand):
 
     # Complete one command before running the next one in the sequence. Disable
     # async to do this. Also, save the current async value to restore it later.
-    async = lldb.debugger.GetAsync()
+    asyncFlag = lldb.debugger.GetAsync()
     lldb.debugger.SetAsync(False)
 
     for command in commands[:-1]:
       success = self.run_command(interpreter, command)
       if not success:
-        lldb.debugger.SetAsync(async)
+        lldb.debugger.SetAsync(asyncFlag)
         return
 
     # Restore original async value.
-    lldb.debugger.SetAsync(async)
+    lldb.debugger.SetAsync(asyncFlag)
 
     # If the last command is `continue`, call Continue() on the process
     # instead. This is done because HandleCommand('continue') has strange
@@ -473,7 +473,7 @@ class FBSequenceCommand(fb.FBCommand):
     ret = lldb.SBCommandReturnObject()
     interpreter.HandleCommand(command, ret)
     if ret.GetOutput():
-      print >>self.result, ret.GetOutput().strip()
+      print(ret.GetOutput().strip())
 
     if ret.Succeeded():
       return True

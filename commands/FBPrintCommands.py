@@ -80,9 +80,9 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
       view = arguments[0]
       description = viewHelpers.upwardsRecursiveDescription(view, maxDepth)
       if description:
-        print description
+        print(description)
       else:
-        print 'Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.'
+        print('Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression.')
     else:
       printingMethod = 'recursiveDescription'
       if isMac:
@@ -102,7 +102,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
         toRemove = ";.*(?:\n|$)"
         description = re.sub(toRemove, r'>\n', description)
 
-      print description
+      print(description)
 
 class FBPrintCoreAnimationTree(fb.FBCommand):
   def name(self):
@@ -112,7 +112,7 @@ class FBPrintCoreAnimationTree(fb.FBCommand):
     return 'Print layer tree from the perspective of the render server.'
 
   def run(self, arguments, options):
-    print fb.describeObject('[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]')
+    print(fb.describeObject('[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]'))
 
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
@@ -130,14 +130,14 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
     if arguments[0] == '__keyWindow_rootVC_dynamic__':
       if fb.evaluateBooleanExpression('[UIViewController respondsToSelector:@selector(_printHierarchy)]'):
-        print fb.describeObject('[UIViewController _printHierarchy]')
+        print(fb.describeObject('[UIViewController _printHierarchy]'))
         return
 
       arguments[0] = '(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]'
       if isMac:
         arguments[0] = '(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]'
 
-    print vcHelpers.viewControllerRecursiveDescription(arguments[0])
+    print(vcHelpers.viewControllerRecursiveDescription(arguments[0]))
 
 
 class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
@@ -154,7 +154,7 @@ class FBPrintIsExecutingInAnimationBlockCommand(fb.FBCommand):
 def _printIterative(initialValue, generator):
   indent = 0
   for currentValue in generator(initialValue):
-    print '   | ' * indent + currentValue
+    print('   | ' * indent + currentValue)
     indent += 1
 
 
@@ -198,7 +198,7 @@ class FBPrintUpwardResponderChain(fb.FBCommand):
       responderClass = 'NSResponder'
 
     if not fb.evaluateBooleanExpression('(BOOL)[(id)' + startResponder + ' isKindOfClass:[' + responderClass + ' class]]'):
-      print 'Whoa, ' + startResponder + ' is not a ' + responderClass + '. =('
+      print('Whoa, ' + startResponder + ' is not a ' + responderClass + '. =(')
       return
 
     _printIterative(startResponder, _responderChain)
@@ -249,11 +249,11 @@ class FBPrintOnscreenTableView(fb.FBCommand):
     tableView = tableViewInHierarchy()
     if tableView:
       viewValue = fb.evaluateExpressionValue(tableView)
-      print viewValue.GetObjectDescription()
+      print(viewValue.GetObjectDescription())
       cmd = 'echo %s | tr -d "\n" | pbcopy' % tableView
       os.system(cmd)
     else:
-      print 'Sorry, chump. I couldn\'t find a table-view. :\'('
+      print('Sorry, chump. I couldn\'t find a table-view. :\'(')
 
 class FBPrintOnscreenTableViewCells(fb.FBCommand):
   def name(self):
@@ -264,7 +264,7 @@ class FBPrintOnscreenTableViewCells(fb.FBCommand):
 
   def run(self, arguments, options):
     tableView = tableViewInHierarchy()
-    print fb.evaluateExpressionValue('(id)[(id)' + tableView + ' visibleCells]').GetObjectDescription()
+    print(fb.evaluateExpressionValue('(id)[(id)' + tableView + ' visibleCells]').GetObjectDescription())
 
 
 class FBPrintInternals(fb.FBCommand):
@@ -288,7 +288,7 @@ class FBPrintInternals(fb.FBCommand):
         if fb.evaluateBooleanExpression('[{} respondsToSelector:@selector(_ivarDescription)]'.format(object)):
             command = 'po [{} _ivarDescription]'.format(object)
         else:
-            print 'Sorry, but it seems Apple dumped the _ivarDescription method'
+            print('Sorry, but it seems Apple dumped the _ivarDescription method')
             return
     else:
         objectClass = fb.evaluateExpressionValue('(id)[(id)(' + object + ') class]').GetObjectDescription()
@@ -319,7 +319,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
     ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
 
     result = fb.evaluateExpressionValue('(({} *)({}))->{}'.format(objectClass, object, ivarName))
-    print result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result
+    print(result.GetObjectDescription() if '@' in ivarTypeEncodingFirstChar else result)
 
 class FBPrintKeyPath(fb.FBCommand):
   def name(self):
@@ -340,7 +340,7 @@ class FBPrintKeyPath(fb.FBCommand):
     else:
       objectToMessage, keypath = command.split('.', 1)
       object = fb.evaluateObjectExpression(objectToMessage)
-      print fb.describeObject('[{} valueForKeyPath:@"{}"]'.format(object, keypath))
+      print(fb.describeObject('[{} valueForKeyPath:@"{}"]'.format(object, keypath)))
 
 
 class FBPrintApplicationDocumentsPath(fb.FBCommand):
@@ -363,7 +363,7 @@ class FBPrintApplicationDocumentsPath(fb.FBCommand):
     pathString = '{}'.format(path).split('"')[1]
     cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
     os.system(cmd)
-    print pathString
+    print(pathString)
     if options.open:
       os.system('open '+ pathString)
 
@@ -385,7 +385,7 @@ class FBPrintApplicationBundlePath(fb.FBCommand):
     pathString = '{}'.format(path).split('"')[1]
     cmd = 'echo {} | tr -d "\n" | pbcopy'.format(pathString)
     os.system(cmd)
-    print pathString
+    print(pathString)
     if options.open:
       os.system('open '+ pathString)
 
@@ -458,7 +458,7 @@ class FBPrintData(fb.FBCommand):
     elif encoding_text == 'utf32l':
       enc = 0x9c000100
 
-    print fb.describeObject('[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc))
+    print(fb.describeObject('[[NSString alloc] initWithData:{} encoding:{}]'.format(arguments[0], enc)))
 
 class FBPrintTargetActions(fb.FBCommand):
 
@@ -483,7 +483,7 @@ class FBPrintTargetActions(fb.FBCommand):
       targetDescription = fb.evaluateExpressionValue('(id){target}'.format(target=target)).GetObjectDescription()
       actionsDescription = fb.evaluateExpressionValue('(id)[{actions} componentsJoinedByString:@", "]'.format(actions=actions)).GetObjectDescription()
 
-      print '{target}: {actions}'.format(target=targetDescription, actions=actionsDescription)
+      print('{target}: {actions}'.format(target=targetDescription, actions=actionsDescription))
 
 class FBPrintJSON(fb.FBCommand):
 
@@ -507,7 +507,7 @@ class FBPrintJSON(fb.FBCommand):
     jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:(id){} options:{} error:nil]'.format(objectToPrint, pretty))
     jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(id){} encoding:4]'.format(jsonData)).GetObjectDescription()
 
-    print jsonString
+    print(jsonString)
 
 class FBPrintSwiftJSON(fb.FBCommand):
     
@@ -530,7 +530,7 @@ class FBPrintSwiftJSON(fb.FBCommand):
       jsonData = fb.evaluateObjectExpression('[NSJSONSerialization dataWithJSONObject:(NSObject*){} options:{} error:nil]'.format(objectToPrint, pretty))
       jsonString = fb.evaluateExpressionValue('(NSString*)[[NSString alloc] initWithData:(NSObject*){} encoding:4]'.format(jsonData)).GetObjectDescription()
 
-      print jsonString
+      print(jsonString)
 
 class FBPrintAsCurl(fb.FBCommand):
   def name(self):
@@ -574,15 +574,15 @@ class FBPrintAsCurl(fb.FBCommand):
           if fb.evaluateIntegerExpression('[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]'.format(HTTPData)):
             dataAsString = fb.evaluateExpressionValue('(id)[(id){} base64EncodedStringWithOptions:0]'.format(HTTPData)).GetObjectDescription()
           else :
-            print 'This version of OS doesn\'t supports base64 data encoding'
+            print('This version of OS doesn\'t supports base64 data encoding')
             return False
         elif not runtimeHelpers.isIOSDevice():
           dataFile = self.generateTmpFilePath()
           if not fb.evaluateBooleanExpression('(BOOL)[{} writeToFile:@"{}" atomically:NO]'.format(HTTPData, dataFile)):
-            print 'Can\'t write data to file {}'.format(dataFile)
+            print('Can\'t write data to file {}'.format(dataFile))
             return False
         else:
-          print 'HTTPBody data for iOS Device is supported only with "--embed-data" flag'
+          print('HTTPBody data for iOS Device is supported only with "--embed-data" flag')
           return False
 
     commandString = ''
@@ -596,7 +596,7 @@ class FBPrintAsCurl(fb.FBCommand):
         commandString += ' --data-binary @"{}"'.format(dataFile)
 
     commandString += ' "{}"'.format(URL)
-    print commandString
+    print(commandString)
 
 class FBPrintToClipboard(fb.FBCommand):
   def name(self):
@@ -613,7 +613,7 @@ class FBPrintToClipboard(fb.FBCommand):
     process = subprocess.Popen(
         'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
     process.communicate(lldbOutput.encode('utf-8'))
-    print "Object copied to clipboard"
+    print("Object copied to clipboard")
 
 class FBPrintObjectInObjc(fb.FBCommand):
   def name(self):

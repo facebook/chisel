@@ -128,7 +128,7 @@ def printAccessibilityHierarchy(view, indent = 0):
 
   #if we don't have any accessibility string - we should have some children
   if int(a11yLabel.GetValue(), 16) == 0:
-    print indentString + ('{} {}'.format(classDesc, view))
+    print(indentString + ('{} {}'.format(classDesc, view)))
     #We call private method that gives back all visible accessibility children for view
     a11yElements = accessibilityElements(view)
     accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % a11yElements))
@@ -136,7 +136,7 @@ def printAccessibilityHierarchy(view, indent = 0):
       subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (a11yElements, index))
       printAccessibilityHierarchy(subview, indent + 1)
   else:
-    print indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription()))
+    print(indentString + ('({} {}) {}'.format(classDesc, view, a11yLabel.GetObjectDescription())))
 
 def printAccessibilityIdentifiersHierarchy(view, indent = 0):
   a11yIdentifier = accessibilityIdentifier(view)
@@ -145,7 +145,7 @@ def printAccessibilityIdentifiersHierarchy(view, indent = 0):
 
   #if we don't have any accessibility identifier - we should have some children
   if int(a11yIdentifier.GetValue(), 16) == 0:
-    print indentString + ('{} {}'.format(classDesc, view))
+    print(indentString + ('{} {}'.format(classDesc, view)))
     #We call private method that gives back all visible accessibility children for view
     a11yElements = accessibilityElements(view)
     accessibilityElementsCount = int(fb.evaluateExpression('(int)[%s count]' % a11yElements))
@@ -153,4 +153,4 @@ def printAccessibilityIdentifiersHierarchy(view, indent = 0):
       subview = fb.evaluateObjectExpression('[%s objectAtIndex:%i]' % (a11yElements, index))
       printAccessibilityIdentifiersHierarchy(subview, indent + 1)
   else:
-    print indentString + ('({} {}) {}'.format(classDesc, view, a11yIdentifier.GetObjectDescription()))
+    print(indentString + ('({} {}) {}'.format(classDesc, view, a11yIdentifier.GetObjectDescription())))
