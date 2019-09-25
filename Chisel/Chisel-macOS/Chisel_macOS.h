@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 #import <Cocoa/Cocoa.h>
 
 //! Project version number for Chisel_macOS.
