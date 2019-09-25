@@ -104,16 +104,6 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
 
       print(description)
 
-class FBPrintCoreAnimationTree(fb.FBCommand):
-  def name(self):
-    return 'pca'
-
-  def description(self):
-    return 'Print layer tree from the perspective of the render server.'
-
-  def run(self, arguments, options):
-    print(fb.describeObject('[NSString stringWithCString:(char *)CARenderServerGetInfo(0, 2, 0)]'))
-
 
 class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
   def name(self):
