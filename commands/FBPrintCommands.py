@@ -18,7 +18,6 @@ import fblldbobjcruntimehelpers as runtimeHelpers
 def lldbcommands():
   return [
     FBPrintViewHierarchyCommand(),
-    FBPrintCoreAnimationTree(),
     FBPrintViewControllerHierarchyCommand(),
     FBPrintIsExecutingInAnimationBlockCommand(),
     FBPrintInheritanceHierarchy(),
