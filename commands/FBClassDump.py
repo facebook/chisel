@@ -117,7 +117,7 @@ class FBPrintBlock(fb.FBCommand):
     struct Block_literal_1 real = *((__bridge struct Block_literal_1 *)$block);
     NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
     
-    [dict setObject:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
+    [dict setValue:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
     
     if (real.flags & BLOCK_HAS_SIGNATURE) {
       char *signature;
@@ -137,7 +137,7 @@ class FBPrintBlock(fb.FBCommand):
           [types addObject:(id)[NSString stringWithUTF8String:type]];
       }
       
-      [dict setObject:types forKey:@"signature"];
+      [dict setValue:types forKey:@"signature"];
     }
     
     RETURN(dict);
@@ -145,17 +145,116 @@ class FBPrintBlock(fb.FBCommand):
     command = string.Template(tmpString).substitute(block=block)
     json = fb.evaluate(command)
 
+    # We assume that the maximum number of variables captured by the block is 10
+    max_var_count = 10
+    variables_json = self.getBlockVariables(block, max_var_count)
+    if variables_json is not None:
+      json.update(variables_json)
+
+    variablesStrs = []
+    for i in range(max_var_count):
+      varKey = 'variables['+str(i)+']'
+      if varKey in json:
+        variablesStrs.append(json[varKey])
+    variablesStr = '\n'.join(variablesStrs)
+
     signature = json['signature']
     if not signature:
-      print 'Imp: ' + hex(json['invoke'])
+      print 'Imp: ' + hex(json['invoke']) + '   Variables : {\n'+variablesStr+'\n};'
       return 
 
     sigStr = '{} ^('.format(decode(signature[0]))
     # the block`s implementation always take the block as it`s first argument, so we ignore it
     sigStr += ', '.join([decode(m) for m in signature[2:]])
-    sigStr += ');'
+    sigStr += ')'
     
-    print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr
+    print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr + '   Variables : {\n'+variablesStr+'\n};'
+
+  def getBlockVariables(self, block, max_var_count):
+    '''
+    no __Block_byref_xxx
+    We must check the block's captured variables one by one here.
+    no reason, but it works.
+    We assume that the maximum number of variables captured by the block is max_var_count
+    '''
+
+    # http://clang.llvm.org/docs/Block-ABI-Apple.html
+    tmpString = """
+    #define BLOCK_VARIABLES_COUNT ($variables_count)
+    enum {
+      BLOCK_HAS_COPY_DISPOSE =  (1 << 25),
+      BLOCK_HAS_CTOR =          (1 << 26), // helpers have C++ code
+      BLOCK_IS_GLOBAL =         (1 << 28),
+      BLOCK_HAS_STRET =         (1 << 29), // IFF BLOCK_HAS_SIGNATURE
+      BLOCK_HAS_SIGNATURE =     (1 << 30),
+    };
+    struct Block_literal_1 {
+      void *isa; // initialized to &_NSConcreteStackBlock or &_NSConcreteGlobalBlock
+      int flags;
+      int reserved;
+      void (*invoke)(void *, ...);
+      struct Block_descriptor_1 {
+          unsigned long int reserved; // NULL
+          unsigned long int size;         // sizeof(struct Block_literal_1)
+          // optional helper functions
+          void (*copy_helper)(void *dst, void *src);     // IFF (1<<25)
+          void (*dispose_helper)(void *src);             // IFF (1<<25)
+          // required ABI.2010.3.16
+          const char *signature;                         // IFF (1<<30)
+      } *descriptor;
+      // imported variables
+      Class *variables[BLOCK_VARIABLES_COUNT];
+    };
+    struct Block_literal_1 real = *((__bridge struct Block_literal_1 *)$block);
+    NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
+
+    // Get the list of classes and look for testPointerClass
+    NSInteger numClasses = (NSInteger)objc_getClassList(NULL, 0);
+    Class *classesList = (Class*)malloc(sizeof(Class) * numClasses);
+    numClasses = (NSInteger)objc_getClassList(classesList, numClasses);
+
+    Class **blockVariables = real.variables;
+    for (int i = 0; i < BLOCK_VARIABLES_COUNT; i++) {
+        Class *obj = (Class*)blockVariables[i];
+        if (obj == NULL) {
+            break;
+        }
+
+        Class testPointerClass = (Class)(*obj);
+        BOOL isClass = NO;
+        for (int i = 0; i < numClasses; i++)
+        {
+            if (classesList[i] == testPointerClass)
+            {
+                isClass = YES;
+                break;
+            }
+        }
+        // __Block_byref_xxx may break this
+        /*
+        if (!isClass) {
+          break;
+        }
+        */
+
+        NSString *key = [NSString stringWithFormat:@"variables[%d]", i];
+        NSString *value = [NSString stringWithFormat:@"%@", obj];
+        [dict setValue:value forKey:key];
+    }
+
+    free(classesList);
+
+    RETURN(dict);
+    """
+    last_json = None
+    for i in range(1, max_var_count):
+      command = string.Template(tmpString).substitute(block=block, variables_count=i)
+      json = fb.evaluate(command, printErrors=False)
+      if json is not None:
+        last_json = json
+      else:
+        break
+    return last_json
 
 # helpers 
 def isClassObject(arg):
@@ -308,10 +407,10 @@ def getProperties(klass):
           NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
           
           char *name = (char *)property_getName(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:name] forKey:@"name"];
+          [dict setValue:(id)[NSString stringWithUTF8String:name] forKey:@"name"];
           
           char *attrstr = (char *)property_getAttributes(props[i]);
-          [dict setObject:(id)[NSString stringWithUTF8String:attrstr] forKey:@"attributes_string"];
+          [dict setValue:(id)[NSString stringWithUTF8String:attrstr] forKey:@"attributes_string"];
           
           NSMutableDictionary *attrsDict = (id)[NSMutableDictionary dictionary];
           unsigned int pcount;
@@ -319,9 +418,9 @@ def getProperties(klass):
           for (int i = 0; i < pcount; i++) {
               NSString *name = (id)[NSString stringWithUTF8String:(char *)attrs[i].name];
               NSString *value = (id)[NSString stringWithUTF8String:(char *)attrs[i].value];
-              [attrsDict setObject:value forKey:name];
+              [attrsDict setValue:value forKey:name];
           }
-          [dict setObject:attrsDict forKey:@"attributes"];
+          [dict setValue:attrsDict forKey:@"attributes"];
           
           [result addObject:dict];
       }
