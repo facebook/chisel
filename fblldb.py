@@ -94,8 +94,8 @@ def validateArgsForCommand(args, command):
     for defaultArg in defaultArgsToAppend:
       if not defaultArg:
         arg = command.args()[index]
-        print 'Whoops! You are missing the <' + arg.argName + '> argument.'
-        print '\nUsage: ' + usageForCommand(command)
+        print('Whoops! You are missing the <' + arg.argName + '> argument.')
+        print('\nUsage: ' + usageForCommand(command))
         return
       index += 1
 

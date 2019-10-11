@@ -39,17 +39,17 @@ class FBPrintMethods(fb.FBCommand):
     cls = getClassFromArgument(arguments[0], options.clsname)
 
     if options.clsmethod:
-      print 'Class Methods:'
+      print('Class Methods:')
       printClassMethods(cls, options.showaddr)
 
     if options.insmethod:
-      print '\nInstance Methods:'
+      print('\nInstance Methods:')
       printInstanceMethods(cls, options.showaddr)
 
     if not options.clsmethod and not options.insmethod:
-      print 'Class Methods:'
+      print('Class Methods:')
       printClassMethods(cls, options.showaddr)
-      print '\nInstance Methods:'
+      print('\nInstance Methods:')
       printInstanceMethods(cls, options.showaddr)
 
 
@@ -147,7 +147,7 @@ class FBPrintBlock(fb.FBCommand):
 
     signature = json['signature']
     if not signature:
-      print 'Imp: ' + hex(json['invoke'])
+      print('Imp: ' + hex(json['invoke']))
       return 
 
     sigStr = '{} ^('.format(decode(signature[0]))
@@ -155,7 +155,7 @@ class FBPrintBlock(fb.FBCommand):
     sigStr += ', '.join([decode(m) for m in signature[2:]])
     sigStr += ');'
     
-    print  'Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr
+    print('Imp: ' + hex(json['invoke']) + '    Signature: ' + sigStr)
 
 # helpers 
 def isClassObject(arg):
@@ -178,13 +178,13 @@ def getClassFromArgument(arg, is_classname):
 def printInstanceMethods(cls, showaddr=False, prefix='-'):
   methods = getMethods(cls)
   if not methods:
-    print "No methods were found"
+    print("No methods were found")
 
   for m in methods:
     if showaddr:
-      print prefix + ' ' + m.prettyPrintString() + ' ' + str(m.imp)
+      print(prefix + ' ' + m.prettyPrintString() + ' ' + str(m.imp))
     else:
-      print prefix + ' ' + m.prettyPrintString()
+      print(prefix + ' ' + m.prettyPrintString())
 
 def printClassMethods(cls, showaddr=False):
   printInstanceMethods(runtimeHelpers.object_getClass(cls), showaddr, '+')
@@ -192,7 +192,7 @@ def printClassMethods(cls, showaddr=False):
 def printProperties(cls, showvalue=False):
   props = getProperties(cls)
   for p in props:
-    print p.prettyPrintString()
+    print(p.prettyPrintString())
 
 def decode(code):
   encodeMap = {
