@@ -72,7 +72,7 @@ def subviewsOfView(view):
     (view, level) = views.pop(0)
     subviews = fb.evaluateExpression('(id)[%s subviews]' % view)
     subviewsCount = int(fb.evaluateExpression('(int)[(id)%s count]' % subviews))
-    for i in xrange(subviewsCount):
+    for i in range(subviewsCount):
       subview = fb.evaluateExpression('(id)[%s objectAtIndex:%i]' % (subviews, i))
       views.append((subview, level+1))
       yield (subview, level+1)
