@@ -548,7 +548,7 @@ class XCElementSnapshot(object):
     :return: XCUIElement children list
     :rtype: list[lldb.SBValue]
     """
-    return [self.children.GetChildAtIndex(i) for i in xrange(0, self.children_count)]
+    return [self.children.GetChildAtIndex(i) for i in range(self.children_count)]
 
   @property
   def enabled(self):
