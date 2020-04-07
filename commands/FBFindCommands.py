@@ -70,7 +70,7 @@ class FBFindViewControllerCommand(fb.FBCommand):
         return nextResponder
       else:
         return None
-    except:
+    except Exception:
       return None
 
 

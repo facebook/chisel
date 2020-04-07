@@ -116,6 +116,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
     expressionForSelf = objc.functionPreambleExpressionForSelf()
     if not expressionForSelf:
+      arch = objc.currentArch()
       print('Your architecture, {}, is truly fantastic. However, I don\'t currently support it.'.format(arch))
       return
 

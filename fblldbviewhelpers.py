@@ -93,7 +93,7 @@ def upwardsRecursiveDescription(view, maxDepth=0):
     try:
       if int(currentView, 0) == 0:
         currentView = None
-    except:
+    except Exception:
       currentView = None
 
     if viewDescription:

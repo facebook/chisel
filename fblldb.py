@@ -13,8 +13,6 @@ import sys
 
 from optparse import OptionParser
 
-import fblldbbase as fb
-
 def __lldb_init_module(debugger, dict):
   filePath = os.path.realpath(__file__)
   lldbHelperDir = os.path.dirname(filePath)

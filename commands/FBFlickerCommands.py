@@ -35,7 +35,7 @@ class FBFlickerViewCommand(fb.FBCommand):
 
     isHidden = fb.evaluateBooleanExpression('[' + object + ' isHidden]')
     shouldHide = not isHidden
-    for x in range(0, 2):
+    for _ in range(0, 2):
       viewHelpers.setViewHidden(object, shouldHide)
       viewHelpers.setViewHidden(object, isHidden)
 

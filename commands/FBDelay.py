@@ -7,7 +7,6 @@
 
 from threading import Timer
 import fblldbbase as fb
-import fblldbobjcruntimehelpers as runtimeHelpers
 import lldb
 import string
 
