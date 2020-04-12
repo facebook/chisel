@@ -117,7 +117,7 @@ class FBPrintBlock(fb.FBCommand):
     struct Block_literal_1 real = *((__bridge struct Block_literal_1 *)$block);
     NSMutableDictionary *dict = (id)[NSMutableDictionary dictionary];
     
-    [dict setObject:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
+    [dict setValue:(id)[NSNumber numberWithLong:(long)real.invoke] forKey:@"invoke"];
     
     if (real.flags & BLOCK_HAS_SIGNATURE) {
       char *signature;
@@ -137,7 +137,7 @@ class FBPrintBlock(fb.FBCommand):
           [types addObject:(id)[NSString stringWithUTF8String:type]];
       }
       
-      [dict setObject:types forKey:@"signature"];
+      [dict setValue:types forKey:@"signature"];
     }
     
     RETURN(dict);
