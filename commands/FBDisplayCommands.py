@@ -5,10 +5,10 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import fblldbbase as fb
-import fblldbobjcruntimehelpers as runtimeHelpers
-import fblldbviewcontrollerhelpers as viewControllerHelpers
-import fblldbviewhelpers as viewHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjcruntimehelpers as runtimeHelpers
+import fbchisellldbviewcontrollerhelpers as viewControllerHelpers
+import fbchisellldbviewhelpers as viewHelpers
 import lldb
 
 

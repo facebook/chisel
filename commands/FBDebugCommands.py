@@ -12,8 +12,8 @@ import os
 import re
 import sys
 
-import fblldbbase as fb
-import fblldbobjcruntimehelpers as objc
+import fbchisellldbbase as fb
+import fbchisellldbobjcruntimehelpers as objc
 import lldb
 
 

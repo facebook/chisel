@@ -8,8 +8,8 @@
 import os
 import re
 
-import fblldbbase as fb
-import fblldbobjecthelpers as objHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjecthelpers as objHelpers
 
 
 # This is the key corresponding to accessibility label in

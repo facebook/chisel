@@ -7,8 +7,8 @@
 
 import string
 
-import fblldbbase as fb
-import fblldbobjcruntimehelpers as runtimeHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjcruntimehelpers as runtimeHelpers
 
 
 def lldbcommands():

@@ -11,8 +11,8 @@ import time
 
 import lldb
 import errno
-import fblldbbase as fb
-import fblldbobjecthelpers as objectHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjecthelpers as objectHelpers
 
 
 def lldbcommands():

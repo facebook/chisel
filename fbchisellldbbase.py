@@ -205,7 +205,7 @@ def check_expr(expr):
 # must contain a RETURN marco and it will automatic transform the
 # Objective-C object to Python object
 # Example:
-#       >>> fblldbbase.evaluate('NSString *str = @"hello world"; RETURN(@{@"key": str});')  # noqa B950
+#       >>> fbchisellldbbase.evaluate('NSString *str = @"hello world"; RETURN(@{@"key": str});') # noqa B950
 #       {u'key': u'hello world'}
 def evaluate(expr):
     if not check_expr(expr):

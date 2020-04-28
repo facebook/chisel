@@ -9,8 +9,8 @@ import errno
 import os
 import time
 
-import fblldbbase as fb
-import fblldbobjecthelpers as objectHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjecthelpers as objectHelpers
 import lldb
 
 

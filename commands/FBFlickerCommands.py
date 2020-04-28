@@ -8,9 +8,9 @@
 import os
 import sys
 
-import fblldbbase as fb
-import fblldbobjcruntimehelpers as runtimeHelpers
-import fblldbviewhelpers as viewHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjcruntimehelpers as runtimeHelpers
+import fbchisellldbviewhelpers as viewHelpers
 import lldb
 
 

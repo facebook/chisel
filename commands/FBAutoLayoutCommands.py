@@ -6,8 +6,8 @@
 # LICENSE file in the root directory of this source tree.
 
 
-import fblldbbase as fb
-import fblldbviewhelpers as viewHelpers
+import fbchisellldbbase as fb
+import fbchisellldbviewhelpers as viewHelpers
 import lldb
 
 

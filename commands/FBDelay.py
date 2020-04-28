@@ -7,7 +7,7 @@
 
 from threading import Timer
 
-import fblldbbase as fb
+import fbchisellldbbase as fb
 import lldb
 
 

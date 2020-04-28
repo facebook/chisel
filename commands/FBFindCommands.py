@@ -8,9 +8,9 @@
 import os
 import re
 
-import fblldbbase as fb
-import fblldbobjcruntimehelpers as objc
-import fblldbviewcontrollerhelpers as vcHelpers
+import fbchisellldbbase as fb
+import fbchisellldbobjcruntimehelpers as objc
+import fbchisellldbviewcontrollerhelpers as vcHelpers
 import lldb
 
 

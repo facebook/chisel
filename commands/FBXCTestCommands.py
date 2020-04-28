@@ -7,7 +7,7 @@
 
 import re
 
-import fblldbbase as fb
+import fbchisellldbbase as fb
 import lldb
 
 

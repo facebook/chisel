@@ -24,7 +24,7 @@ Then add the following line to your `~/.lldbinit` file.
 ```Python
 # ~/.lldbinit
 ...
-command script import /usr/local/opt/chisel/libexec/fblldb.py
+command script import /usr/local/opt/chisel/libexec/fbchisellldb.py
 ```
 
 Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
@@ -32,7 +32,7 @@ Alternatively, download chisel and add the following line to your _~/.lldbinit_ 
 ```Python
 # ~/.lldbinit
 ...
-command script import /path/to/fblldb.py
+command script import /path/to/fbchisellldb.py
 
 ```
 
@@ -97,7 +97,7 @@ You can add local, custom commands. Here's a contrived example.
 # Example file with custom commands, located at /magical/commands/example.py
 
 import lldb
-import fblldbbase as fb
+import fbchisellldbbase as fb
 
 def lldbcommands():
   return [ PrintKeyWindowLevel() ]
@@ -115,13 +115,13 @@ class PrintKeyWindowLevel(fb.FBCommand):
     lldb.debugger.HandleCommand('p (CGFloat)[(id)[(id)[UIApplication sharedApplication] keyWindow] windowLevel]')
 ```
 
-Then all that's left is to source the commands in lldbinit. `Chisel` has a python function just for this, _loadCommandsInDirectory_ in the _fblldb.py_ module.
+Then all that's left is to source the commands in lldbinit. `Chisel` has a python function just for this, _loadCommandsInDirectory_ in the _fbobjclldb.py_ module.
 
 ```Python
 # ~/.lldbinit
 ...
-command script import /path/to/fblldb.py
-script fblldb.loadCommandsInDirectory('/magical/commands/')
+command script import /path/to/fbobjclldb.py
+script fbobjclldb.loadCommandsInDirectory('/magical/commands/')
 
 ```
 
