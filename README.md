@@ -24,7 +24,7 @@ Then add the following line to your `~/.lldbinit` file.
 ```Python
 # ~/.lldbinit
 ...
-command script import /usr/local/opt/chisel/libexec/fbchisellldb.py
+command script import /usr/local/opt/chisel/libexec/fblldb.py
 ```
 
 Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
@@ -32,7 +32,7 @@ Alternatively, download chisel and add the following line to your _~/.lldbinit_ 
 ```Python
 # ~/.lldbinit
 ...
-command script import /path/to/fbchisellldb.py
+command script import /path/to/fblldb.py
 
 ```
 
