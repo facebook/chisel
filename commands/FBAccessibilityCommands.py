@@ -95,15 +95,15 @@ class FBFindViewByAccessibilityLabelCommand(fb.FBCommand):
             # We call private method that gives back all visible accessibility children
             # for view iOS 10 and higher
             if fb.evaluateBooleanExpression(
-                "[UIView respondsToSelector:@selector(_accessibilityElementsAndContainersDescendingFromViews:options:sorted:)]"  # noqa B950
+                "[UIView respondsToSelector:@selector(_accessibilityElementsAndContainersDescendingFromViews:options:sorted:)]"
             ):
                 accessibilityElements = fb.evaluateObjectExpression(
-                    "[UIView _accessibilityElementsAndContainersDescendingFromViews:@[(id)%s] options:0 sorted:NO]"  # noqa B950
+                    "[UIView _accessibilityElementsAndContainersDescendingFromViews:@[(id)%s] options:0 sorted:NO]"
                     % view
                 )
             else:
                 accessibilityElements = fb.evaluateObjectExpression(
-                    "[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]"  # noqa B950
+                    "[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]"
                     % view
                 )
             accessibilityElementsCount = fb.evaluateIntegerExpression(
@@ -156,7 +156,7 @@ def isRunningInSimulator():
 def forceStartAccessibilityServer():
     # We try to start accessibility server only if we don't have needed method active
     if not fb.evaluateBooleanExpression(
-        "[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]"  # noqa B950
+        "[UIView instancesRespondToSelector:@selector(_accessibilityElementsInContainer:)]"
     ):
         # Starting accessibility server is different for simulator and device
         if isRunningInSimulator():
@@ -165,7 +165,7 @@ def forceStartAccessibilityServer():
             )
         else:
             fb.evaluateEffect(
-                "[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]"  # noqa B950
+                "[[[UIApplication sharedApplication] _accessibilityBundlePrincipalClass] _accessibilityStartServer]"
             )
 
 
@@ -198,7 +198,7 @@ def accessibilityElements(view):
         return fb.evaluateExpression("(id)[%s _accessibleSubviews]" % (view), False)
     else:
         return fb.evaluateObjectExpression(
-            "[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]"  # noqa B950
+            "[[[UIApplication sharedApplication] keyWindow] _accessibilityElementsInContainer:0 topLevel:%s includeKB:0]"
             % view
         )
 

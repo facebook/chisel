@@ -80,20 +80,20 @@ def functionPreambleExpressionForObjectParameterAtIndex(parameterIndex):
     elif arch == "x86_64":
         if parameterIndex > 3:
             raise Exception(
-                "Current implementation can not return object at index greater than 3 for x86_64"  # noqa B950
+                "Current implementation can not return object at index greater than 3 for x86_64"
             )
         registersList = ["rdx", "rcx", "r8", "r9"]
         expresssion = "(id)$" + registersList[parameterIndex]
     elif arch == "arm64":
         if parameterIndex > 5:
             raise Exception(
-                "Current implementation can not return object at index greater than 5 for arm64"  # noqa B950
+                "Current implementation can not return object at index greater than 5 for arm64"
             )
         expresssion = "(id)$x" + str(parameterIndex + 2)
     elif re.match(r"^armv.*$", arch):
         if parameterIndex > 1:
             raise Exception(
-                "Current implementation can not return object at index greater than 1 for arm32"  # noqa B950
+                "Current implementation can not return object at index greater than 1 for arm32"
             )
         expresssion = "(id)$r" + str(parameterIndex + 2)
     return expresssion

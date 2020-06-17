@@ -23,7 +23,7 @@ class FBFindViewControllerCommand(fb.FBCommand):
         return "fvc"
 
     def description(self):
-        return "Find the view controllers whose class names match classNameRegex and puts the address of first on the clipboard."  # noqa B950
+        return "Find the view controllers whose class names match classNameRegex and puts the address of first on the clipboard."
 
     def options(self):
         return [
@@ -32,14 +32,14 @@ class FBFindViewControllerCommand(fb.FBCommand):
                 long="--name",
                 arg="classNameRegex",
                 type="string",
-                help="The view-controller-class regex to search the view controller hierarchy for.",  # noqa B950
+                help="The view-controller-class regex to search the view controller hierarchy for.",
             ),
             fb.FBCommandArgument(
                 short="-v",
                 long="--view",
                 arg="view",
                 type="UIView",
-                help="This function will print the View Controller that owns this view.",  # noqa B950
+                help="This function will print the View Controller that owns this view.",
             ),
         ]
 
@@ -93,7 +93,7 @@ class FBFindViewCommand(fb.FBCommand):
         return "fv"
 
     def description(self):
-        return "Find the views whose class names match classNameRegex and puts the address of first on the clipboard."  # noqa B950
+        return "Find the views whose class names match classNameRegex and puts the address of first on the clipboard."
 
     def args(self):
         return [

@@ -64,7 +64,7 @@ def _colorIsCGColorRef(color):
     color = "(CGColorRef)(" + color + ")"
 
     result = fb.evaluateExpressionValue(
-        "(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()".format(  # noqa B950
+        "(unsigned long)CFGetTypeID({color}) == (unsigned long)CGColorGetTypeID()".format(
             color=color
         )
     )
@@ -91,7 +91,7 @@ def _showColor(color):
 
     imageSize = 58
     fb.evaluateEffect(
-        "UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)".format(  # noqa B950
+        "UIGraphicsBeginImageContextWithOptions((CGSize)CGSizeMake({imageSize}, {imageSize}), NO, 0.0)".format(
             imageSize=imageSize
         )
     )
@@ -207,7 +207,7 @@ def _visualize(target):
                 print("Data isn't an image and isn't a string.")
         else:
             print(
-                "{} isn't supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.".format(  # noqa B950
+                "{} isn't supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.".format(
                     objectHelpers.className(target)
                 )
             )

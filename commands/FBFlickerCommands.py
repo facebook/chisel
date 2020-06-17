@@ -56,7 +56,7 @@ class FBViewSearchCommand(fb.FBCommand):
 
     def run(self, arguments, options):
         print(
-            "\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n"  # noqa B950
+            "\nUse the following and (q) to quit.\n(w) move to superview\n(s) move to first subview\n(a) move to previous sibling\n(d) move to next sibling\n(p) print the hierarchy\n"
         )
 
         object = fb.evaluateInputExpression(arguments[0])

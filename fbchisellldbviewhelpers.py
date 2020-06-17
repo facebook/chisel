@@ -149,6 +149,6 @@ def upwardsRecursiveDescription(view, maxDepth=0):
 
 def slowAnimation(speed=1):
     fb.evaluateEffect(
-        '[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]'  # noqa B950
+        '[[[UIApplication sharedApplication] windows] setValue:@(%s) forKeyPath:@"layer.speed"]'
         % speed
     )

@@ -53,7 +53,7 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
 
         objectAddress = int(fb.evaluateObjectExpression(commandForObject), 0)
 
-        ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void*)object_getInstanceVariable((id){}, "{}", 0))'.format(  # noqa B950
+        ivarOffsetCommand = '(ptrdiff_t)ivar_getOffset((void*)object_getInstanceVariable((id){}, "{}", 0))'.format(
             objectAddress, ivarName
         )
         ivarOffset = int(fb.evaluateExpression(ivarOffsetCommand), 0)
@@ -62,7 +62,7 @@ class FBWatchInstanceVariableCommand(fb.FBCommand):
         # not permanent in the session like $variables.
         ivarSizeCommand = (
             "unsigned int size = 0;"
-            'char *typeEncoding = (char *)ivar_getTypeEncoding((void*)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'  # noqa B950
+            'char *typeEncoding = (char *)ivar_getTypeEncoding((void*)class_getInstanceVariable((Class)object_getClass((id){}), "{}"));'
             "(char *)NSGetSizeAndAlignment(typeEncoding, &size, 0);"
             "size"
         ).format(objectAddress, ivarName)
@@ -88,14 +88,14 @@ class FBFrameworkAddressBreakpointCommand(fb.FBCommand):
         return "binside"
 
     def description(self):
-        return "Set a breakpoint for a relative address within the framework/library that's currently running. This does the work of finding the offset for the framework/library and sliding your address accordingly."  # noqa B950
+        return "Set a breakpoint for a relative address within the framework/library that's currently running. This does the work of finding the offset for the framework/library and sliding your address accordingly."
 
     def args(self):
         return [
             fb.FBCommandArgument(
                 arg="address",
                 type="string",
-                help="Address within the currently running framework to set a breakpoint on.",  # noqa B950
+                help="Address within the currently running framework to set a breakpoint on.",
             )
         ]
 
@@ -118,14 +118,14 @@ class FBMethodBreakpointCommand(fb.FBCommand):
         return "bmessage"
 
     def description(self):
-        return "Set a breakpoint for a selector on a class, even if the class itself doesn't override that selector. It walks the hierarchy until it finds a class that does implement the selector and sets a conditional breakpoint there."  # noqa B950
+        return "Set a breakpoint for a selector on a class, even if the class itself doesn't override that selector. It walks the hierarchy until it finds a class that does implement the selector and sets a conditional breakpoint there."
 
     def args(self):
         return [
             fb.FBCommandArgument(
                 arg="expression",
                 type="string",
-                help='Expression to set a breakpoint on, e.g. "-[MyView setFrame:]", "+[MyView awesomeClassMethod]" or "-[0xabcd1234 setFrame:]"',  # noqa B950
+                help='Expression to set a breakpoint on, e.g. "-[MyView setFrame:]", "+[MyView awesomeClassMethod]" or "-[0xabcd1234 setFrame:]"',
             )
         ]
 
@@ -155,7 +155,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
         if not expressionForSelf:
             arch = objc.currentArch()
             print(
-                "Your architecture, {}, is truly fantastic. However, I don't currently support it.".format(  # noqa B950
+                "Your architecture, {}, is truly fantastic. However, I don't currently support it.".format(
                     arch
                 )
             )
@@ -213,7 +213,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
         if not found:
             print(
-                "There doesn't seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?".format(  # noqa B950
+                "There doesn't seem to be an implementation of {} in the class hierarchy. Made a boo boo with the selector name?".format(
                     selector
                 )
             )
@@ -242,7 +242,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
         if category:
             lldb.debugger.HandleCommand(
-                'breakpoint set --skip-prologue false --fullname "{}" --condition "{}"'.format(  # noqa B950
+                'breakpoint set --skip-prologue false --fullname "{}" --condition "{}"'.format(
                     breakpointFullName, breakpointCondition
                 )
             )
@@ -251,7 +251,7 @@ class FBMethodBreakpointCommand(fb.FBCommand):
                 methodTypeCharacter, breakpointClassName, selector
             )
             lldb.debugger.HandleCommand(
-                'breakpoint set --skip-prologue false --func-regex "{}" --condition "{}"'.format(  # noqa B950
+                'breakpoint set --skip-prologue false --func-regex "{}" --condition "{}"'.format(
                     breakpointPattern, breakpointCondition
                 )
             )
@@ -279,7 +279,7 @@ class FBMemoryWarningCommand(fb.FBCommand):
 
     def run(self, arguments, options):
         fb.evaluateEffect(
-            "[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]"  # noqa B950
+            "[[UIApplication sharedApplication] performSelector:@selector(_performMemoryWarning)]"
         )
 
 
@@ -432,7 +432,7 @@ class FBFindInstancesCommand(fb.FBCommand):
 
         if len(arguments) == 0 or not arguments[0].strip():
             print(
-                "Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`"  # noqa B950
+                "Usage: findinstances <classOrProtocol> [<predicate>]; Run `help findinstances`"
             )
             return
 

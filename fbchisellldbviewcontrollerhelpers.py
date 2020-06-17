@@ -22,7 +22,7 @@ def presentViewController(viewController):
 
         if notPresented:
             fb.evaluateEffect(
-                "[[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:%s animated:YES completion:nil]"  # noqa B950
+                "[[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:%s animated:YES completion:nil]"
                 % vc
             )
         else:
@@ -44,7 +44,7 @@ def dismissViewController(viewController):
 
         if isPresented:
             fb.evaluateEffect(
-                "[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]"  # noqa B950
+                "[(UIViewController *)%s dismissViewControllerAnimated:YES completion:nil]"
                 % vc
             )
         else:
@@ -64,12 +64,12 @@ def _viewControllerDescription(viewController):
 
     if fb.evaluateBooleanExpression("[(id)%s isViewLoaded]" % (vc)):
         result = fb.evaluateExpressionValue(
-            '(id)[[NSString alloc] initWithFormat:@"<%%@: %%p; view = <%%@; %%p>; frame = (%%g, %%g; %%g, %%g)>", (id)NSStringFromClass((id)[(id)%s class]), %s, (id)[(id)[(id)%s view] class], (id)[(id)%s view], ((CGRect)[(id)[(id)%s view] frame]).origin.x, ((CGRect)[(id)[(id)%s view] frame]).origin.y, ((CGRect)[(id)[(id)%s view] frame]).size.width, ((CGRect)[(id)[(id)%s view] frame]).size.height]'  # noqa B950
+            '(id)[[NSString alloc] initWithFormat:@"<%%@: %%p; view = <%%@; %%p>; frame = (%%g, %%g; %%g, %%g)>", (id)NSStringFromClass((id)[(id)%s class]), %s, (id)[(id)[(id)%s view] class], (id)[(id)%s view], ((CGRect)[(id)[(id)%s view] frame]).origin.x, ((CGRect)[(id)[(id)%s view] frame]).origin.y, ((CGRect)[(id)[(id)%s view] frame]).size.width, ((CGRect)[(id)[(id)%s view] frame]).size.height]'
             % (vc, vc, vc, vc, vc, vc, vc, vc)
         )
     else:
         result = fb.evaluateExpressionValue(
-            '(id)[[NSString alloc] initWithFormat:@"<%%@: %%p; view not loaded>", (id)NSStringFromClass((id)[(id)%s class]), %s]'  # noqa B950
+            '(id)[[NSString alloc] initWithFormat:@"<%%@: %%p; view not loaded>", (id)NSStringFromClass((id)[(id)%s class]), %s]'
             % (vc, vc)
         )
 
@@ -106,7 +106,7 @@ def _recursiveViewControllerDescriptionWithPrefixAndChildPrefix(
 
     if not isMac:
         isModal = fb.evaluateBooleanExpression(
-            "%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s"  # noqa B950
+            "%s != nil && ((id)[(id)[(id)%s presentedViewController] presentingViewController]) == %s"
             % (vc, vc, vc)
         )
 

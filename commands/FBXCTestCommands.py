@@ -290,7 +290,7 @@ def take_snapshot(element):
     :rtype: lldb.SBValue
     """
     return fb.evaluateExpressionValue(
-        "(XCElementSnapshot *)[[[{} query] matchingSnapshotsWithError:nil] firstObject]".format(  # noqa B950
+        "(XCElementSnapshot *)[[[{} query] matchingSnapshotsWithError:nil] firstObject]".format(
             element
         )
     )

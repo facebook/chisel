@@ -20,7 +20,7 @@ class FBPrintInvocation(fb.FBCommand):
         return "pinvocation"
 
     def description(self):
-        return "Print the stack frame, receiver, and arguments of the current invocation. It will fail to print all arguments if any arguments are variadic (varargs).\n\nNOTE: Sadly this is currently only implemented on x86."  # noqa B950
+        return "Print the stack frame, receiver, and arguments of the current invocation. It will fail to print all arguments if any arguments are variadic (varargs).\n\nNOTE: Sadly this is currently only implemented on x86."
 
     def options(self):
         return [
@@ -30,7 +30,7 @@ class FBPrintInvocation(fb.FBCommand):
                 arg="all",
                 default=False,
                 boolean=True,
-                help="Specify to print the entire stack instead of just the current frame.",  # noqa B950
+                help="Specify to print the entire stack instead of just the current frame.",
             )
         ]
 
@@ -76,7 +76,7 @@ def printInvocationForFrame(frame):
         and str(signatureValue.GetError()) != "success"
     ):
         print(
-            "My sincerest apologies. I couldn't find a method signature for the selector."  # noqa B950
+            "My sincerest apologies. I couldn't find a method signature for the selector."
         )
         return
 

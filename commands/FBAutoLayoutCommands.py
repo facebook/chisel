@@ -42,7 +42,7 @@ class FBPrintAutolayoutTrace(fb.FBCommand):
     def run(self, arguments, options):
         view = fb.evaluateInputExpression(arguments[0])
         opt = fb.evaluateBooleanExpression(
-            "[UIView instancesRespondToSelector:@selector(_autolayoutTraceRecursively:)]"  # noqa B950
+            "[UIView instancesRespondToSelector:@selector(_autolayoutTraceRecursively:)]"
         )
         traceCall = "_autolayoutTraceRecursively:1" if opt else "_autolayoutTrace"
         print(fb.describeObject("[{} {}]".format(view, traceCall)))

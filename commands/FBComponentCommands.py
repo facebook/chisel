@@ -70,7 +70,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
                 arg="upwards",
                 boolean=True,
                 default=False,
-                help="Print only the component hierarchy found on the first superview that has them, carrying the search up to its window.",  # noqa B950
+                help="Print only the component hierarchy found on the first superview that has them, carrying the search up to its window.",
             ),
             fb.FBCommandArgument(
                 short="-v",
@@ -78,7 +78,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
                 arg="showViews",
                 type="BOOL",
                 default="YES",
-                help="Prints the component hierarchy and does not print the views if the supplied argument is 'NO'. Supply either a 'YES' or a 'NO'. The default is to show views.",  # noqa B950
+                help="Prints the component hierarchy and does not print the views if the supplied argument is 'NO'. Supply either a 'YES' or a 'NO'. The default is to show views.",
             ),
         ]
 
@@ -87,7 +87,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
             fb.FBCommandArgument(
                 arg="aView",
                 type="UIView* or CKComponent*",
-                help="The view or component from which the search for components begins.",  # noqa B950
+                help="The view or component from which the search for components begins.",
                 default="(id)[[UIApplication sharedApplication] keyWindow]",
             )
         ]
@@ -103,7 +103,7 @@ class FBComponentsPrintCommand(fb.FBCommand):
 
         print(
             fb.describeObject(
-                "[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)"  # noqa B950
+                "[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)"
                 + view
                 + " searchUpwards:"
                 + upwards

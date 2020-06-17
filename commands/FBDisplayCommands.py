@@ -47,7 +47,7 @@ class FBDrawBorderCommand(fb.FBCommand):
         return "border"
 
     def description(self):
-        return "Draws a border around <viewOrLayer>. Color and width can be optionally provided. Additionally depth can be provided in order to recursively border subviews."  # noqa B950
+        return "Draws a border around <viewOrLayer>. Color and width can be optionally provided. Additionally depth can be provided in order to recursively border subviews."
 
     def args(self):
         return [
@@ -82,7 +82,7 @@ class FBDrawBorderCommand(fb.FBCommand):
                 arg="depth",
                 type="int",
                 default=0,
-                help="Number of levels of subviews to border. Each level gets a different color beginning with the provided or default color",  # noqa B950
+                help="Number of levels of subviews to border. Each level gets a different color beginning with the provided or default color",
             ),
         ]
 
@@ -186,7 +186,7 @@ class FBMaskViewCommand(fb.FBCommand):
         return "mask"
 
     def description(self):
-        return "Add a transparent rectangle to the window to reveal a possibly obscured or hidden view or layer's bounds"  # noqa B950
+        return "Add a transparent rectangle to the window to reveal a possibly obscured or hidden view or layer's bounds"
 
     def args(self):
         return [
@@ -248,7 +248,7 @@ class FBCoreAnimationFlushCommand(fb.FBCommand):
         return "caflush"
 
     def description(self):
-        return "Force Core Animation to flush. This will 'repaint' the UI but also may mess with ongoing animations."  # noqa B950
+        return "Force Core Animation to flush. This will 'repaint' the UI but also may mess with ongoing animations."
 
     def run(self, arguments, options):
         viewHelpers.flushCoreAnimationTransaction()

@@ -55,7 +55,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
                 arg="upwards",
                 boolean=True,
                 default=False,
-                help="Print only the hierarchy directly above the view, up to its window.",  # noqa B950
+                help="Print only the hierarchy directly above the view, up to its window.",
             ),
             fb.FBCommandArgument(
                 short="-d",
@@ -71,7 +71,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
                 arg="window",
                 type="int",
                 default="0",
-                help='Specify the window to print a description of. Check which windows exist with "po (id)[[UIApplication sharedApplication] windows]".',  # noqa B950
+                help='Specify the window to print a description of. Check which windows exist with "po (id)[[UIApplication sharedApplication] windows]".',
             ),
             fb.FBCommandArgument(
                 short="-s",
@@ -123,7 +123,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
             if isMac:
                 arguments[
                     0
-                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]"  # noqa B950
+                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]"
             else:
                 arguments[0] = "(id)[[UIApplication sharedApplication] keyWindow]"
 
@@ -134,7 +134,7 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
                 print(description)
             else:
                 print(
-                    "Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression."  # noqa B950
+                    "Failed to walk view hierarchy. Make sure you pass a view, not any other kind of object or expression."
                 )
         else:
             printingMethod = "recursiveDescription"
@@ -189,11 +189,11 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
 
             arguments[
                 0
-            ] = "(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]"  # noqa B950
+            ] = "(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]"
             if isMac:
                 arguments[
                     0
-                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]"  # noqa B950
+                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]"
 
         print(vcHelpers.viewControllerRecursiveDescription(arguments[0]))
 
@@ -428,7 +428,7 @@ class FBPrintInstanceVariable(fb.FBCommand):
             "(id)[(" + object + ") class]"
         ).GetObjectDescription()
 
-        ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, "{}", 0)))[0]'.format(  # noqa B950
+        ivarTypeCommand = '((char *)ivar_getTypeEncoding((void*)object_getInstanceVariable((id){}, "{}", 0)))[0]'.format(
             object, ivarName
         )
         ivarTypeEncodingFirstChar = fb.evaluateExpression(ivarTypeCommand)
@@ -713,7 +713,7 @@ class FBPrintJSON(fb.FBCommand):
         objectToPrint = fb.evaluateInputExpression(arguments[0])
         pretty = 1 if options.plain is None else 0
         jsonData = fb.evaluateObjectExpression(
-            "[NSJSONSerialization dataWithJSONObject:(id){} options:{} error:nil]".format(  # noqa B950
+            "[NSJSONSerialization dataWithJSONObject:(id){} options:{} error:nil]".format(
                 objectToPrint, pretty
             )
         )
@@ -761,12 +761,12 @@ class FBPrintSwiftJSON(fb.FBCommand):
         )
         pretty = 1 if options.plain is None else 0
         jsonData = fb.evaluateObjectExpression(
-            "[NSJSONSerialization dataWithJSONObject:(NSObject*){} options:{} error:nil]".format(  # noqa B950
+            "[NSJSONSerialization dataWithJSONObject:(NSObject*){} options:{} error:nil]".format(
                 objectToPrint, pretty
             )
         )
         jsonString = fb.evaluateExpressionValue(
-            "(NSString*)[[NSString alloc] initWithData:(NSObject*){} encoding:4]".format(  # noqa B950
+            "(NSString*)[[NSString alloc] initWithData:(NSObject*){} encoding:4]".format(
                 jsonData
             )
         ).GetObjectDescription()
@@ -847,7 +847,7 @@ class FBPrintAsCurl(fb.FBCommand):
         if fb.evaluateIntegerExpression("[{} length]".format(HTTPData)) > 0:
             if options.embed:
                 if fb.evaluateIntegerExpression(
-                    "[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]".format(  # noqa B950
+                    "[{} respondsToSelector:@selector(base64EncodedStringWithOptions:)]".format(
                         HTTPData
                     )
                 ):
@@ -868,7 +868,7 @@ class FBPrintAsCurl(fb.FBCommand):
                     return False
             else:
                 print(
-                    'HTTPBody data for iOS Device is supported only with "--embed-data" flag'  # noqa B950
+                    'HTTPBody data for iOS Device is supported only with "--embed-data" flag'
                 )
                 return False
 
@@ -916,7 +916,7 @@ class FBPrintObjectInObjc(fb.FBCommand):
         return "poobjc"
 
     def description(self):
-        return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -O -l ObjC++ -- " )'  # noqa B950
+        return 'Print the expression result, with the expression run in an ObjC++ context. (Shortcut for "expression -O -l ObjC++ -- " )'
 
     def args(self):
         return [
