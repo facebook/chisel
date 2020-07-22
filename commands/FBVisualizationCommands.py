@@ -146,6 +146,14 @@ def _showLayer(layer):
     fb.evaluateEffect("UIGraphicsEndImageContext()")
 
 
+def _showPixelBuffer(target):
+    fb.evaluateExpression("CGImageRef $imageOut = NULL")
+    fb.evaluateExpression("(OSStatus)VTCreateCGImageFromCVPixelBuffer(" + target + ", NULL, &$imageOut)")
+    image = fb.evaluateExpression("[UIImage imageWithCGImage:$imageOut]")
+    _showImage(image)
+    fb.evaluateExpression("CGImageRelease($imageOut)")
+
+
 def _dataIsImage(data):
     data = "(" + data + ")"
 
@@ -181,6 +189,12 @@ def _visualize(target):
         + ") == (unsigned long)CGImageGetTypeID()"
     ):
         _showImage("(id)[UIImage imageWithCGImage:" + target + "]")
+    elif fb.evaluateBooleanExpression(
+        "(unsigned long)CFGetTypeID((CFTypeRef)"
+        + target
+        + ") == (unsigned long)CVPixelBufferGetTypeID()"
+    ):
+        _showPixelBuffer(target)
     else:
         if objectHelpers.isKindOfClass(target, "UIImage"):
             _showImage(target)
@@ -219,7 +233,7 @@ class FBVisualizeCommand(fb.FBCommand):
 
     def description(self):
         return (
-            "Open a UIImage, CGImageRef, UIView, or CALayer in Preview.app on your Mac."
+            "Open a UIImage, CGImageRef, UIView, CALayer, or CVPixelBuffer in Preview.app on your Mac."
         )
 
     def args(self):
