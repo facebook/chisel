@@ -69,7 +69,7 @@ The following is a list of your current user-defined commands:
 ...
 ```
 
-The bottom of the list will contain all of the commands sourced from `Chisel`.
+The bottom list contains all the commands sourced from `Chisel`.
 
 You can also inspect a specific command by passing its name as an argument to the help command (as with all other `LLDB` commands). 
 
