@@ -26,6 +26,26 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 disclosure of security bugs. In those cases, please go through the process
 outlined on that page and do not file a public issue.
 
+## Updating Chisel in Brew (for maintainers)
+Most users have Chisel installed via Homebrew. In order to update the version they'll receive when using `brew install` or `brew update`, we have to make some manual changes.
+
+1. Create a new release in the GitHub web interface.
+2. Download the `tar.gz` for that release and run `shasum -a 256 <path>`.
+3. Copy the URL for the `.tar.gz` on the release page.
+
+Run:
+```
+brew bump-formula-pr --strict chisel \
+--url=<GitHub .tar.gz URL> \
+--sha256=<output of shasum>
+```
+
+More docs on the process are available on the [Homebrew site](https://docs.brew.sh/How-To-Open-a-Homebrew-Pull-Request).
+
+Example PRs:
+- [Bump to 2.0.1](https://github.com/Homebrew/homebrew-core/pull/59799)
+- [Bump to 2.0.0](https://github.com/Homebrew/homebrew-core/pull/50571)
+
 ## License
 By contributing to Chisel, you agree that your contributions will be licensed
 under its MIT license.
