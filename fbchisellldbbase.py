@@ -11,7 +11,7 @@ import shlex
 import lldb
 
 
-class FBCommandArgument: # noqa B903
+class FBCommandArgument:  # noqa B903
     def __init__(
         self, short="", long="", arg="", type="", help="", default="", boolean=False
     ):

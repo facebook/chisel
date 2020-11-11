@@ -170,7 +170,7 @@ def prettyPrintInvocation(frame, invocation):
             index += 1
 
 
-def argumentAsString(frame, address, encoding):   # noqa C901
+def argumentAsString(frame, address, encoding):  # noqa C901
     if encoding[0] == "{":
         encoding = encoding[1:]
 

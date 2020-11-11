@@ -31,7 +31,6 @@
 # Can be removed when Python 2 support is removed.
 from __future__ import print_function
 
-
 import fbchisellldbbase as fb
 
 
@@ -53,7 +52,7 @@ def generateKey(arguments):
     keyArgs = []
 
     for argument in arguments[2:]:
-        if argument.startswith('('):
+        if argument.startswith("("):
             value = fb.evaluateExpression(argument)
         else:
             value = fb.evaluateExpressionValue(argument).GetObjectDescription()
@@ -95,7 +94,6 @@ class FBPrintCounterCommand(fb.FBCommand):
         print(str(counters[key]))
 
 
-
 # Prints all the counters sorted by the keys.
 # (lldb) printcounters
 # key_1: 0
@@ -109,7 +107,7 @@ class FBPrintCountersCommand(fb.FBCommand):
     def run(self, arguments, options):
         keys = sorted(counters.keys())
         for key in keys:
-            print(key + ': ' + str(counters[key]))
+            print(key + ": " + str(counters[key]))
 
 
 # Resets the counter for the key.

@@ -73,9 +73,7 @@ class FlickerWalker:
         initialAsync = lldb.debugger.GetAsync()
         # Needed so XCode doesn't hang if tap on Continue while lldb
         # is waiting for user input in 'vs' mode
-        lldb.debugger.SetAsync(
-            True
-        )
+        lldb.debugger.SetAsync(True)
         while self.keepRunning:
             charRead = sys.stdin.readline().rstrip("\n")
             self.inputCallback(charRead)

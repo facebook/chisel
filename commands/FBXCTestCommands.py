@@ -284,7 +284,7 @@ class FBXCNoId(fb.FBCommand):
 def take_snapshot(element):
     """
     Takes snapshot (XCElementSnapshot) from XCUIElement (as pointer)
-    
+
     :param int element: Pointer to the XCUIElement
     :return: XCElementSnapshot object
     :rtype: lldb.SBValue
@@ -299,7 +299,7 @@ def take_snapshot(element):
 class _ElementList(object):
     """
     Store element and list of children
-    
+
     :param XCElementSnapshot element: XCElementSnapshot
     :param list[_ElementList] children: List of XCElementSnapshot objects
     """
@@ -311,7 +311,7 @@ class _ElementList(object):
     def text(self, pointer, trait, frame, indent):
         """
         String representation of the element
-        
+
         :param bool pointer: Print pointers
         :param bool trait: Print traits
         :param bool frame: Print frames
@@ -328,7 +328,7 @@ class _ElementList(object):
     def hierarchy_text(self, pointer=False, trait=False, frame=False, indent=0):
         """
         String representation of the hierarchy of elements
-        
+
         :param bool pointer: Print pointers
         :param bool trait: Print traits
         :param bool frame: Print frames
@@ -347,7 +347,7 @@ class _ElementList(object):
 class XCElementSnapshot(object):
     """
     XCElementSnapshot wrapper
-    
+
     :param lldb.SBValue element: XCElementSnapshot object
     :param str element_value: Pointer to XCElementSnapshot object
     :param language: Project language
@@ -372,7 +372,7 @@ class XCElementSnapshot(object):
 
     def __init__(self, element, language):
         """
-        :param lldb.SBValue element: XCElementSnapshot object 
+        :param lldb.SBValue element: XCElementSnapshot object
         :param language: Project language
         """
         super(XCElementSnapshot, self).__init__()
@@ -403,7 +403,7 @@ class XCElementSnapshot(object):
     def is_missing_identifier(self):
         """
         Checks if element has a label but doesn't have an identifier.
-        
+
         :return: True if element has a label but doesn't have an identifier.
         :rtype: bool
         """
@@ -411,7 +411,7 @@ class XCElementSnapshot(object):
 
     @property
     def type(self):
-        """    
+        """
         :return: XCUIElement type / XCUIElementType
         :rtype: lldb.SBValue
         """
@@ -890,7 +890,7 @@ class XCElementSnapshot(object):
     def generation_value(self):
         """
         :return: XCUIElement generation value
-        :rtype: int 
+        :rtype: int
         """
         return int(self.generation.GetValueAsUnsigned())
 
@@ -1085,7 +1085,7 @@ class XCElementSnapshot(object):
     def depth_value(self):
         """
         :return: XCUIElement depth
-        :rtype: int 
+        :rtype: int
         """
         return int(self.depth.GetValue())
 
@@ -1130,7 +1130,7 @@ class XCElementSnapshot(object):
     def summary(self, pointer=False, trait=False, frame=False):
         """
         Returns XCElementSnapshot summary
-        
+
         :param bool pointer: Print pointers
         :param bool trait: Print traits
         :param bool frame: Print frames
@@ -1180,7 +1180,7 @@ class XCElementSnapshot(object):
     def detail_summary(self):
         """
         Returns XCElementSnapshot detail summary
-        
+
         :return: XCElementSnapshot detail summary
         :rtype: str
         """
@@ -1234,7 +1234,7 @@ class XCElementSnapshot(object):
     def tree(self):
         """
         Returns tree of elements in hierarchy
-        
+
         :return: Elements hierarchy
         :rtype: _ElementList
         """
@@ -1246,7 +1246,7 @@ class XCElementSnapshot(object):
     def find_missing_identifiers(self, status_bar):
         """
         Find element which has a label but doesn't have an identifier
-        
+
         :param bool status_bar: Print status bar items
         :return: Hierarchy structure with items which has a label but doesn't have an identifier
         :rtype: _ElementList | None
@@ -1273,7 +1273,7 @@ class XCElementSnapshot(object):
     def get_type_value_string(value):
         """
         Get element type string from XCUIElementType (as int)
-        
+
         :param int value: XCUIElementType (as int)
         :return: XCUIElementType string
         :rtype: str
@@ -1284,7 +1284,7 @@ class XCElementSnapshot(object):
     def get_traits_value_string(value):
         """
         Get element traits string from UIAccessibilityTraits (as int)
-        
+
         :param int value: UIAccessibilityTraits (as int)
         :return: UIAccessibilityTraits string
         :rtype: str
@@ -1295,7 +1295,7 @@ class XCElementSnapshot(object):
     def get_user_interface_size_class_string(value):
         """
         Get user interface size class string from UIUserInterfaceSizeClass (as int)
-        
+
         :param value: UIAccessibilityTraits (as int)
         :return: UIUserInterfaceSizeClass string
         :rtype: str
@@ -1410,7 +1410,7 @@ class XCUIElementType(object):
     def name_for_value(cls, value):
         """
         Get element type string from XCUIElementType (as int)
-        
+
         :param int value: XCUIElementType (as int)
         :return: Name of type
         :rtype: str
@@ -1448,7 +1448,7 @@ class UIAccessibilityTraits(object):
     @classmethod
     def _attributes_by_value(cls):
         """
-        :return: Hash of all attributes and their values 
+        :return: Hash of all attributes and their values
         :rtype: dict[int, str]
         """
         class_attributes = set(dir(cls)) - set(dir(object))
@@ -1497,7 +1497,7 @@ class UIUserInterfaceSizeClass(object):
     def name_for_value(cls, value):
         """
         Get user interface size class string from UIUserInterfaceSizeClass (as int)
-        
+
         :param int value: UIAccessibilityTraits (as int)
         :return: UIUserInterfaceSizeClass string
         :rtype: str
@@ -1515,13 +1515,13 @@ class UIUserInterfaceSizeClass(object):
 class CGRect(object):
     """
     CGRect wrapper
-    
+
     :param lldb.SBValue element: CGRect object
     """
 
     def __init__(self, element):
         """
-        :param lldb.SBValue element: CGRect object  
+        :param lldb.SBValue element: CGRect object
         """
         super(CGRect, self).__init__()
 
@@ -1547,7 +1547,7 @@ class CGRect(object):
 class CGPoint(object):
     """
     CGPoint wrapper
-    
+
     :param lldb.SBValue element: CGPoint object
     """
 
@@ -1572,8 +1572,8 @@ class CGPoint(object):
 def normalize_summary(summary):
     """
     Normalize summary by removing "'" and "@" characters
-    
-    :param str summary: Summary string to normalize 
+
+    :param str summary: Summary string to normalize
     :return: Normalized summary string
     :rtype: str
     """
@@ -1583,8 +1583,8 @@ def normalize_summary(summary):
 def normalize_array_description(description):
     """
     Normalize array object description by removing "<" and ">" characters and content between them.
-    
-    :param str description: Array object description 
+
+    :param str description: Array object description
     :return: Normalized array object description string
     :rtype: str
     """
@@ -1608,8 +1608,8 @@ def import_uikit():
 def debug(element):
     """
     Debug helper
-    
-    :param lldb.SBValue element: Element to debug 
+
+    :param lldb.SBValue element: Element to debug
     """
     print("---")
     print("element: {}".format(element))

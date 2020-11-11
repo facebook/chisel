@@ -580,7 +580,7 @@ class FBPrintData(fb.FBCommand):
             fb.FBCommandArgument(arg="data", type="NSData *", help="NSData object.")
         ]
 
-    def run(self, arguments, option):   # noqa C901
+    def run(self, arguments, option):  # noqa C901
         # Normalize encoding.
         encoding_text = option.encoding.lower().replace(" -", "")
         enc = 4  # Default encoding UTF-8.
