@@ -147,33 +147,31 @@ class FBTapLoggerCommand(fb.FBCommand):
             + " allTouches] anyObject] phase] == 0"
         )
         breakpoint.SetOneShot(True)
+
+        callback_name = taplog_callback.__qualname__
+        # Import the callback so LLDB can see it
         lldb.debugger.HandleCommand(
-            "breakpoint command add -s python -F \"sys.modules['"
-            + __name__
-            + "']."
-            + self.__class__.__name__
-            + '.taplog_callback" '
-            + str(breakpoint.id)
+            "script from %s import %s" % (__name__, callback_name)
         )
+        breakpoint.SetScriptCallbackFunction(callback_name)
+
         lldb.debugger.SetAsync(True)
         lldb.debugger.HandleCommand("continue")
 
-    @staticmethod
-    def taplog_callback(frame, bp_loc, internal_dict):
-        parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
-        print(
-            "Gesture Recognizers:\n{}".format(
-                fb.describeObject(
-                    "[[[%s allTouches] anyObject] gestureRecognizers]" % (parameterExpr)
-                )
+
+def taplog_callback(frame, bp_loc, internal_dict):
+    parameterExpr = objc.functionPreambleExpressionForObjectParameterAtIndex(0)
+    print(
+        "Gesture Recognizers:\n{}".format(
+            fb.describeObject(
+                "[[[%s allTouches] anyObject] gestureRecognizers]" % (parameterExpr)
             )
         )
-        print(
-            "View:\n{}".format(
-                fb.describeObject(
-                    "[[[%s allTouches] anyObject] view]" % (parameterExpr)
-                )
-            )
+    )
+    print(
+        "View:\n{}".format(
+            fb.describeObject("[[[%s allTouches] anyObject] view]" % (parameterExpr))
         )
-        # We don't want to proceed event (click on button for example), so we just skip it
-        lldb.debugger.HandleCommand("thread return")
+    )
+    # We don't want to proceed event (click on button for example), so we just skip it
+    lldb.debugger.HandleCommand("thread return")
