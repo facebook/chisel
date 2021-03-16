@@ -23,7 +23,7 @@ class FBInputTexByAccessibilityIdCommand(fb.FBCommand):
         return "settext"
 
     def description(self):
-        return "Set text on text on a view by accessibility id."
+        return "Set text on a view by accessibility id."
 
     def args(self):
         return [
