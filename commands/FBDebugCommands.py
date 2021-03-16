@@ -297,7 +297,7 @@ def switchBreakpointState(expression, on):
         for location in breakpoint:
             if location.IsEnabled() != on and (
                 expression_pattern.search(str(location))
-                or expression == hex(location.GetAddress())
+                or expression == hex(location.GetLoadAddress())
             ):
                 print(str(location))
                 location.SetEnabled(on)
