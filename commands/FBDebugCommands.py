@@ -168,7 +168,9 @@ class FBMethodBreakpointCommand(fb.FBCommand):
 
         methodIsClassMethod = methodTypeCharacter == "+"
 
-        if not methodIsClassMethod:
+        if methodIsClassMethod:
+            methodTypeCharacter = "\+"
+        else:
             # The default is instance method, and methodTypeCharacter
             # may not actually be '-'.
             methodTypeCharacter = "-"
