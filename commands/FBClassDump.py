@@ -403,26 +403,26 @@ class Property:
     # https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW1
     def prettyPrintString(self):
         attrs = []
-        if self.attributes.has_key("N"):
+        if 'N' in self.attributes:
             attrs.append("nonatomic")
         else:
             attrs.append("atomic")
 
-        if self.attributes.has_key("&"):
+        if "&" in self.attributes:
             attrs.append("strong")
-        elif self.attributes.has_key("C"):
+        elif "C" in self.attributes:
             attrs.append("copy")
-        elif self.attributes.has_key("W"):
+        elif "W" in self.attributes:
             attrs.append("weak")
         else:
             attrs.append("assign")
 
-        if self.attributes.has_key("R"):
+        if "R" in self.attributes:
             attrs.append("readonly")
 
-        if self.attributes.has_key("G"):
+        if "G" in self.attributes:
             attrs.append("getter={}".format(self.attributes["G"]))
-        if self.attributes.has_key("S"):
+        if "S" in self.attributes:
             attrs.append("setter={}".format(self.attributes["S"]))
 
         return "@property ({}) {} {};".format(
