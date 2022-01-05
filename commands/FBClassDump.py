@@ -403,7 +403,7 @@ class Property:
     # https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW1
     def prettyPrintString(self):
         attrs = []
-        if 'N' in self.attributes:
+        if "N" in self.attributes:
             attrs.append("nonatomic")
         else:
             attrs.append("atomic")
