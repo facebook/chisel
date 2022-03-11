@@ -31,6 +31,8 @@ Then add the following line to your `~/.lldbinit` file.
 command script import /usr/local/opt/chisel/libexec/fbchisellldb.py
 ```
 
+* Note that if you are installing on an M1 Mac, the path above should be `/opt/homebrew/opt/chisel/libexec/fbchisellldb.py` instead.
+
 Alternatively, download chisel and add the following line to your _~/.lldbinit_ file.
 
 ```Python
