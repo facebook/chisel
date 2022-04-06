@@ -147,13 +147,18 @@ def _showLayer(layer):
 
 
 def _showPixelBuffer(target):
-    fb.evaluateExpression("CGImageRef $imageOut = NULL")
+    imgVar = "$imageOut" + str(round(time.time()))
+    fb.evaluateExpression("CGImageRef " + imgVar + " = NULL")
     fb.evaluateExpression(
-        "(OSStatus)VTCreateCGImageFromCVPixelBuffer(" + target + ", NULL, &$imageOut)"
+        "(OSStatus)VTCreateCGImageFromCVPixelBuffer((CVPixelBufferRef)"
+        + target
+        + ", NULL, &"
+        + imgVar
+        + ")"
     )
-    image = fb.evaluateExpression("[UIImage imageWithCGImage:$imageOut]")
+    image = fb.evaluateExpression("[UIImage imageWithCGImage:" + imgVar + "]")
     _showImage(image)
-    fb.evaluateExpression("CGImageRelease($imageOut)")
+    fb.evaluateExpression("CGImageRelease(" + imgVar + ")")
 
 
 def _dataIsImage(data):
