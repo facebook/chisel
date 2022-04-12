@@ -24,7 +24,8 @@ def loadCommandsInDirectory(commandsDirectory):
     for file in os.listdir(commandsDirectory):
         fileName, fileExtension = os.path.splitext(file)
         if fileExtension == ".py":
-            module = imp.load_source(fileName, os.path.join(commandsDirectory, file))
+            module = imp.load_source(fileName,
+                                     os.path.join(commandsDirectory, file))
 
             if hasattr(module, "lldbinit"):
                 module.lldbinit()
@@ -32,17 +33,16 @@ def loadCommandsInDirectory(commandsDirectory):
             if hasattr(module, "lldbcommands"):
                 module._loadedFunctions = {}
                 for command in module.lldbcommands():
-                    loadCommand(
-                        module, command, commandsDirectory, fileName, fileExtension
-                    )
+                    loadCommand(module, command, commandsDirectory, fileName,
+                                fileExtension)
 
 
 def loadCommand(module, command, directory, filename, extension):
-    func = makeRunCommand(command, os.path.join(directory, filename + extension))
+    func = makeRunCommand(command, os.path.join(directory,
+                                                filename + extension))
     name = command.name()
-    helpText = (
-        command.description().strip().splitlines()[0]
-    )  # first line of description
+    helpText = (command.description().strip().splitlines()[0]
+                )  # first line of description
 
     key = filename + "_" + name
 
@@ -50,22 +50,16 @@ def loadCommand(module, command, directory, filename, extension):
 
     functionName = "__" + key
 
+    lldb.debugger.HandleCommand("script " + functionName + " = sys.modules['" +
+                                module.__name__ + "']._loadedFunctions['" +
+                                key + "']")
     lldb.debugger.HandleCommand(
-        "script "
-        + functionName
-        + " = sys.modules['"
-        + module.__name__
-        + "']._loadedFunctions['"
-        + key
-        + "']"
-    )
-    lldb.debugger.HandleCommand(
-        'command script add --help "{help}" --function {function} {name}'.format(
+        'command script add --help "{help}" --function {function} {name}'.
+        format(
             help=helpText.replace('"', '\\"'),  # escape quotes
             function=functionName,
             name=name,
-        )
-    )
+        ))
 
 
 def makeRunCommand(command, filename):
@@ -92,7 +86,7 @@ def makeRunCommand(command, filename):
         # the initial args form an expression and combine them into a single arg.
         if len(args) > len(command.args()):
             overhead = len(args) - len(command.args())
-            head = args[: overhead + 1]  # Take N+1 and reduce to 1.
+            head = args[:overhead + 1]  # Take N+1 and reduce to 1.
             args = [" ".join(head)] + args[-overhead:]
 
         if validateArgsForCommand(args, command):
@@ -105,13 +99,14 @@ def makeRunCommand(command, filename):
 def validateArgsForCommand(args, command):
     if len(args) < len(command.args()):
         defaultArgs = [arg.default for arg in command.args()]
-        defaultArgsToAppend = defaultArgs[len(args) :]
+        defaultArgsToAppend = defaultArgs[len(args):]
 
         index = len(args)
         for defaultArg in defaultArgsToAppend:
             if not defaultArg:
                 arg = command.args()[index]
-                print("Whoops! You are missing the <" + arg.argName + "> argument.")
+                print("Whoops! You are missing the <" + arg.argName +
+                      "> argument.")
                 print("\nUsage: " + usageForCommand(command))
                 return
             index += 1
