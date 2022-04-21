@@ -7,6 +7,7 @@
 
 import imp
 import os
+from contextlib import redirect_stdout, redirect_stderr
 from optparse import OptionParser
 
 import lldb
@@ -70,33 +71,39 @@ def loadCommand(module, command, directory, filename, extension):
 
 def makeRunCommand(command, filename):
     def runCommand(debugger, input, exe_ctx, result, _):
-        command.result = result
-        command.context = exe_ctx
-        splitInput = command.lex(input)
+        # lldb assumes that any output meant for the user is written
+        # to the result object. By redirecting stdout here, we can
+        # use methods like print (or parse_args) in the command logic
+        # as if they are writing to stdout, but write to result
+        # instead. lldb will handle displaying it to the user.
+        with redirect_stdout(result), redirect_stderr(result):
+            command.result = result
+            command.context = exe_ctx
+            splitInput = command.lex(input)
 
-        # OptionParser will throw in the case where you want just one
-        # big long argument and no options and you enter something
-        # that starts with '-' in the argument. e.g.:
-        #     somecommand -[SomeClass someSelector:]
-        # This solves that problem by prepending a '--' so that
-        # OptionParser does the right thing.
-        options = command.options()
-        if len(options) == 0:
-            if "--" not in splitInput:
-                splitInput.insert(0, "--")
+            # OptionParser will throw in the case where you want just one
+            # big long argument and no options and you enter something
+            # that starts with '-' in the argument. e.g.:
+            #     somecommand -[SomeClass someSelector:]
+            # This solves that problem by prepending a '--' so that
+            # OptionParser does the right thing.
+            options = command.options()
+            if len(options) == 0:
+                if "--" not in splitInput:
+                    splitInput.insert(0, "--")
 
-        parser = optionParserForCommand(command)
-        (options, args) = parser.parse_args(splitInput)
+            parser = optionParserForCommand(command)
+            (options, args) = parser.parse_args(splitInput)
 
-        # When there are more args than the command has declared, assume
-        # the initial args form an expression and combine them into a single arg.
-        if len(args) > len(command.args()):
-            overhead = len(args) - len(command.args())
-            head = args[: overhead + 1]  # Take N+1 and reduce to 1.
-            args = [" ".join(head)] + args[-overhead:]
+            # When there are more args than the command has declared, assume
+            # the initial args form an expression and combine them into a single arg.
+            if len(args) > len(command.args()):
+                overhead = len(args) - len(command.args())
+                head = args[: overhead + 1]  # Take N+1 and reduce to 1.
+                args = [" ".join(head)] + args[-overhead:]
 
-        if validateArgsForCommand(args, command):
-            command.run(args, options)
+            if validateArgsForCommand(args, command):
+                command.run(args, options)
 
     runCommand.__doc__ = helpForCommand(command, filename)
     return runCommand
