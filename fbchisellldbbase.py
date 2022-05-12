@@ -221,7 +221,7 @@ def evaluate(expr):
     else:
         process = lldb.debugger.GetSelectedTarget().GetProcess()
         error = lldb.SBError()
-        ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2 ** 20, error)
+        ret = process.ReadCStringFromMemory(int(ret.GetValue(), 16), 2**20, error)
         if not error.Success():
             print(error)
             return None
