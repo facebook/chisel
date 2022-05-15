@@ -7,7 +7,7 @@
 
 import imp
 import os
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from optparse import OptionParser
 
 import lldb
