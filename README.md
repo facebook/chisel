@@ -52,7 +52,7 @@ There are many commands; here's a few:
 |-----------------|----------------|-------|-------|
 |pviews           |Print the recursive view description for the key window.|Yes|Yes|
 |pvc              |Print the recursive view controller description for the key window.|Yes|No|
-|visualize        |Open a `UIImage`, `CGImageRef`, `UIView`, `CALayer`, `NSData` (of an image), `UIColor`, `CIColor`, or `CGColorRef` in Preview.app on your Mac.|Yes|No|
+|visualize        |Open a `UIImage`, `CGImageRef`, `UIView`, `CALayer`, `NSData` (of an image), `UIColor`, `CIColor`, `CIImage`, `CGColorRef` or `CVPixelBuffer` in Preview.app on your Mac.|Yes|No|
 |fv               |Find a view in the hierarchy whose class name matches the provided regex.|Yes|No|
 |fvc              |Find a view controller in the hierarchy whose class name matches the provided regex.|Yes|No|
 |show/hide        |Show or hide the given view or layer. You don't even have to continue the process to see the changes!|Yes|Yes|

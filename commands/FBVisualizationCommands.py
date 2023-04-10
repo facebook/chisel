@@ -226,9 +226,11 @@ def _visualize(target):
                 )
             else:
                 print("Data isn't an image and isn't a string.")
+        elif objectHelpers.isKindOfClass(target, "CIImage"):
+            _showImage("[UIImage imageWithCIImage:(id)" + target + "]")
         else:
             print(
-                "{} isn't supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, or CGColorRef.".format(
+                "{} isn't supported. You can visualize UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, CIImage, CGColorRef or CVPixelBuffer.".format(
                     objectHelpers.className(target)
                 )
             )
@@ -239,7 +241,7 @@ class FBVisualizeCommand(fb.FBCommand):
         return "visualize"
 
     def description(self):
-        return "Open a UIImage, CGImageRef, UIView, CALayer, or CVPixelBuffer in Preview.app on your Mac."
+        return "Open a UIImage, CGImageRef, UIView, CALayer, NSData, UIColor, CIColor, CIImage, CGColorRef or CVPixelBuffer in Preview.app on your Mac."
 
     def args(self):
         return [
