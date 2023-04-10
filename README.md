@@ -19,8 +19,8 @@ brew install chisel
 if `.lldbinit` file doesn't exist you can create it & open it by tapping on the terminal
 
  ```shell
- touch .lldbinit 
- open .lldbinit 
+ touch .lldbinit
+ open .lldbinit
 ```
 
 Then add the following line to your `~/.lldbinit` file.
@@ -77,7 +77,7 @@ The following is a list of your current user-defined commands:
 
 The bottom list contains all the commands sourced from `Chisel`.
 
-You can also inspect a specific command by passing its name as an argument to the help command (as with all other `LLDB` commands). 
+You can also inspect a specific command by passing its name as an argument to the help command (as with all other `LLDB` commands).
 
 ```
 (lldb) help border
@@ -107,14 +107,14 @@ import fbchisellldbbase as fb
 
 def lldbcommands():
   return [ PrintKeyWindowLevel() ]
-  
+
 class PrintKeyWindowLevel(fb.FBCommand):
   def name(self):
     return 'pkeywinlevel'
-    
+
   def description(self):
     return 'An incredibly contrived command that prints the window level of the key window.'
-    
+
   def run(self, arguments, options):
     # It's a good habit to explicitly cast the type of all return
     # values and arguments. LLDB can't always find them on its own.
