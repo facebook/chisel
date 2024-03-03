@@ -121,9 +121,9 @@ class FBPrintViewHierarchyCommand(fb.FBCommand):
                 )
         elif arguments[0] == "__keyWindow_dynamic__":
             if isMac:
-                arguments[
-                    0
-                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]"
+                arguments[0] = (
+                    "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentView]"
+                )
             else:
                 arguments[0] = "(id)[[UIApplication sharedApplication] keyWindow]"
 
@@ -187,13 +187,13 @@ class FBPrintViewControllerHierarchyCommand(fb.FBCommand):
                 print(fb.describeObject("[UIViewController _printHierarchy]"))
                 return
 
-            arguments[
-                0
-            ] = "(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]"
+            arguments[0] = (
+                "(id)[(id)[[UIApplication sharedApplication] keyWindow] rootViewController]"
+            )
             if isMac:
-                arguments[
-                    0
-                ] = "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]"
+                arguments[0] = (
+                    "(id)[[[[NSApplication sharedApplication] windows] objectAtIndex:0] contentViewController]"
+                )
 
         print(vcHelpers.viewControllerRecursiveDescription(arguments[0]))
 
