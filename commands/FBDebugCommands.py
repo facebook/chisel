@@ -286,7 +286,6 @@ class FBMemoryWarningCommand(fb.FBCommand):
 
 
 def switchBreakpointState(expression, on):
-
     expression_pattern = re.compile(r"{}".format(expression), re.I)
 
     target = lldb.debugger.GetSelectedTarget()

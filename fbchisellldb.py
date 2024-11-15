@@ -169,7 +169,6 @@ def helpForCommand(command, filename):
     if command.options():
         help += "\n\nOptions:"
         for option in command.options():
-
             if option.longName and option.shortName:
                 optionFlag = option.longName + "/" + option.shortName
             elif option.longName:
