@@ -43,14 +43,7 @@ class FBComponentsDebugCommand(fb.FBCommand):
         ]
 
     def run(self, arguments, options):
-        if options.set:
-            fb.evaluateEffect("[CKComponentDebugController setDebugMode:YES]")
-            print("Debug mode for ComponentKit has been set.")
-        elif options.unset:
-            fb.evaluateEffect("[CKComponentDebugController setDebugMode:NO]")
-            print("Debug mode for ComponentKit has been unset.")
-        else:
-            print("No option for ComponentKit Debug mode specified.")
+        print("Debug mode for ComponentKit is deprecated; use Flipper instead.")
 
 
 class FBComponentsPrintCommand(fb.FBCommand):
