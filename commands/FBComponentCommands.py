@@ -55,26 +55,6 @@ class FBComponentsPrintCommand(fb.FBCommand):
             "Print a recursive description of components found starting from <aView>."
         )
 
-    def options(self):
-        return [
-            fb.FBCommandArgument(
-                short="-u",
-                long="--up",
-                arg="upwards",
-                boolean=True,
-                default=False,
-                help="Print only the component hierarchy found on the first superview that has them, carrying the search up to its window.",
-            ),
-            fb.FBCommandArgument(
-                short="-v",
-                long="--show-views",
-                arg="showViews",
-                type="BOOL",
-                default="YES",
-                help="Prints the component hierarchy and does not print the views if the supplied argument is 'NO'. Supply either a 'YES' or a 'NO'. The default is to show views.",
-            ),
-        ]
-
     def args(self):
         return [
             fb.FBCommandArgument(
@@ -86,22 +66,14 @@ class FBComponentsPrintCommand(fb.FBCommand):
         ]
 
     def run(self, arguments, options):
-        upwards = "YES" if options.upwards else "NO"
-        showViews = "YES" if options.showViews == "YES" else "NO"
-
         view = fb.evaluateInputExpression(arguments[0])
         if not viewHelpers.isView(view):
             # assume it's a CKComponent
             view = fb.evaluateExpression("((CKComponent *)%s).viewContext.view" % view)
-
         print(
             fb.describeObject(
                 "[CKComponentHierarchyDebugHelper componentHierarchyDescriptionForView:(UIView *)"
                 + view
-                + " searchUpwards:"
-                + upwards
-                + " showViews:"
-                + showViews
                 + "]"
             )
         )
