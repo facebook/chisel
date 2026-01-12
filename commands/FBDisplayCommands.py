@@ -117,9 +117,9 @@ class FBDrawBorderCommand(fb.FBCommand):
                 setBorder(layer, options.width, color, colorClassName)
         else:
             # `obj` is not a view, make sure recursive bordering is not requested
-            assert (
-                depth <= 0
-            ), "Recursive bordering is only supported for UIViews or NSViews"
+            assert depth <= 0, (
+                "Recursive bordering is only supported for UIViews or NSViews"
+            )
             layer = viewHelpers.convertToLayer(obj)
             setBorder(layer, options.width, color, colorClassName)
 
@@ -172,9 +172,9 @@ class FBRemoveBorderCommand(fb.FBCommand):
                 setUnborder(layer)
         else:
             # `obj` is not a view, make sure recursive unbordering is not requested
-            assert (
-                depth <= 0
-            ), "Recursive unbordering is only supported for UIViews or NSViews"
+            assert depth <= 0, (
+                "Recursive unbordering is only supported for UIViews or NSViews"
+            )
             layer = viewHelpers.convertToLayer(obj)
             setUnborder(layer)
 
