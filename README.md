@@ -126,8 +126,8 @@ Then all that's left is to source the commands in lldbinit. `Chisel` has a pytho
 ```Python
 # ~/.lldbinit
 ...
-command script import /path/to/fbobjclldb.py
-script fbobjclldb.loadCommandsInDirectory('/magical/commands/')
+command script import /path/to/fblldb.py
+script fblldb.loadCommandsInDirectory('/magical/commands/')
 
 ```
 
