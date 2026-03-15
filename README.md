@@ -1,7 +1,3 @@
-<a href="https://opensource.facebook.com/support-ukraine">
-  <img src="https://img.shields.io/badge/Support-Ukraine-FFD500?style=flat&labelColor=005BBB" alt="Support Ukraine - Help Provide Humanitarian Aid to Ukraine." />
-</a>
-
 # Chisel
 `Chisel` is a collection of `LLDB` commands to assist in the debugging of iOS apps.
 
